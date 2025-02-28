@@ -20,28 +20,26 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TemperatureConverter(viewModel: TemperatureViewModel) {
-    val currentValue by viewModel.temperature.collectAsStateWithLifecycle()
-    val sourceUnit by viewModel.sourceUnit.collectAsStateWithLifecycle()
-    val destinationUnit by viewModel.destinationUnit.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val convertedValue by viewModel.convertedTemperature.collectAsStateWithLifecycle()
-    val enabled = remember(currentValue, sourceUnit, destinationUnit) {
-        !viewModel.getTemperatureAsFloat().isNaN() && sourceUnit != destinationUnit
+    val enabled = remember(uiState.temperature, uiState.sourceUnit, uiState.destinationUnit) {
+        !viewModel.getTemperatureAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TemperatureTextField(
-            temperature = currentValue,
+            temperature = uiState.temperature,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = { viewModel.setTemperature(it) })
         TemperatureButtonRow(
-            selected = sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
+            selected = uiState.sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
         ) { unit: TemperatureUnit ->
             viewModel.setSourceUnit(unit)
         }
         TemperatureButtonRow(
-            selected = destinationUnit, label = Res.string.to, modifier = Modifier.padding(bottom = 16.dp)
+            selected = uiState.destinationUnit, label = Res.string.to, modifier = Modifier.padding(bottom = 16.dp)
         ) { unit: TemperatureUnit ->
             viewModel.setDestinationUnit(unit)
         }
@@ -50,7 +48,7 @@ fun TemperatureConverter(viewModel: TemperatureViewModel) {
         ) {
             Text(text = stringResource(Res.string.convert))
         }
-        Result(value = convertedValue, unit = destinationUnit)
+        Result(value = convertedValue, unit = uiState.destinationUnit)
     }
 }
 
@@ -63,14 +61,14 @@ fun TemperatureTextField(
 ) {
     TextField(
         value = temperature, onValueChange = {
-        onValueChange(it)
-    }, placeholder = {
-        Text(text = stringResource(Res.string.placeholder_temperature))
-    }, modifier = modifier, keyboardActions = KeyboardActions(onAny = {
-        keyboardActionCallback()
-    }), keyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
-    ), singleLine = true
+            onValueChange(it)
+        }, placeholder = {
+            Text(text = stringResource(Res.string.placeholder_temperature))
+        }, modifier = modifier, keyboardActions = KeyboardActions(onAny = {
+            keyboardActionCallback()
+        }), keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
+        ), singleLine = true
     )
 }
 

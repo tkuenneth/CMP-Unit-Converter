@@ -1,45 +1,54 @@
 package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+data class UiState(
+    val sourceUnit: TemperatureUnit, val destinationUnit: TemperatureUnit, val temperature: String
+)
 
 class TemperatureViewModel(private val repository: TemperatureRepository) : ViewModel() {
 
-    private val _sourceUnit: MutableStateFlow<TemperatureUnit> = MutableStateFlow(
-        repository.getTemperatureSourceUnit()
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
+        UiState(
+            sourceUnit = TemperatureUnit.Celsius, destinationUnit = TemperatureUnit.Fahrenheit, temperature = ""
+        )
     )
+    val uiState = _uiState.asStateFlow()
 
-    val sourceUnit: StateFlow<TemperatureUnit>
-        get() = _sourceUnit
+    init {
+        viewModelScope.launch {
+            combineTransform(
+                repository.sourceUnit, repository.destinationUnit, repository.temperature
+            ) { sourceUnit, destinationUnit, temperature ->
+                emit(Triple(sourceUnit, destinationUnit, temperature))
+            }.collect { (sourceUnit, destinationUnit, temperature) ->
+                _uiState.update { current ->
+                    current.copy(
+                        sourceUnit = sourceUnit, destinationUnit = destinationUnit, temperature = temperature
+                    )
+                }
+            }
+        }
+    }
 
     fun setSourceUnit(value: TemperatureUnit) {
-        _sourceUnit.update { value }
-        repository.setTemperatureSourceUnit(value)
+        _uiState.update { it.copy(sourceUnit = value) }
+        viewModelScope.launch {
+            repository.setTemperatureSourceUnit(value)
+        }
     }
-
-    private val _destinationUnit: MutableStateFlow<TemperatureUnit> = MutableStateFlow(
-        repository.getTemperatureDestinationUnit()
-    )
-
-    val destinationUnit: StateFlow<TemperatureUnit>
-        get() = _destinationUnit
 
     fun setDestinationUnit(value: TemperatureUnit) {
-        _destinationUnit.update { value }
-        repository.setTemperatureDestinationUnit(value)
+        _uiState.update { it.copy(destinationUnit = value) }
+        viewModelScope.launch {
+            repository.setTemperatureDestinationUnit(value)
+        }
     }
 
-    private val _temperature: MutableStateFlow<String> = MutableStateFlow(
-        repository.getTemperature()
-    )
-
-    val temperature: StateFlow<String>
-        get() = _temperature
-
-    fun getTemperatureAsFloat(): Float = _temperature.value.let {
+    fun getTemperatureAsFloat(): Float = uiState.value.temperature.let {
         return try {
             it.toFloat()
         } catch (e: NumberFormatException) {
@@ -48,8 +57,10 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
     }
 
     fun setTemperature(value: String) {
-        _temperature.update { value }
-        repository.setTemperature(value)
+        _uiState.update { it.copy(temperature = value) }
+        viewModelScope.launch {
+            repository.setTemperature(value)
+        }
     }
 
     private val _convertedTemperature: MutableStateFlow<Float> = MutableStateFlow(Float.NaN)
@@ -57,12 +68,12 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
 
     fun convert() {
         getTemperatureAsFloat().let { value ->
-            val valueInCelsius = when (_sourceUnit.value) {
+            val valueInCelsius = when (uiState.value.sourceUnit) {
                 TemperatureUnit.Celsius -> value
                 TemperatureUnit.Fahrenheit -> value.convertFahrenheitToCelsius()
             }
             _convertedTemperature.update {
-                when (_destinationUnit.value) {
+                when (uiState.value.destinationUnit) {
                     TemperatureUnit.Celsius -> valueInCelsius
                     TemperatureUnit.Fahrenheit -> valueInCelsius.convertCelsiusToFahrenheit()
                 }
