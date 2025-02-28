@@ -57,12 +57,20 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
 
     fun convert() {
         getTemperatureAsFloat().let { value ->
+            val valueInCelsius = when (_sourceUnit.value) {
+                TemperatureUnit.Celsius -> value
+                TemperatureUnit.Fahrenheit -> value.convertFahrenheitToCelsius()
+            }
             _convertedTemperature.update {
-                if (!value.isNaN()) {
-                    if (_sourceUnit.value == TemperatureUnit.Celsius) (value * 1.8F) + 32F
-                    else (value - 32F) / 1.8F
-                } else Float.NaN
+                when (_destinationUnit.value) {
+                    TemperatureUnit.Celsius -> valueInCelsius
+                    TemperatureUnit.Fahrenheit -> valueInCelsius.convertCelsiusToFahrenheit()
+                }
             }
         }
     }
+
+    private fun Float.convertFahrenheitToCelsius() = (this - 32F) / 1.8F
+
+    private fun Float.convertCelsiusToFahrenheit() = (this * 1.8F) + 32F
 }
