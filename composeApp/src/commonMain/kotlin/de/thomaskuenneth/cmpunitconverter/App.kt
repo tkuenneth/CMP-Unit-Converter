@@ -10,12 +10,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance.DistanceConverter
-import de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance.DistanceRepository
-import de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance.DistanceViewModel
-import de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverter
-import de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.temperature.TemperatureRepository
-import de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.temperature.TemperatureViewModel
+import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverter
+import de.thomaskuenneth.cmpunitconverter.distance.DistanceRepository
+import de.thomaskuenneth.cmpunitconverter.distance.DistanceViewModel
+import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverter
+import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureRepository
+import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

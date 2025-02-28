@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance
+package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions

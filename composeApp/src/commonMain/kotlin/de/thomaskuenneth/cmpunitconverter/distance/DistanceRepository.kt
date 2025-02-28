@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance
+package de.thomaskuenneth.cmpunitconverter.distance
 
 enum class DistanceUnit {
     Meter, Mile

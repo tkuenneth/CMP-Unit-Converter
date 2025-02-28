@@ -5,8 +5,8 @@ import androidx.compose.material.icons.twotone.SquareFoot
 import androidx.compose.material.icons.twotone.Thermostat
 import androidx.compose.ui.graphics.vector.ImageVector
 import cmpunitconverter.composeapp.generated.resources.Res
-import cmpunitconverter.composeapp.generated.resources.tab_distance
-import cmpunitconverter.composeapp.generated.resources.tab_temperature
+import cmpunitconverter.composeapp.generated.resources.distance
+import cmpunitconverter.composeapp.generated.resources.temperature
 import org.jetbrains.compose.resources.StringResource
 
 enum class AppDestinations(
@@ -15,11 +15,11 @@ enum class AppDestinations(
     val contentDescription: StringResource = labelRes,
 ) {
     Temperature(
-        labelRes = Res.string.tab_temperature,
+        labelRes = Res.string.temperature,
         icon = Icons.TwoTone.Thermostat
     ),
     Distance(
-        labelRes = Res.string.tab_distance,
+        labelRes = Res.string.distance,
         icon = Icons.TwoTone.SquareFoot
     ),
 }

@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance
+package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

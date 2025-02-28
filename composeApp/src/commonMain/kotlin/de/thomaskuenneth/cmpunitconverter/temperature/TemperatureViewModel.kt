@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.temperature
+package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,9 +15,21 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
     val sourceUnit: StateFlow<TemperatureUnit>
         get() = _sourceUnit
 
-    fun setUnit(value: TemperatureUnit) {
+    fun setSourceUnit(value: TemperatureUnit) {
         _sourceUnit.update { value }
         repository.setTemperatureSourceUnit(value)
+    }
+
+    private val _destinationUnit: MutableStateFlow<TemperatureUnit> = MutableStateFlow(
+        repository.getTemperatureDestinationUnit()
+    )
+
+    val destinationUnit: StateFlow<TemperatureUnit>
+        get() = _destinationUnit
+
+    fun setDestinationUnit(value: TemperatureUnit) {
+        _destinationUnit.update { value }
+        repository.setTemperatureDestinationUnit(value)
     }
 
     private val _temperature: MutableStateFlow<String> = MutableStateFlow(
