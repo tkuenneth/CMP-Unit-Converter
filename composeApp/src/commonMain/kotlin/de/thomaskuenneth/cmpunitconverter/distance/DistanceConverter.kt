@@ -21,28 +21,26 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun DistanceConverter(viewModel: DistanceViewModel) {
-    val currentValue by viewModel.distance.collectAsStateWithLifecycle()
-    val sourceUnit by viewModel.sourceUnit.collectAsStateWithLifecycle()
-    val destinationUnit by viewModel.destinationUnit.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val convertedValue by viewModel.convertedDistance.collectAsStateWithLifecycle()
-    val enabled = remember(currentValue, sourceUnit, destinationUnit) {
-        !viewModel.getDistanceAsFloat().isNaN() && sourceUnit != destinationUnit
+    val enabled = remember(uiState.distance, uiState.sourceUnit, uiState.destinationUnit) {
+        !viewModel.getDistanceAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DistanceTextField(
-            distance = currentValue,
+            distance = uiState.distance,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = { viewModel.setDistance(it) })
         DistanceButtonRow(
-            selected = sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
+            selected = uiState.sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
         ) { unit: DistanceUnit ->
             viewModel.setSourceUnit(unit)
         }
         DistanceButtonRow(
-            selected = destinationUnit, label = Res.string.to, modifier = Modifier.padding(bottom = 16.dp)
+            selected = uiState.destinationUnit, label = Res.string.to, modifier = Modifier.padding(bottom = 16.dp)
         ) { unit: DistanceUnit ->
             viewModel.setDestinationUnit(unit)
         }
@@ -51,7 +49,7 @@ fun DistanceConverter(viewModel: DistanceViewModel) {
         ) {
             Text(text = stringResource(Res.string.convert))
         }
-        Result(value = convertedValue, unit = destinationUnit)
+        Result(value = convertedValue, unit = uiState.destinationUnit)
     }
 }
 

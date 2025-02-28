@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-abstract class BaseRepository {
+abstract class BaseRepository(key: String) {
 
-    private val dataStore = getDataStore()
+    private val dataStore = getDataStore(key)
 
     protected fun getFlow(key: String, defaultValue: String): Flow<String> {
         return dataStore.data.map {

@@ -8,11 +8,12 @@ enum class TemperatureUnit {
     Celsius, Fahrenheit
 }
 
+private const val KEY = "temperature"
 private const val KEY_TEMPERATURE_SOURCE_UNIT = "keyTemperatureSourceUnit"
 private const val KEY_TEMPERATURE_DESTINATION_UNIT = "keyTemperatureDestinationUnit"
 private const val KEY_TEMPERATURE = "keyTemperature"
 
-class TemperatureRepository : BaseRepository() {
+class TemperatureRepository : BaseRepository(KEY) {
 
     val sourceUnit: Flow<TemperatureUnit>
         get() = getFlow(KEY_TEMPERATURE_SOURCE_UNIT, TemperatureUnit.Celsius)

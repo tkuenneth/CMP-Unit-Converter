@@ -1,45 +1,54 @@
 package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+data class UiState(
+    val sourceUnit: DistanceUnit, val destinationUnit: DistanceUnit, val distance: String
+)
 
 class DistanceViewModel(private val repository: DistanceRepository) : ViewModel() {
 
-    private val _sourceUnit: MutableStateFlow<DistanceUnit> = MutableStateFlow(
-        repository.getDistanceSourceUnit()
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
+        UiState(
+            sourceUnit = DistanceUnit.Meter, destinationUnit = DistanceUnit.Mile, distance = ""
+        )
     )
+    val uiState = _uiState.asStateFlow()
 
-    val sourceUnit: StateFlow<DistanceUnit>
-        get() = _sourceUnit
+    init {
+        viewModelScope.launch {
+            combineTransform(
+                repository.sourceUnit, repository.destinationUnit, repository.temperature
+            ) { sourceUnit, destinationUnit, temperature ->
+                emit(Triple(sourceUnit, destinationUnit, temperature))
+            }.collect { (sourceUnit, destinationUnit, temperature) ->
+                _uiState.update { current ->
+                    current.copy(
+                        sourceUnit = sourceUnit, destinationUnit = destinationUnit, distance = temperature
+                    )
+                }
+            }
+        }
+    }
 
     fun setSourceUnit(value: DistanceUnit) {
-        _sourceUnit.update { value }
-        repository.setDistanceSourceUnit(value)
+        _uiState.update { it.copy(sourceUnit = value) }
+        viewModelScope.launch {
+            repository.setDistanceSourceUnit(value)
+        }
     }
-
-    private val _destinationUnit: MutableStateFlow<DistanceUnit> = MutableStateFlow(
-        repository.getDistanceDestinationUnit()
-    )
-
-    val destinationUnit: StateFlow<DistanceUnit>
-        get() = _destinationUnit
 
     fun setDestinationUnit(value: DistanceUnit) {
-        _destinationUnit.update { value }
-        repository.setDistanceDestinationUnit(value)
+        _uiState.update { it.copy(destinationUnit = value) }
+        viewModelScope.launch {
+            repository.setDistanceDestinationUnit(value)
+        }
     }
 
-    private val _distance: MutableStateFlow<String> = MutableStateFlow(
-        repository.getDistance()
-    )
-
-    val distance: StateFlow<String>
-        get() = _distance
-
-    fun getDistanceAsFloat(): Float = _distance.value.let {
+    fun getDistanceAsFloat(): Float = uiState.value.distance.let {
         return try {
             it.toFloat()
         } catch (e: NumberFormatException) {
@@ -48,8 +57,10 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
     }
 
     fun setDistance(value: String) {
-        _distance.update { value }
-        repository.setDistance(value)
+        _uiState.update { it.copy(distance = value) }
+        viewModelScope.launch {
+            repository.setDistance(value)
+        }
     }
 
     private val _convertedDistance: MutableStateFlow<Float> = MutableStateFlow(Float.NaN)
@@ -57,14 +68,14 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
 
     fun convert() {
         getDistanceAsFloat().let { value ->
-            val valueInMeter = when (_sourceUnit.value) {
+            val valueInCelsius = when (uiState.value.sourceUnit) {
                 DistanceUnit.Meter -> value
                 DistanceUnit.Mile -> value.convertMileToMeter()
             }
             _convertedDistance.update {
-                when (_destinationUnit.value) {
-                    DistanceUnit.Meter -> valueInMeter
-                    DistanceUnit.Mile -> valueInMeter.convertMeterToMile()
+                when (uiState.value.destinationUnit) {
+                    DistanceUnit.Meter -> valueInCelsius
+                    DistanceUnit.Mile -> valueInCelsius.convertMeterToMile()
                 }
             }
         }
