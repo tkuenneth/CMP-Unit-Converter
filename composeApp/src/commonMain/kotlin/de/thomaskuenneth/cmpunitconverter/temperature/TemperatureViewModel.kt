@@ -1,25 +1,23 @@
-package de.thomaskuenneth.cmpunitconverter.viewmodels
+package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.lifecycle.ViewModel
-import de.thomaskuenneth.cmpunitconverter.Repository
-import de.thomaskuenneth.cmpunitconverter.TemperatureUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class TemperatureViewModel(private val repository: Repository) : ViewModel() {
+class TemperatureViewModel(private val repository: TemperatureRepository) : ViewModel() {
 
-    private val _unit: MutableStateFlow<TemperatureUnit> = MutableStateFlow(
-        repository.getTemperatureUnit()
+    private val _sourceUnit: MutableStateFlow<TemperatureUnit> = MutableStateFlow(
+        repository.getTemperatureSourceUnit()
     )
 
-    val unit: StateFlow<TemperatureUnit>
-        get() = _unit
+    val sourceUnit: StateFlow<TemperatureUnit>
+        get() = _sourceUnit
 
     fun setUnit(value: TemperatureUnit) {
-        _unit.update { value }
-        repository.setTemperatureUnit(value)
+        _sourceUnit.update { value }
+        repository.setTemperatureSourceUnit(value)
     }
 
     private val _temperature: MutableStateFlow<String> = MutableStateFlow(
@@ -49,7 +47,7 @@ class TemperatureViewModel(private val repository: Repository) : ViewModel() {
         getTemperatureAsFloat().let { value ->
             _convertedTemperature.update {
                 if (!value.isNaN()) {
-                    if (_unit.value == TemperatureUnit.celsius) (value * 1.8F) + 32F
+                    if (_sourceUnit.value == TemperatureUnit.Celsius) (value * 1.8F) + 32F
                     else (value - 32F) / 1.8F
                 } else Float.NaN
             }

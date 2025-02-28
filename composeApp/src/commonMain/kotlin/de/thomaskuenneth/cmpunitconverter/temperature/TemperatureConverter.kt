@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmpunitconverter.panes
+package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,8 +18,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cmpunitconverter.composeapp.generated.resources.*
-import de.thomaskuenneth.cmpunitconverter.TemperatureUnit
-import de.thomaskuenneth.cmpunitconverter.viewmodels.TemperatureViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -27,13 +25,13 @@ fun TemperatureConverter(viewModel: TemperatureViewModel) {
     val strCelsius = stringResource(Res.string.celsius)
     val strFahrenheit = stringResource(Res.string.fahrenheit)
     val currentValue by viewModel.temperature.collectAsStateWithLifecycle()
-    val unit by viewModel.unit.collectAsStateWithLifecycle()
+    val unit by viewModel.sourceUnit.collectAsStateWithLifecycle()
     val convertedValue by viewModel.convertedTemperature.collectAsStateWithLifecycle()
     val result by remember(convertedValue) {
         mutableStateOf(
             if (convertedValue.isNaN()) ""
             else "$convertedValue ${
-                if (unit == TemperatureUnit.celsius) strCelsius else strFahrenheit
+                if (unit == TemperatureUnit.Celsius) strCelsius else strFahrenheit
             }"
         )
     }
@@ -92,11 +90,11 @@ fun TemperatureButtonGroup(
 ) {
     Row(modifier = modifier) {
         TemperatureRadioButton(
-            selected = selected == TemperatureUnit.celsius, unit = TemperatureUnit.celsius, onClick = onClick
+            selected = selected == TemperatureUnit.Celsius, unit = TemperatureUnit.Celsius, onClick = onClick
         )
         TemperatureRadioButton(
-            selected = selected == TemperatureUnit.fahrenheit,
-            unit = TemperatureUnit.fahrenheit,
+            selected = selected == TemperatureUnit.Fahrenheit,
+            unit = TemperatureUnit.Fahrenheit,
             onClick = onClick,
             modifier = Modifier.padding(start = 16.dp)
         )
@@ -117,8 +115,8 @@ fun TemperatureRadioButton(
         Text(
             text = stringResource(
                 when (unit) {
-                    TemperatureUnit.celsius -> Res.string.celsius
-                    TemperatureUnit.fahrenheit -> Res.string.fahrenheit
+                    TemperatureUnit.Celsius -> Res.string.celsius
+                    TemperatureUnit.Fahrenheit -> Res.string.fahrenheit
                 }
             ), modifier = Modifier.padding(start = 8.dp)
         )

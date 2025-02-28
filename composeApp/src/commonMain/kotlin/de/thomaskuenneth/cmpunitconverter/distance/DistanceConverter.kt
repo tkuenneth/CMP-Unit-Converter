@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmpunitconverter.panes
+package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -15,12 +15,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cmpunitconverter.composeapp.generated.resources.*
-import de.thomaskuenneth.cmpunitconverter.DistanceUnit
-import de.thomaskuenneth.cmpunitconverter.viewmodels.DistancesViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun DistancesConverter(viewModel: DistancesViewModel) {
+fun DistanceConverter(viewModel: DistanceViewModel) {
     val strMeter = stringResource(Res.string.meter)
     val strMile = stringResource(Res.string.mile)
     val currentValue by viewModel.distance.collectAsStateWithLifecycle()
@@ -30,7 +28,7 @@ fun DistancesConverter(viewModel: DistancesViewModel) {
         mutableStateOf(
             if (convertedValue.isNaN()) ""
             else "$convertedValue ${
-                if (unit == DistanceUnit.meters) strMile else strMeter
+                if (unit == DistanceUnit.Meter) strMile else strMeter
             }"
         )
     }
@@ -92,13 +90,13 @@ fun DistanceButtonGroup(
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         DistanceRadioButton(
-            selected = selected == DistanceUnit.meters,
-            unit = DistanceUnit.meters,
+            selected = selected == DistanceUnit.Meter,
+            unit = DistanceUnit.Meter,
             onClick = onClick
         )
         DistanceRadioButton(
-            selected = selected == DistanceUnit.miles,
-            unit = DistanceUnit.miles,
+            selected = selected == DistanceUnit.Mile,
+            unit = DistanceUnit.Mile,
             onClick = onClick
         )
     }
@@ -119,8 +117,8 @@ fun DistanceRadioButton(
         Text(
             text = stringResource(
                 when (unit) {
-                    DistanceUnit.meters -> Res.string.meter
-                    DistanceUnit.miles -> Res.string.mile
+                    DistanceUnit.Meter -> Res.string.meter
+                    DistanceUnit.Mile -> Res.string.mile
                 }
             )
         )

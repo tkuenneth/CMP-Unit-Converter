@@ -1,16 +1,14 @@
-package de.thomaskuenneth.cmpunitconverter.viewmodels
+package de.thomaskuenneth.cmp.de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.lifecycle.ViewModel
-import de.thomaskuenneth.cmpunitconverter.DistanceUnit
-import de.thomaskuenneth.cmpunitconverter.Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class DistancesViewModel(private val repository: Repository) : ViewModel() {
+class DistanceViewModel(private val repository: DistanceRepository) : ViewModel() {
 
     private val _unit: MutableStateFlow<DistanceUnit> = MutableStateFlow(
-        repository.getDistanceUnit()
+        repository.getDistanceSourceUnit()
     )
 
     val unit: StateFlow<DistanceUnit>
@@ -18,7 +16,7 @@ class DistancesViewModel(private val repository: Repository) : ViewModel() {
 
     fun setUnit(value: DistanceUnit) {
         _unit.update { value }
-        repository.setDistanceUnit(value)
+        repository.setDistanceSourceUnit(value)
     }
 
     private val _distance: MutableStateFlow<String> = MutableStateFlow(
@@ -49,7 +47,7 @@ class DistancesViewModel(private val repository: Repository) : ViewModel() {
     fun convert() {
         getDistanceAsFloat().let { value ->
             _convertedDistance.update {
-                if (!value.isNaN()) if (_unit.value == DistanceUnit.meters) value * 0.00062137F
+                if (!value.isNaN()) if (_unit.value == DistanceUnit.Meter) value * 0.00062137F
                 else value / 0.00062137F
                 else Float.NaN
             }
