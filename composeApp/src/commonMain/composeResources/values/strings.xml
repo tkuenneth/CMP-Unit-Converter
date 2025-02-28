@@ -9,7 +9,7 @@
     <string name="template">%1$s %2$s</string>
 
     <!-- temperature -->
-    <string name="placeholder">temperature</string>
+    <string name="placeholder_temperature">temperature</string>
     <string name="celsius">°C</string>
     <string name="fahrenheit">°F</string>
 

@@ -65,7 +65,7 @@ fun TemperatureTextField(
         value = temperature, onValueChange = {
         onValueChange(it)
     }, placeholder = {
-        Text(text = stringResource(Res.string.placeholder))
+        Text(text = stringResource(Res.string.placeholder_temperature))
     }, modifier = modifier, keyboardActions = KeyboardActions(onAny = {
         keyboardActionCallback()
     }), keyboardOptions = KeyboardOptions(

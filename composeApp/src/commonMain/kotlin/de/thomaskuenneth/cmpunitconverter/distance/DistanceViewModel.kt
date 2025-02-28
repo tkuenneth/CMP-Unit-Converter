@@ -3,20 +3,33 @@ package de.thomaskuenneth.cmpunitconverter.distance
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class DistanceViewModel(private val repository: DistanceRepository) : ViewModel() {
 
-    private val _unit: MutableStateFlow<DistanceUnit> = MutableStateFlow(
+    private val _sourceUnit: MutableStateFlow<DistanceUnit> = MutableStateFlow(
         repository.getDistanceSourceUnit()
     )
 
-    val unit: StateFlow<DistanceUnit>
-        get() = _unit
+    val sourceUnit: StateFlow<DistanceUnit>
+        get() = _sourceUnit
 
-    fun setUnit(value: DistanceUnit) {
-        _unit.update { value }
+    fun setSourceUnit(value: DistanceUnit) {
+        _sourceUnit.update { value }
         repository.setDistanceSourceUnit(value)
+    }
+
+    private val _destinationUnit: MutableStateFlow<DistanceUnit> = MutableStateFlow(
+        repository.getDistanceDestinationUnit()
+    )
+
+    val destinationUnit: StateFlow<DistanceUnit>
+        get() = _destinationUnit
+
+    fun setDestinationUnit(value: DistanceUnit) {
+        _destinationUnit.update { value }
+        repository.setDistanceDestinationUnit(value)
     }
 
     private val _distance: MutableStateFlow<String> = MutableStateFlow(
@@ -40,17 +53,24 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
     }
 
     private val _convertedDistance: MutableStateFlow<Float> = MutableStateFlow(Float.NaN)
-
-    val convertedDistance: StateFlow<Float>
-        get() = _convertedDistance
+    val convertedDistance: StateFlow<Float> = _convertedDistance.asStateFlow()
 
     fun convert() {
         getDistanceAsFloat().let { value ->
+            val valueInMeter = when (_sourceUnit.value) {
+                DistanceUnit.Meter -> value
+                DistanceUnit.Mile -> value.convertMileToMeter()
+            }
             _convertedDistance.update {
-                if (!value.isNaN()) if (_unit.value == DistanceUnit.Meter) value * 0.00062137F
-                else value / 0.00062137F
-                else Float.NaN
+                when (_destinationUnit.value) {
+                    DistanceUnit.Meter -> valueInMeter
+                    DistanceUnit.Mile -> valueInMeter.convertMeterToMile()
+                }
             }
         }
     }
+
+    private fun Float.convertMileToMeter() = this / 0.00062137F
+
+    private fun Float.convertMeterToMile() = this * 0.00062137F
 }

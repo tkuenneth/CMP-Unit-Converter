@@ -11,6 +11,11 @@ class DistanceRepository {
     fun setDistanceSourceUnit(value: DistanceUnit) {
     }
 
+    fun getDistanceDestinationUnit(): DistanceUnit = DistanceUnit.Meter
+
+    fun setDistanceDestinationUnit(value: DistanceUnit) {
+    }
+
     fun getDistance(): String = ""
 
     fun setDistance(value: String) {
