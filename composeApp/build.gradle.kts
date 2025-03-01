@@ -1,5 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.io.InputStreamReader
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -7,6 +9,21 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
+
+group = "de.thomaskuenneth.cmpunitconverter"
+val file = rootProject.file("composeApp/src/commonMain/kotlin/de/thomaskuenneth/cmpunitconverter/Version.kt")
+val version = if (file.isFile) {
+    with(InputStreamReader(FileInputStream(file), Charsets.UTF_8).use { reader ->
+        reader.readText()
+    }) {
+        val regex = """const val VERSION = "([^"]+)"""".toRegex()
+        regex.find(this)?.groupValues?.get(1)
+    }
+} else error("${file.absolutePath} not found")
+
+val appleId = System.getenv("PROD_MACOS_NOTARIZATION_APPLE_ID") ?: ""
+val appleTeamId = System.getenv("PROD_MACOS_NOTARIZATION_TEAM_ID") ?: ""
+val notarizationPassword = System.getenv("PROD_MACOS_NOTARIZATION_PWD") ?: ""
 
 kotlin {
     androidTarget {
@@ -98,11 +115,30 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "de.thomaskuenneth.cmpunitconverter.MainKt"
-
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "de.thomaskuenneth.cmpunitconverter"
-            packageVersion = "1.0.0"
+            packageName = "CMP Unit Converter"
+            packageVersion = version.toString()
+            description = "A Compose Multiplatform unit converter"
+            copyright = "2025 Thomas Kuenneth. All rights reserved."
+            vendor = "Thomas Kuenneth"
+            macOS {
+                bundleID = "de.thomaskuenneth.cmpunitconverter.CMPUnitConverter"
+//                iconFile.set(project.file("artwork/Souffleur.icns"))
+                signing {
+                    sign.set(true)
+                    identity.set("Thomas Kuenneth")
+                }
+                notarization {
+                    appleID.set(appleId)
+                    password.set(notarizationPassword)
+                    teamID.set(appleTeamId)
+                }
+            }
+            windows {
+//                iconFile.set(project.file("artwork/Souffleur.ico"))
+                menuGroup = "Thomas Kuenneth"
+            }
         }
     }
 }

@@ -4,9 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.SquareFoot
 import androidx.compose.material.icons.twotone.Thermostat
 import androidx.compose.ui.graphics.vector.ImageVector
-import cmpunitconverter.composeapp.generated.resources.Res
-import cmpunitconverter.composeapp.generated.resources.distance
-import cmpunitconverter.composeapp.generated.resources.temperature
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 
 enum class AppDestinations(

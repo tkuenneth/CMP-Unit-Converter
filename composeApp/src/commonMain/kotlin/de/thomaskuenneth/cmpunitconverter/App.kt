@@ -16,8 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import cmpunitconverter.composeapp.generated.resources.Res
-import cmpunitconverter.composeapp.generated.resources.app_name
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverter
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverter
 import org.jetbrains.compose.resources.stringResource
