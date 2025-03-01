@@ -23,14 +23,16 @@ fun App() {
         application = {
             modules(appModule)
         }) {
-        MaterialTheme {
-            MaterialAdaptiveDemo()
+        MaterialTheme(
+            colorScheme = defaultColorScheme()
+        ) {
+            CMPUnitConverter()
         }
     }
 }
 
 @Composable
-fun MaterialAdaptiveDemo() {
+fun CMPUnitConverter() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Temperature) }
     NavigationSuiteScaffold(
         navigationSuiteItems = {
