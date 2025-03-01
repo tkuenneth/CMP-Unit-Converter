@@ -1,14 +1,21 @@
 package de.thomaskuenneth.cmpunitconverter
 
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import cmpunitconverter.composeapp.generated.resources.Res
+import cmpunitconverter.composeapp.generated.resources.app_name
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverter
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverter
 import org.jetbrains.compose.resources.stringResource
@@ -31,6 +38,7 @@ fun App() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CMPUnitConverter() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Temperature) }
@@ -51,13 +59,22 @@ fun CMPUnitConverter() {
                 )
             }
         }) {
-        when (currentDestination) {
-            AppDestinations.Temperature -> {
-                TemperatureConverter(viewModel = koinViewModel())
-            }
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(title = { Text(text = stringResource(Res.string.app_name)) })
+            }) { innerPadding ->
+            Box(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(innerPadding)) {
+                Crossfade(targetState = currentDestination) {
+                    when (currentDestination) {
+                        AppDestinations.Temperature -> {
+                            TemperatureConverter(viewModel = koinViewModel())
+                        }
 
-            AppDestinations.Distance -> {
-                DistanceConverter(viewModel = koinViewModel())
+                        AppDestinations.Distance -> {
+                            DistanceConverter(viewModel = koinViewModel())
+                        }
+                    }
+                }
             }
         }
     }
