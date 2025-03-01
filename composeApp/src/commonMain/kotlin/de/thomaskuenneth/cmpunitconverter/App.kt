@@ -2,6 +2,7 @@ package de.thomaskuenneth.cmpunitconverter
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import cmpunitconverter.composeapp.generated.resources.Res
 import cmpunitconverter.composeapp.generated.resources.app_name
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverter
@@ -59,21 +61,46 @@ fun CMPUnitConverter() {
                 )
             }
         }) {
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(title = { Text(text = stringResource(Res.string.app_name)) })
-            }) { innerPadding ->
-            Box(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(innerPadding)) {
-                Crossfade(targetState = currentDestination) {
-                    when (currentDestination) {
-                        AppDestinations.Temperature -> {
-                            TemperatureConverter(viewModel = koinViewModel())
-                        }
+        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+        if (shouldUseScaffold()) {
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        scrollBehavior = scrollBehavior, title = { Text(text = stringResource(Res.string.app_name)) })
+                }) { innerPadding ->
+                Content(
+                    paddingValues = innerPadding,
+                    scrollBehavior = scrollBehavior,
+                    currentDestination = currentDestination
+                )
+            }
+        } else {
+            Content(
+                paddingValues = PaddingValues.Absolute(),
+                scrollBehavior = scrollBehavior,
+                currentDestination = currentDestination
+            )
+        }
+    }
+}
 
-                        AppDestinations.Distance -> {
-                            DistanceConverter(viewModel = koinViewModel())
-                        }
-                    }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Content(
+    paddingValues: PaddingValues, scrollBehavior: TopAppBarScrollBehavior, currentDestination: AppDestinations
+) {
+    Box(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection).fillMaxSize()
+            .verticalScroll(rememberScrollState()).padding(paddingValues)
+    ) {
+        Crossfade(targetState = currentDestination) {
+            when (currentDestination) {
+                AppDestinations.Temperature -> {
+                    TemperatureConverter(viewModel = koinViewModel())
+                }
+
+                AppDestinations.Distance -> {
+                    DistanceConverter(viewModel = koinViewModel())
                 }
             }
         }
