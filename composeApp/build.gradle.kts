@@ -55,6 +55,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.adaptive)
             implementation(libs.adaptive.layout)
+            implementation(libs.adaptive.navigation)
             implementation(compose.material3AdaptiveNavigationSuite)
 
             implementation(compose.runtime)

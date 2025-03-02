@@ -1,24 +1,16 @@
 package de.thomaskuenneth.cmpunitconverter
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
-import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverter
-import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverter
+import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverterScreen
+import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverterScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
@@ -39,7 +31,6 @@ fun App() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CMPUnitConverter() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Temperature) }
@@ -60,47 +51,13 @@ fun CMPUnitConverter() {
                 )
             }
         }) {
-        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-        if (shouldUseScaffold()) {
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        scrollBehavior = scrollBehavior, title = { Text(text = stringResource(Res.string.app_name)) })
-                }) { innerPadding ->
-                Content(
-                    paddingValues = innerPadding,
-                    scrollBehavior = scrollBehavior,
-                    currentDestination = currentDestination
-                )
+        when (currentDestination) {
+            AppDestinations.Temperature -> {
+                TemperatureConverterScreen(viewModel = koinViewModel())
             }
-        } else {
-            Content(
-                paddingValues = PaddingValues.Absolute(),
-                scrollBehavior = scrollBehavior,
-                currentDestination = currentDestination
-            )
-        }
-    }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Content(
-    paddingValues: PaddingValues, scrollBehavior: TopAppBarScrollBehavior, currentDestination: AppDestinations
-) {
-    Box(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection).fillMaxSize()
-            .verticalScroll(rememberScrollState()).padding(paddingValues)
-    ) {
-        Crossfade(targetState = currentDestination) {
-            when (currentDestination) {
-                AppDestinations.Temperature -> {
-                    TemperatureConverter(viewModel = koinViewModel())
-                }
-
-                AppDestinations.Distance -> {
-                    DistanceConverter(viewModel = koinViewModel())
-                }
+            AppDestinations.Distance -> {
+                DistanceConverterScreen(viewModel = koinViewModel())
             }
         }
     }

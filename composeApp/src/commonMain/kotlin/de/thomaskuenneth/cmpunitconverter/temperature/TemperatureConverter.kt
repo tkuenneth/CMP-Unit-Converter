@@ -1,14 +1,17 @@
 package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -18,15 +21,23 @@ import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TemperatureConverter(viewModel: TemperatureViewModel) {
+fun TemperatureConverter(
+    viewModel: TemperatureViewModel,
+    scrollBehavior: TopAppBarScrollBehavior,
+    shouldShowButton: Boolean,
+    navigateToSupportingPane: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val convertedValue by viewModel.convertedTemperature.collectAsStateWithLifecycle()
     val enabled = remember(uiState.temperature, uiState.sourceUnit, uiState.destinationUnit) {
         !viewModel.getTemperatureAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection).fillMaxSize()
+            .verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TemperatureTextField(
             temperature = uiState.temperature,
@@ -49,6 +60,11 @@ fun TemperatureConverter(viewModel: TemperatureViewModel) {
             Text(text = stringResource(Res.string.convert))
         }
         Result(value = convertedValue, unit = uiState.destinationUnit)
+        if (shouldShowButton) {
+            TextButton(onClick = navigateToSupportingPane) {
+                Text(text = stringResource(Res.string.learn_more))
+            }
+        }
     }
 }
 
@@ -61,14 +77,14 @@ fun TemperatureTextField(
 ) {
     TextField(
         value = temperature, onValueChange = {
-            onValueChange(it)
-        }, placeholder = {
-            Text(text = stringResource(Res.string.placeholder_temperature))
-        }, modifier = modifier, keyboardActions = KeyboardActions(onAny = {
-            keyboardActionCallback()
-        }), keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
-        ), singleLine = true
+        onValueChange(it)
+    }, placeholder = {
+        Text(text = stringResource(Res.string.placeholder_temperature))
+    }, modifier = modifier, keyboardActions = KeyboardActions(onAny = {
+        keyboardActionCallback()
+    }), keyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
+    ), singleLine = true
     )
 }
 
