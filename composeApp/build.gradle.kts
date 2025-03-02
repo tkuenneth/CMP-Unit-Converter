@@ -124,7 +124,7 @@ compose.desktop {
             vendor = "Thomas Kuenneth"
             macOS {
                 bundleID = "de.thomaskuenneth.cmpunitconverter.CMPUnitConverter"
-//                iconFile.set(project.file("artwork/Souffleur.icns"))
+                iconFile.set(rootProject.file("artwork/app_icon.icns"))
                 signing {
                     sign.set(true)
                     identity.set("Thomas Kuenneth")

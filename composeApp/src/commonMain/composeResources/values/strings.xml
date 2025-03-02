@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">Unit Converter</string>
+    <string name="app_name">CMP Unit Converter</string>
+
+    <string name="file">File</string>
+    <string name="quit">Quit</string>
+    <string name="help">Help</string>
+    <string name="about">About CMP Unit Converter\u2026</string>
+
     <string name="temperature">Temperature</string>
     <string name="distance">Distance</string>
 
