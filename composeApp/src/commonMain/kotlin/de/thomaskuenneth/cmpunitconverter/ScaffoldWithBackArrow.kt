@@ -20,21 +20,25 @@ import org.jetbrains.compose.resources.stringResource
 fun <T> ScaffoldWithBackArrow(
     navigator: ThreePaneScaffoldNavigator<T>, scrollBehavior: TopAppBarScrollBehavior, content: @Composable () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(navigationIcon = {
-                if (navigator.canNavigateBack()) IconButton(onClick = { navigator.navigateBack() }) {
-                    Icon(
-                        Icons.AutoMirrored.Default.ArrowBack, contentDescription = stringResource(Res.string.back)
-                    )
-                }
-            }, scrollBehavior = scrollBehavior, title = { Text(text = stringResource(Res.string.app_name)) })
-        }) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            BackHandler(navigator.canNavigateBack()) {
-                navigator.navigateBack()
+    if (shouldUseScaffold()) {
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(navigationIcon = {
+                    if (navigator.canNavigateBack()) IconButton(onClick = { navigator.navigateBack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack, contentDescription = stringResource(Res.string.back)
+                        )
+                    }
+                }, scrollBehavior = scrollBehavior, title = { Text(text = stringResource(Res.string.app_name)) })
+            }) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                content()
             }
-            content()
         }
+    } else {
+        content()
+    }
+    BackHandler(navigator.canNavigateBack()) {
+        navigator.navigateBack()
     }
 }
