@@ -13,5 +13,4 @@ Other things worth noting:
 
 ### What's up next?
 
-- Showing the *About* dialog on all platforms
 - Adding a settings dialog on all platforms

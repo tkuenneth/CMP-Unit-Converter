@@ -4,4 +4,6 @@ import platform.UIKit.UIDevice
 
 actual fun shouldUseScaffold(): Boolean = true
 
+actual fun shouldShowAboutInSeparateWindow(): Boolean = false
+
 actual val platformName: String = UIDevice.currentDevice().systemName()

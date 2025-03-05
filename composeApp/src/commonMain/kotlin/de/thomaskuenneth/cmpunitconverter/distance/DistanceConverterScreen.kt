@@ -11,20 +11,24 @@ import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
+import de.thomaskuenneth.cmpunitconverter.app.AppViewModel
 import de.thomaskuenneth.cmpunitconverter.temperature.SupportingPane
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun DistanceConverterScreen(viewModel: DistanceViewModel) {
+fun DistanceConverterScreen(appViewModel: AppViewModel, distanceViewModel: DistanceViewModel) {
     val navigator = rememberSupportingPaneScaffoldNavigator(
         scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())
     )
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    ScaffoldWithBackArrow(navigator = navigator, scrollBehavior = scrollBehavior) {
+    ScaffoldWithBackArrow(
+        navigator = navigator,
+        scrollBehavior = scrollBehavior,
+        infoClicked = { appViewModel.setShouldShowAbout(true) }) {
         SupportingPaneScaffold(
             directive = navigator.scaffoldDirective, mainPane = {
                 DistanceConverter(
-                    viewModel = viewModel,
+                    viewModel = distanceViewModel,
                     scrollBehavior = scrollBehavior,
                     shouldShowButton = navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
                 ) {

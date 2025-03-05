@@ -12,19 +12,23 @@ import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
+import de.thomaskuenneth.cmpunitconverter.app.AppViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun TemperatureConverterScreen(viewModel: TemperatureViewModel) {
+fun TemperatureConverterScreen(appViewModel: AppViewModel, temperatureViewModel: TemperatureViewModel) {
     val navigator = rememberSupportingPaneScaffoldNavigator(
         scaffoldDirective = calculatePaneScaffoldDirective(currentWindowAdaptiveInfo())
     )
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    ScaffoldWithBackArrow(navigator = navigator, scrollBehavior = scrollBehavior) {
+    ScaffoldWithBackArrow(
+        navigator = navigator,
+        scrollBehavior = scrollBehavior,
+        infoClicked = { appViewModel.setShouldShowAbout(true) }) {
         SupportingPaneScaffold(
             directive = navigator.scaffoldDirective, mainPane = {
                 TemperatureConverter(
-                    viewModel = viewModel,
+                    viewModel = temperatureViewModel,
                     scrollBehavior = scrollBehavior,
                     shouldShowButton = navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
                 ) {

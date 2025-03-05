@@ -8,9 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
-import de.thomaskuenneth.cmpunitconverter.di.appModule
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
+import de.thomaskuenneth.cmpunitconverter.di.appModule
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverterScreen
+import de.thomaskuenneth.cmpunitconverter.shouldShowAboutInSeparateWindow
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverterScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -19,7 +20,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
-fun App(platformContent: @Composable (AppViewModel) -> Unit) {
+fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
     KoinApplication(
         application = {
             modules(appModule)
@@ -35,14 +36,14 @@ fun App(platformContent: @Composable (AppViewModel) -> Unit) {
 }
 
 @Composable
-fun CMPUnitConverter(viewModel: AppViewModel) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+fun CMPUnitConverter(appViewModel: AppViewModel) {
+    val uiState by appViewModel.uiState.collectAsStateWithLifecycle()
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             AppDestinations.entries.forEach {
                 item(
                     selected = it == uiState.currentDestination,
-                    onClick = { viewModel.setCurrentDestination(it) },
+                    onClick = { appViewModel.setCurrentDestination(it) },
                     icon = {
                         Icon(
                             imageVector = it.icon, contentDescription = stringResource(it.contentDescription)
@@ -56,12 +57,15 @@ fun CMPUnitConverter(viewModel: AppViewModel) {
         }) {
         when (uiState.currentDestination) {
             AppDestinations.Temperature -> {
-                TemperatureConverterScreen(viewModel = koinViewModel())
+                TemperatureConverterScreen(appViewModel = appViewModel, temperatureViewModel = koinViewModel())
             }
 
             AppDestinations.Distance -> {
-                DistanceConverterScreen(viewModel = koinViewModel())
+                DistanceConverterScreen(appViewModel = appViewModel, distanceViewModel = koinViewModel())
             }
         }
+    }
+    if (uiState.shouldShowAbout && !shouldShowAboutInSeparateWindow()) {
+        AboutBottomSheet { appViewModel.setShouldShowAbout(false) }
     }
 }

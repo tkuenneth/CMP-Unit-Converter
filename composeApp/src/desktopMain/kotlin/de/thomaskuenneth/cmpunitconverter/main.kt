@@ -25,11 +25,13 @@ fun main() = application {
             CMPUnitConverterMenuBar(
                 currentDestination = uiState.currentDestination,
                 exit = ::exitApplication,
-                showAboutDialog = { viewModel.setShouldShowAboutDialog(true) },
+                showAboutDialog = { viewModel.setShouldShowAbout(true) },
                 navigateToTemperature = { viewModel.setCurrentDestination(AppDestinations.Temperature) },
                 navigateToDistance = { viewModel.setCurrentDestination(AppDestinations.Distance) },
             )
-            if (uiState.shouldShowAboutDialog) AboutDialog { viewModel.setShouldShowAboutDialog(false) }
+            if (uiState.shouldShowAbout && shouldShowAboutInSeparateWindow()) {
+                AboutDialog { viewModel.setShouldShowAbout(false) }
+            }
         }
     }
 }
