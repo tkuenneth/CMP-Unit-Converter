@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmpunitconverter
+package de.thomaskuenneth.cmpunitconverter.di
 
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceRepository
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceViewModel

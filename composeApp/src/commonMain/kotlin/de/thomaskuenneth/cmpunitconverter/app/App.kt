@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
-import de.thomaskuenneth.cmpunitconverter.appModule
+import de.thomaskuenneth.cmpunitconverter.di.appModule
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverterScreen
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverterScreen
