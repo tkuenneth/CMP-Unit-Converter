@@ -23,8 +23,11 @@ fun main() = application {
         App { viewModel ->
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             CMPUnitConverterMenuBar(
+                currentDestination = uiState.currentDestination,
                 exit = ::exitApplication,
                 showAboutDialog = { viewModel.setShouldShowAboutDialog(true) },
+                navigateToTemperature = { viewModel.setCurrentDestination(AppDestinations.Temperature) },
+                navigateToDistance = { viewModel.setCurrentDestination(AppDestinations.Distance) },
             )
             if (uiState.shouldShowAboutDialog) AboutDialog { viewModel.setShouldShowAboutDialog(false) }
         }
@@ -32,7 +35,13 @@ fun main() = application {
 }
 
 @Composable
-fun FrameWindowScope.CMPUnitConverterMenuBar(exit: () -> Unit, showAboutDialog: () -> Unit) {
+fun FrameWindowScope.CMPUnitConverterMenuBar(
+    currentDestination: AppDestinations,
+    exit: () -> Unit,
+    showAboutDialog: () -> Unit,
+    navigateToTemperature: () -> Unit,
+    navigateToDistance: () -> Unit
+) {
     val backHandlerState by backHandlerState.collectAsStateWithLifecycle()
     MenuBar {
         if (!IS_MACOS) {
@@ -43,6 +52,21 @@ fun FrameWindowScope.CMPUnitConverterMenuBar(exit: () -> Unit, showAboutDialog: 
             }
         }
         Menu(text = stringResource(Res.string.navigate)) {
+            CheckboxItem(
+                checked = currentDestination == AppDestinations.Temperature,
+                shortcut = KeyShortcut(Key.One, alt = true),
+                text = stringResource(Res.string.temperature),
+                onCheckedChange = {
+                    navigateToTemperature()
+                })
+            CheckboxItem(
+                checked = currentDestination == AppDestinations.Distance,
+                shortcut = KeyShortcut(Key.Two, alt = true),
+                text = stringResource(Res.string.distance),
+                onCheckedChange = {
+                    navigateToDistance()
+                })
+            Separator()
             Item(
                 enabled = backHandlerState.enabled,
                 shortcut = KeyShortcut(Key.Escape),
