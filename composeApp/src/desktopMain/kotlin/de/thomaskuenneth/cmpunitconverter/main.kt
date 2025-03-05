@@ -1,6 +1,7 @@
 package de.thomaskuenneth.cmpunitconverter
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
@@ -8,6 +9,7 @@ import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.thomaskuenneth.cmpunitconverter.app.App
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -18,13 +20,14 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = stringResource(Res.string.app_name),
     ) {
-        var showAboutDialog by remember { mutableStateOf(false) }
-        CMPUnitConverterMenuBar(
-            exit = ::exitApplication,
-            showAboutDialog = { showAboutDialog = true },
-        )
-        App()
-        if (showAboutDialog) AboutDialog { showAboutDialog = false }
+        App { viewModel ->
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            CMPUnitConverterMenuBar(
+                exit = ::exitApplication,
+                showAboutDialog = { viewModel.setShouldShowAboutDialog(true) },
+            )
+            if (uiState.shouldShowAboutDialog) AboutDialog { viewModel.setShouldShowAboutDialog(false) }
+        }
     }
 }
 
