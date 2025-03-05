@@ -9,3 +9,9 @@ This repo contains a real-world example of a *Compose Multiplatform* app. *CMP U
 Other things worth noting:
 
 - Support for dark and light mode
+- Navigate to top-level destinations using the menu bar (including keyboard shortcuts)
+
+### What's up next?
+
+- Showing the *About* dialog on all platforms
+- Adding a settings dialog on all platforms
