@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,8 @@ fun About(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutBottomSheet(closeSheet: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = { closeSheet() }) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(sheetState = sheetState, onDismissRequest = { closeSheet() }) {
         About(modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }
