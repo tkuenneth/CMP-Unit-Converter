@@ -24,10 +24,11 @@ fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
         application = {
             modules(appModule)
         }) {
+        val viewModel: AppViewModel = koinViewModel()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         MaterialTheme(
-            colorScheme = defaultColorScheme()
+            colorScheme = defaultColorScheme(uiState.colorSchemeMode)
         ) {
-            val viewModel: AppViewModel = koinViewModel()
             platformContent(viewModel)
             CMPUnitConverter(viewModel)
         }

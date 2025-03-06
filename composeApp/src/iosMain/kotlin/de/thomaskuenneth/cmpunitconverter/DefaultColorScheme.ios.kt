@@ -1,15 +1,10 @@
 package de.thomaskuenneth.cmpunitconverter
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
+import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 
 @Composable
-actual fun defaultColorScheme() = with(isSystemInDarkTheme()) {
-    when (this) {
-        true -> darkColorScheme()
-
-        false -> lightColorScheme()
-    }
+actual fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme {
+    return colorScheme(colorSchemeMode)
 }

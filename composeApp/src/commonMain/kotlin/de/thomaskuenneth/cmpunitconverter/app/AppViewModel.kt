@@ -1,13 +1,12 @@
 package de.thomaskuenneth.cmpunitconverter.app
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.shouldShowAboutInSeparateWindow
 import de.thomaskuenneth.cmpunitconverter.shouldShowSettingsInSeparateWindow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 enum class AboutVisibility {
     Hidden, Sheet, Window
@@ -20,16 +19,23 @@ enum class SettingsVisibility {
 data class UiState(
     val currentDestination: AppDestinations,
     val aboutVisibility: AboutVisibility,
-    val settingsVisibility: SettingsVisibility
+    val settingsVisibility: SettingsVisibility,
+    val colorSchemeMode: ColorSchemeMode,
 )
 
-class AppViewModel : ViewModel() {
+class AppViewModel(private val repository: AppRepository) : ViewModel() {
+
+    init {
+        repository.colorSchemeMode.onEach { colorSchemeMode -> setColorSchemeMode(colorSchemeMode) }
+            .launchIn(viewModelScope)
+    }
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
             currentDestination = AppDestinations.Temperature,
             aboutVisibility = AboutVisibility.Hidden,
-            settingsVisibility = SettingsVisibility.Hidden
+            settingsVisibility = SettingsVisibility.Hidden,
+            colorSchemeMode = ColorSchemeMode.System
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -57,6 +63,13 @@ class AppViewModel : ViewModel() {
                     true -> if (shouldShowSettingsInSeparateWindow()) SettingsVisibility.Window else SettingsVisibility.Sheet
                 }
             )
+        }
+    }
+
+    fun setColorSchemeMode(colorSchemeMode: ColorSchemeMode) {
+        _uiState.update { state -> state.copy(colorSchemeMode = colorSchemeMode) }
+        viewModelScope.launch {
+            repository.setColorSchemeMode(colorSchemeMode)
         }
     }
 }

@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">CMP Unit Converter</string>
 
+    <string name="color_scheme">Color Scheme</string>
+    <string name="system">System</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+
     <string name="back">Back</string>
     <string name="settings">Settings</string>
 
