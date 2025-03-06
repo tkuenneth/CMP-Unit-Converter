@@ -10,12 +10,14 @@ import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 @Composable
 expect fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme
 
+@Composable
 fun ColorSchemeMode.isDark(): Boolean = when (this) {
     ColorSchemeMode.Dark -> true
     ColorSchemeMode.Light -> false
     ColorSchemeMode.System -> isSystemInDarkTheme()
 }
 
+@Composable
 fun colorScheme(colorSchemeMode: ColorSchemeMode) = when (colorSchemeMode.isDark()) {
     false -> lightColorScheme()
 
