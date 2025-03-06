@@ -9,6 +9,7 @@ import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.thomaskuenneth.cmpunitconverter.app.AboutVisibility
 import de.thomaskuenneth.cmpunitconverter.app.App
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
@@ -29,7 +30,7 @@ fun main() = application {
                 navigateToTemperature = { viewModel.setCurrentDestination(AppDestinations.Temperature) },
                 navigateToDistance = { viewModel.setCurrentDestination(AppDestinations.Distance) },
             )
-            if (uiState.shouldShowAbout && shouldShowAboutInSeparateWindow()) {
+            if (uiState.aboutVisibility == AboutVisibility.Window) {
                 AboutDialog { viewModel.setShouldShowAbout(false) }
             }
         }

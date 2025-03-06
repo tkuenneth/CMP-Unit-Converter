@@ -2,20 +2,25 @@ package de.thomaskuenneth.cmpunitconverter.app
 
 import androidx.lifecycle.ViewModel
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
+import de.thomaskuenneth.cmpunitconverter.shouldShowAboutInSeparateWindow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+enum class AboutVisibility {
+    Hidden, Window, Sheet
+}
+
 data class UiState(
-    val currentDestination: AppDestinations, val shouldShowAbout: Boolean
+    val currentDestination: AppDestinations, val aboutVisibility: AboutVisibility
 )
 
 class AppViewModel : ViewModel() {
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
-            currentDestination = AppDestinations.Temperature, shouldShowAbout = false
+            currentDestination = AppDestinations.Temperature, aboutVisibility = AboutVisibility.Hidden
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -25,6 +30,13 @@ class AppViewModel : ViewModel() {
     }
 
     fun setShouldShowAbout(shouldShowAbout: Boolean) {
-        _uiState.update { state -> state.copy(shouldShowAbout = shouldShowAbout) }
+        _uiState.update { state ->
+            state.copy(
+                aboutVisibility = when (shouldShowAbout) {
+                    false -> AboutVisibility.Hidden
+                    true -> if (shouldShowAboutInSeparateWindow()) AboutVisibility.Window else AboutVisibility.Sheet
+                }
+            )
+        }
     }
 }

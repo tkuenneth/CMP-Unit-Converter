@@ -11,7 +11,6 @@ import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
 import de.thomaskuenneth.cmpunitconverter.di.appModule
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverterScreen
-import de.thomaskuenneth.cmpunitconverter.shouldShowAboutInSeparateWindow
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverterScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -65,7 +64,7 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
             }
         }
     }
-    if (uiState.shouldShowAbout && !shouldShowAboutInSeparateWindow()) {
+    if (uiState.aboutVisibility == AboutVisibility.Sheet) {
         AboutBottomSheet { appViewModel.setShouldShowAbout(false) }
     }
 }
