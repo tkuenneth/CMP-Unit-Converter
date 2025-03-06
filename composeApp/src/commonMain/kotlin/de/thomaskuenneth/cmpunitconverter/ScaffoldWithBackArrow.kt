@@ -5,15 +5,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.about
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_name
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.back
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -23,6 +21,7 @@ fun <T> ScaffoldWithBackArrow(
     navigator: ThreePaneScaffoldNavigator<T>,
     scrollBehavior: TopAppBarScrollBehavior,
     infoClicked: () -> Unit,
+    settingsClicked: () -> Unit,
     content: @Composable () -> Unit
 ) {
     if (shouldUseScaffold()) {
@@ -39,6 +38,12 @@ fun <T> ScaffoldWithBackArrow(
                     },
                     scrollBehavior = scrollBehavior,
                     actions = {
+                        IconButton(onClick = settingsClicked) {
+                            Icon(
+                                Icons.Default.Settings,
+                                contentDescription = stringResource(Res.string.settings)
+                            )
+                        }
                         IconButton(onClick = infoClicked) {
                             Icon(
                                 Icons.Default.Info,

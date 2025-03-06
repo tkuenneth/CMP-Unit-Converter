@@ -1,6 +1,7 @@
 package de.thomaskuenneth.cmpunitconverter
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
@@ -11,8 +12,10 @@ import androidx.compose.ui.window.application
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.app.AboutVisibility
 import de.thomaskuenneth.cmpunitconverter.app.App
+import de.thomaskuenneth.cmpunitconverter.app.SettingsVisibility
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
+import java.awt.Desktop
 
 val IS_MACOS = platformName.lowercase().contains("mac os x")
 
@@ -22,16 +25,29 @@ fun main() = application {
         title = stringResource(Res.string.app_name),
     ) {
         App { viewModel ->
+            LaunchedEffect(Unit) {
+                with(Desktop.getDesktop()) {
+                    installPreferencesHandler { viewModel.setShouldShowSettings(true) }
+                }
+            }
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             CMPUnitConverterMenuBar(
                 currentDestination = uiState.currentDestination,
                 exit = ::exitApplication,
-                showAboutDialog = { viewModel.setShouldShowAbout(true) },
+                showAbout = { viewModel.setShouldShowAbout(true) },
+                showSettings = { viewModel.setShouldShowSettings(true) },
                 navigateToTemperature = { viewModel.setCurrentDestination(AppDestinations.Temperature) },
                 navigateToDistance = { viewModel.setCurrentDestination(AppDestinations.Distance) },
             )
-            if (uiState.aboutVisibility == AboutVisibility.Window) {
-                AboutDialog { viewModel.setShouldShowAbout(false) }
+            AboutWindow(visible = uiState.aboutVisibility == AboutVisibility.Window) {
+                viewModel.setShouldShowAbout(
+                    false
+                )
+            }
+            SettingsWindow(visible = uiState.settingsVisibility == SettingsVisibility.Window) {
+                viewModel.setShouldShowSettings(
+                    false
+                )
             }
         }
     }
@@ -41,7 +57,8 @@ fun main() = application {
 fun FrameWindowScope.CMPUnitConverterMenuBar(
     currentDestination: AppDestinations,
     exit: () -> Unit,
-    showAboutDialog: () -> Unit,
+    showAbout: () -> Unit,
+    showSettings: () -> Unit,
     navigateToTemperature: () -> Unit,
     navigateToDistance: () -> Unit
 ) {
@@ -49,6 +66,9 @@ fun FrameWindowScope.CMPUnitConverterMenuBar(
     MenuBar {
         if (!IS_MACOS) {
             Menu(text = stringResource(Res.string.file)) {
+                Item(
+                    text = stringResource(Res.string.settings), onClick = showSettings
+                )
                 Item(
                     text = stringResource(Res.string.quit), onClick = exit, shortcut = KeyShortcut(Key.F4, alt = true)
                 )
@@ -82,7 +102,7 @@ fun FrameWindowScope.CMPUnitConverterMenuBar(
             Menu(text = stringResource(Res.string.help)) {
                 Item(
                     text = stringResource(Res.string.about), onClick = {
-                        showAboutDialog()
+                        showAbout()
                     })
             }
         }

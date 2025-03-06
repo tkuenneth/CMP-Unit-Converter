@@ -8,18 +8,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogWindow
 import de.thomaskuenneth.cmpunitconverter.app.About
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.about_short
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_icon
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_name
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun AboutDialog(onCloseRequest: () -> Unit) {
+fun AboutWindow(visible: Boolean, onCloseRequest: () -> Unit) {
     DialogWindow(
+        visible = visible,
         onCloseRequest = onCloseRequest,
         icon = painterResource(Res.drawable.app_icon),
         resizable = false,
-        title = stringResource(Res.string.app_name)
+        title = stringResource(Res.string.about_short)
     ) {
         About(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
     }

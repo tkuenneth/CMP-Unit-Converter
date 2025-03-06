@@ -24,7 +24,8 @@ fun DistanceConverterScreen(appViewModel: AppViewModel, distanceViewModel: Dista
     ScaffoldWithBackArrow(
         navigator = navigator,
         scrollBehavior = scrollBehavior,
-        infoClicked = { appViewModel.setShouldShowAbout(true) }) {
+        infoClicked = { appViewModel.setShouldShowAbout(true) },
+        settingsClicked = { appViewModel.setShouldShowSettings(true) }) {
         SupportingPaneScaffold(
             directive = navigator.scaffoldDirective, mainPane = {
                 DistanceConverter(

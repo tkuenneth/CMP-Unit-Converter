@@ -64,7 +64,10 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
             }
         }
     }
-    if (uiState.aboutVisibility == AboutVisibility.Sheet) {
-        AboutBottomSheet { appViewModel.setShouldShowAbout(false) }
+    AboutBottomSheet(visible = uiState.aboutVisibility == AboutVisibility.Sheet) { appViewModel.setShouldShowAbout(false) }
+    SettingsBottomSheet(visible = uiState.settingsVisibility == SettingsVisibility.Sheet) {
+        appViewModel.setShouldShowSettings(
+            false
+        )
     }
 }

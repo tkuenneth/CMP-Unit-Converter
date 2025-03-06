@@ -2,12 +2,14 @@
     <string name="app_name">CMP Unit Converter</string>
 
     <string name="back">Back</string>
+    <string name="settings">Settings</string>
 
     <string name="file">File</string>
     <string name="quit">Quit</string>
     <string name="navigate">Navigate</string>
     <string name="help">Help</string>
     <string name="about">About CMP Unit Converter\u2026</string>
+    <string name="about_short">About</string>
 
     <string name="learn_more">Learn more</string>
 

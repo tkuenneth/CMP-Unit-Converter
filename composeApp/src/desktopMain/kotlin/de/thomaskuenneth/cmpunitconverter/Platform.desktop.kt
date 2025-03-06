@@ -4,4 +4,6 @@ actual fun shouldUseScaffold(): Boolean = false
 
 actual fun shouldShowAboutInSeparateWindow(): Boolean = true
 
+actual fun shouldShowSettingsInSeparateWindow(): Boolean = true
+
 actual val platformName: String = System.getProperty("os.name")

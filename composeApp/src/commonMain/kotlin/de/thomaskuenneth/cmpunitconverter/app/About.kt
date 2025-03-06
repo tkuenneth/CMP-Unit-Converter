@@ -41,9 +41,11 @@ fun About(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutBottomSheet(closeSheet: () -> Unit) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ModalBottomSheet(sheetState = sheetState, onDismissRequest = { closeSheet() }) {
-        About(modifier = Modifier.align(Alignment.CenterHorizontally))
+fun AboutBottomSheet(visible: Boolean, closeSheet: () -> Unit) {
+    if (visible) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(sheetState = sheetState, onDismissRequest = { closeSheet() }) {
+            About(modifier = Modifier.align(Alignment.CenterHorizontally))
+        }
     }
 }
