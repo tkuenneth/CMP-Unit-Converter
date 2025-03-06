@@ -11,6 +11,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import de.thomaskuenneth.cmpunitconverter.app.AppViewModel
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -20,8 +21,7 @@ import org.jetbrains.compose.resources.stringResource
 fun <T> ScaffoldWithBackArrow(
     navigator: ThreePaneScaffoldNavigator<T>,
     scrollBehavior: TopAppBarScrollBehavior,
-    infoClicked: () -> Unit,
-    settingsClicked: () -> Unit,
+    viewModel: AppViewModel,
     content: @Composable () -> Unit
 ) {
     if (shouldUseScaffold()) {
@@ -38,13 +38,13 @@ fun <T> ScaffoldWithBackArrow(
                     },
                     scrollBehavior = scrollBehavior,
                     actions = {
-                        IconButton(onClick = settingsClicked) {
+                        IconButton(onClick = { viewModel.setShouldShowSettings(true) }) {
                             Icon(
                                 Icons.Default.Settings,
                                 contentDescription = stringResource(Res.string.settings)
                             )
                         }
-                        IconButton(onClick = infoClicked) {
+                        IconButton(onClick = { viewModel.setShouldShowAbout(true) }) {
                             Icon(
                                 Icons.Default.Info,
                                 contentDescription = stringResource(Res.string.about)

@@ -24,8 +24,8 @@ fun TemperatureConverterScreen(appViewModel: AppViewModel, temperatureViewModel:
     ScaffoldWithBackArrow(
         navigator = navigator,
         scrollBehavior = scrollBehavior,
-        infoClicked = { appViewModel.setShouldShowAbout(true) },
-        settingsClicked = { appViewModel.setShouldShowSettings(true) }) {
+        viewModel = appViewModel
+    ) {
         SupportingPaneScaffold(
             directive = navigator.scaffoldDirective, mainPane = {
                 TemperatureConverter(
