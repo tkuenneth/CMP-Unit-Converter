@@ -27,7 +27,7 @@ modules("jdk.unsupported")
 modules("jdk.unsupported.desktop")
 ```
 
-- Fix `ould not resolve all files for configuration ':kotlinNativeBundleConfiguration'` by adding
+- Fix `could not resolve all files for configuration ':kotlinNativeBundleConfiguration'` on Linux on ARM by adding
 
 ```
 if (!System.getProperty("os.name").lowercase().contains("linux"))
