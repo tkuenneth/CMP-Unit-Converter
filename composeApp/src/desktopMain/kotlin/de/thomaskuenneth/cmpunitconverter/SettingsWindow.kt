@@ -10,6 +10,7 @@ import de.thomaskuenneth.cmpunitconverter.app.Settings
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_icon
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.settings
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.settings_short
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -20,7 +21,7 @@ fun SettingsWindow(visible: Boolean, onCloseRequest: () -> Unit) {
         onCloseRequest = onCloseRequest,
         icon = painterResource(Res.drawable.app_icon),
         resizable = false,
-        title = stringResource(Res.string.settings)
+        title = stringResource(Res.string.settings_short)
     ) {
         Settings(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
     }

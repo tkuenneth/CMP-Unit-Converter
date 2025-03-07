@@ -41,13 +41,13 @@ fun <T> ScaffoldWithBackArrow(
                         IconButton(onClick = { viewModel.setShouldShowSettings(true) }) {
                             Icon(
                                 Icons.Default.Settings,
-                                contentDescription = stringResource(Res.string.settings)
+                                contentDescription = stringResource(Res.string.settings_short)
                             )
                         }
                         IconButton(onClick = { viewModel.setShouldShowAbout(true) }) {
                             Icon(
                                 Icons.Default.Info,
-                                contentDescription = stringResource(Res.string.about)
+                                contentDescription = stringResource(Res.string.about_short)
                             )
                         }
                     },
