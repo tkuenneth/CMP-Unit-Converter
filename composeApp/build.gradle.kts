@@ -143,5 +143,8 @@ compose.desktop {
                 menuGroup = "Thomas Kuenneth"
             }
         }
+        buildTypes.release.proguard {
+            configurationFiles.from("rules.pro")
+        }
     }
 }

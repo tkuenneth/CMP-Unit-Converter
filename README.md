@@ -32,3 +32,7 @@ modules("jdk.unsupported.desktop")
 ```
 if (!System.getProperty("os.name").lowercase().contains("linux"))
 ```
+
+- Refine *rules.pro*
+
+While this preliminary version seems to work, it needs some more love for sure
