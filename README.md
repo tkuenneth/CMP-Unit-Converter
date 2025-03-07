@@ -26,3 +26,9 @@ The project contains a few workarounds to make the build smooth across platforms
 modules("jdk.unsupported")
 modules("jdk.unsupported.desktop")
 ```
+
+- Fix `ould not resolve all files for configuration ':kotlinNativeBundleConfiguration'` by adding
+
+```
+if (!System.getProperty("os.name").lowercase().contains("linux"))
+```
