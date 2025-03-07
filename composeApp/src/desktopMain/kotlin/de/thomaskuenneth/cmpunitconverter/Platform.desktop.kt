@@ -3,12 +3,15 @@ package de.thomaskuenneth.cmpunitconverter
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.colorScheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.io.File
 
 actual fun shouldUseScaffold(): Boolean = false
 
@@ -36,3 +39,9 @@ actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
         mutableBackHandlerState.update { state -> state.copy(enabled = enabled, onBack = onBack) }
     }
 }
+
+actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
+    producePath = {
+        File(System.getProperty("user.home"), dataStoreFileName(key)).absolutePath
+    },
+)

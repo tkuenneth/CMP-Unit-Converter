@@ -4,6 +4,8 @@ import android.os.Build
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.isDark
 
@@ -42,3 +44,9 @@ actual fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme {
 actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
     androidx.activity.compose.BackHandler(enabled = enabled) { onBack() }
 }
+
+actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
+    producePath = {
+        CMPUnitConverterApp.applicationContext.filesDir.resolve(dataStoreFileName(key)).absolutePath
+    },
+)
