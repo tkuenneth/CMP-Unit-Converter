@@ -32,7 +32,7 @@ kotlin {
         }
     }
     
-    listOf(
+    if (!System.getProperty("os.name").lowercase().contains("linux")) listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
