@@ -37,3 +37,8 @@ actual fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme {
         }
     }
 }
+
+@Composable
+actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
+    androidx.activity.compose.BackHandler(enabled = enabled) { onBack() }
+}

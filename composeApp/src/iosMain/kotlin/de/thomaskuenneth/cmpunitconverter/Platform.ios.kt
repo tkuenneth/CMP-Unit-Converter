@@ -18,3 +18,7 @@ actual val platformName: String = UIDevice.currentDevice().systemName()
 actual fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme {
     return colorScheme(colorSchemeMode)
 }
+
+@Composable
+actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
+}

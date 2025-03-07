@@ -14,3 +14,6 @@ expect val platformName: String
 
 @Composable
 expect fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme
+
+@Composable
+expect fun BackHandler(enabled: Boolean, onBack: () -> Unit)
