@@ -117,6 +117,8 @@ compose.desktop {
     application {
         mainClass = "de.thomaskuenneth.cmpunitconverter.MainKt"
         nativeDistributions {
+            modules("jdk.unsupported")
+            modules("jdk.unsupported.desktop")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "CMP Unit Converter"
             packageVersion = version.toString()
