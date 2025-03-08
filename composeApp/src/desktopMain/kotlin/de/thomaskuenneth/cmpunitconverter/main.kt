@@ -14,6 +14,7 @@ import de.thomaskuenneth.cmpunitconverter.app.AboutVisibility
 import de.thomaskuenneth.cmpunitconverter.app.App
 import de.thomaskuenneth.cmpunitconverter.app.SettingsVisibility
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.awt.Desktop
 
@@ -23,6 +24,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = stringResource(Res.string.app_name),
+        icon = painterResource(Res.drawable.app_icon),
     ) {
         App { viewModel ->
             LaunchedEffect(Unit) {
