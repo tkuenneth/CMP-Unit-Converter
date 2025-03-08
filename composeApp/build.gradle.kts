@@ -11,15 +11,24 @@ plugins {
 }
 
 group = "de.thomaskuenneth.cmpunitconverter"
-val file = rootProject.file("composeApp/src/commonMain/kotlin/de/thomaskuenneth/cmpunitconverter/Version.kt")
-val version = if (file.isFile) {
-    with(InputStreamReader(FileInputStream(file), Charsets.UTF_8).use { reader ->
-        reader.readText()
-    }) {
-        val regex = """const val VERSION = "([^"]+)"""".toRegex()
-        regex.find(this)?.groupValues?.get(1)
+
+val content = with(rootProject.file("composeApp/src/commonMain/kotlin/de/thomaskuenneth/cmpunitconverter/Version.kt")) {
+    if (isFile) {
+        InputStreamReader(FileInputStream(this), Charsets.UTF_8).use { reader ->
+            reader.readText()
+        }
+    } else {
+        error("$absolutePath not found")
     }
-} else error("${file.absolutePath} not found")
+}
+val (humanReadableVersionString, buildNumber) = with(content) {
+    val regexFirst = """const val VERSION = "([^"]+)"""".toRegex()
+    val regexSecond = """const val BUILD_NUMBER = "([^"]+)"""".toRegex()
+    Pair(
+        regexFirst.find(this)?.groupValues?.get(1),
+        regexSecond.find(this)?.groupValues?.get(1)
+    )
+}
 
 val appleId = System.getenv("PROD_MACOS_NOTARIZATION_APPLE_ID") ?: ""
 val appleTeamId = System.getenv("PROD_MACOS_NOTARIZATION_TEAM_ID") ?: ""
@@ -31,7 +40,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
     if (!System.getProperty("os.name").lowercase().contains("linux")) listOf(
         iosX64(),
         iosArm64(),
@@ -42,12 +51,12 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm("desktop")
-    
+
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -113,6 +122,12 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+val macExtraPlistKeys: String
+    get() = """
+        <key>CFBundleVersion</key>
+        <string>${buildNumber}</string>
+    """.trim()
+
 compose.desktop {
     application {
         mainClass = "de.thomaskuenneth.cmpunitconverter.MainKt"
@@ -121,7 +136,7 @@ compose.desktop {
             modules("jdk.unsupported.desktop")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "CMP Unit Converter"
-            packageVersion = version.toString()
+            packageVersion = humanReadableVersionString.toString()
             description = "A Compose Multiplatform unit converter"
             copyright = "2025 Thomas Kuenneth. All rights reserved."
             vendor = "Thomas Kuenneth"
@@ -136,6 +151,9 @@ compose.desktop {
                     appleID.set(appleId)
                     password.set(notarizationPassword)
                     teamID.set(appleTeamId)
+                }
+                infoPlist {
+                    extraKeysRawXml = macExtraPlistKeys
                 }
             }
             windows {

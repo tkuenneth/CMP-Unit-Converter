@@ -5,14 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import de.thomaskuenneth.cmpunitconverter.BUILD_NUMBER
 import de.thomaskuenneth.cmpunitconverter.VERSION
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_icon
@@ -31,10 +29,13 @@ fun About(modifier: Modifier = Modifier) {
             painter = painterResource(Res.drawable.app_icon), null, modifier = Modifier.size(96.dp)
         )
         Text(
-            text = stringResource(Res.string.app_name), modifier = Modifier.padding(top = 16.dp)
+            text = stringResource(Res.string.app_name),
+            modifier = Modifier.padding(top = 16.dp),
+            color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = VERSION
+            text = "$VERSION ($BUILD_NUMBER)",
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
