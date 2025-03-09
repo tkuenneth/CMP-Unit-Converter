@@ -2,7 +2,6 @@ package de.thomaskuenneth.cmpunitconverter.app
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -12,6 +11,9 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
@@ -57,44 +59,50 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
         navigateBack = navigatorStateMap[uiState.currentDestination]!!::navigateBack,
         viewModel = appViewModel
     ) { paddingValues, scrollBehavior ->
-        Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.surface)) {
-            NavigationSuiteScaffold(
-                modifier = Modifier.padding(paddingValues),
-                navigationSuiteItems = {
-                    AppDestinations.entries.forEach {
-                        item(
-                            selected = it == uiState.currentDestination,
-                            onClick = { appViewModel.setCurrentDestination(it) },
-                            icon = {
-                                Icon(
-                                    imageVector = it.icon,
-                                    contentDescription = stringResource(it.contentDescription)
-                                )
-                            },
-                            label = {
-                                Text(text = stringResource(it.labelRes))
-                            },
-                        )
-                    }
-                }) {
-                val navigator = navigatorStateMap[uiState.currentDestination]!!
-                when (uiState.currentDestination) {
-                    AppDestinations.Temperature -> {
-                        TemperatureConverterScreen(
-                            navigator = navigator,
-                            viewModel = koinViewModel(),
-                            scrollBehavior = scrollBehavior
-                        )
-                    }
-
-                    AppDestinations.Distance -> {
-                        DistanceConverterScreen(
-                            navigator = navigator,
-                            viewModel = koinViewModel(),
-                            scrollBehavior = scrollBehavior
-                        )
-                    }
+        NavigationSuiteScaffold(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.surface)
+                .padding(paddingValues),
+            navigationSuiteItems = {
+                AppDestinations.entries.forEach {
+                    item(
+                        selected = it == uiState.currentDestination,
+                        onClick = { appViewModel.setCurrentDestination(it) },
+                        icon = {
+                            Icon(
+                                imageVector = it.icon,
+                                contentDescription = stringResource(it.contentDescription)
+                            )
+                        },
+                        label = {
+                            Text(text = stringResource(it.labelRes))
+                        },
+                    )
                 }
+            }) {
+            val navController = rememberNavController()
+            val threePaneScaffoldNavigator = navigatorStateMap[uiState.currentDestination]!!
+            NavHost(
+                navController = navController,
+                startDestination = uiState.currentDestination.name
+            ) {
+                composable(route = AppDestinations.Temperature.name) {
+                    TemperatureConverterScreen(
+                        navigator = threePaneScaffoldNavigator,
+                        viewModel = koinViewModel(),
+                        scrollBehavior = scrollBehavior
+                    )
+                }
+                composable(route = AppDestinations.Distance.name) {
+                    DistanceConverterScreen(
+                        navigator = threePaneScaffoldNavigator,
+                        viewModel = koinViewModel(),
+                        scrollBehavior = scrollBehavior
+                    )
+                }
+            }
+            LaunchedEffect(uiState.currentDestination) {
+                navController.navigate(uiState.currentDestination.name)
             }
             AboutBottomSheet(visible = uiState.aboutVisibility == AboutVisibility.Sheet) {
                 appViewModel.setShouldShowAbout(

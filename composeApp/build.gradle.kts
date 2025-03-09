@@ -62,11 +62,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(libs.adaptive)
-            implementation(libs.adaptive.layout)
-            implementation(libs.adaptive.navigation)
             implementation(compose.material3AdaptiveNavigationSuite)
-
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -74,12 +70,15 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            implementation(libs.navigation.compose)
+            implementation(libs.adaptive)
+            implementation(libs.adaptive.layout)
+            implementation(libs.adaptive.navigation)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
-
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
-
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewModel)
