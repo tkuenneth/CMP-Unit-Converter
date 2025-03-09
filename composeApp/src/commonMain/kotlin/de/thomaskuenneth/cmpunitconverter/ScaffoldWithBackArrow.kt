@@ -1,35 +1,35 @@
 package de.thomaskuenneth.cmpunitconverter
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import de.thomaskuenneth.cmpunitconverter.app.AppViewModel
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> ScaffoldWithBackArrow(
-    navigator: ThreePaneScaffoldNavigator<T>,
-    scrollBehavior: TopAppBarScrollBehavior,
+fun ScaffoldWithBackArrow(
+    shouldShowBack: Boolean,
+    navigateBack: () -> Unit,
     viewModel: AppViewModel,
-    content: @Composable () -> Unit
+    content: @Composable (PaddingValues, TopAppBarScrollBehavior) -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     if (shouldUseScaffold()) {
         Scaffold(
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 CenterAlignedTopAppBar(
                     navigationIcon = {
-                        if (navigator.canNavigateBack()) IconButton(onClick = { navigator.navigateBack() }) {
+                        if (shouldShowBack) IconButton(onClick = navigateBack) {
                             Icon(
                                 Icons.AutoMirrored.Default.ArrowBack,
                                 contentDescription = stringResource(Res.string.back)
@@ -53,14 +53,12 @@ fun <T> ScaffoldWithBackArrow(
                     },
                     title = { Text(text = stringResource(Res.string.app_name)) })
             }) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                content()
-            }
+            content(innerPadding, scrollBehavior)
         }
     } else {
-        content()
+        content(PaddingValues.Absolute(24.dp, 24.dp, 24.dp, 24.dp), scrollBehavior)
     }
-    BackHandler(navigator.canNavigateBack()) {
-        navigator.navigateBack()
+    BackHandler(shouldShowBack) {
+        navigateBack()
     }
 }

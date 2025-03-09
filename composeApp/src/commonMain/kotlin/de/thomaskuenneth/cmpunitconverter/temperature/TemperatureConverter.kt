@@ -36,7 +36,7 @@ fun TemperatureConverter(
     }
     Column(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection).fillMaxSize()
-            .verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TemperatureTextField(

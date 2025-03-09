@@ -1,12 +1,19 @@
 package de.thomaskuenneth.cmpunitconverter.app
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
+import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
+import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
 import de.thomaskuenneth.cmpunitconverter.di.appModule
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverterScreen
@@ -34,41 +41,72 @@ fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun CMPUnitConverter(appViewModel: AppViewModel) {
     val uiState by appViewModel.uiState.collectAsStateWithLifecycle()
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    selected = it == uiState.currentDestination,
-                    onClick = { appViewModel.setCurrentDestination(it) },
-                    icon = {
-                        Icon(
-                            imageVector = it.icon, contentDescription = stringResource(it.contentDescription)
+    val navigatorStateMap = remember {
+        mutableStateMapOf<AppDestinations, ThreePaneScaffoldNavigator<Nothing>>()
+    }
+    key(navigatorStateMap) {
+        navigatorStateMap[AppDestinations.Temperature] = rememberSupportingPaneScaffoldNavigator()
+        navigatorStateMap[AppDestinations.Distance] = rememberSupportingPaneScaffoldNavigator()
+    }
+    ScaffoldWithBackArrow(
+        shouldShowBack = navigatorStateMap[uiState.currentDestination]!!.canNavigateBack(),
+        navigateBack = navigatorStateMap[uiState.currentDestination]!!::navigateBack,
+        viewModel = appViewModel
+    ) { paddingValues, scrollBehavior ->
+        Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.surface)) {
+            NavigationSuiteScaffold(
+                modifier = Modifier.padding(paddingValues),
+                navigationSuiteItems = {
+                    AppDestinations.entries.forEach {
+                        item(
+                            selected = it == uiState.currentDestination,
+                            onClick = { appViewModel.setCurrentDestination(it) },
+                            icon = {
+                                Icon(
+                                    imageVector = it.icon,
+                                    contentDescription = stringResource(it.contentDescription)
+                                )
+                            },
+                            label = {
+                                Text(text = stringResource(it.labelRes))
+                            },
                         )
-                    },
-                    label = {
-                        Text(text = stringResource(it.labelRes))
-                    },
+                    }
+                }) {
+                val navigator = navigatorStateMap[uiState.currentDestination]!!
+                when (uiState.currentDestination) {
+                    AppDestinations.Temperature -> {
+                        TemperatureConverterScreen(
+                            navigator = navigator,
+                            viewModel = koinViewModel(),
+                            scrollBehavior = scrollBehavior
+                        )
+                    }
+
+                    AppDestinations.Distance -> {
+                        DistanceConverterScreen(
+                            navigator = navigator,
+                            viewModel = koinViewModel(),
+                            scrollBehavior = scrollBehavior
+                        )
+                    }
+                }
+            }
+            AboutBottomSheet(visible = uiState.aboutVisibility == AboutVisibility.Sheet) {
+                appViewModel.setShouldShowAbout(
+                    false
                 )
             }
-        }) {
-        when (uiState.currentDestination) {
-            AppDestinations.Temperature -> {
-                TemperatureConverterScreen(appViewModel = appViewModel, temperatureViewModel = koinViewModel())
-            }
-
-            AppDestinations.Distance -> {
-                DistanceConverterScreen(appViewModel = appViewModel, distanceViewModel = koinViewModel())
+            SettingsBottomSheet(visible = uiState.settingsVisibility == SettingsVisibility.Sheet) {
+                appViewModel.setShouldShowSettings(
+                    false
+                )
             }
         }
-    }
-    AboutBottomSheet(visible = uiState.aboutVisibility == AboutVisibility.Sheet) { appViewModel.setShouldShowAbout(false) }
-    SettingsBottomSheet(visible = uiState.settingsVisibility == SettingsVisibility.Sheet) {
-        appViewModel.setShouldShowSettings(
-            false
-        )
     }
 }
 
