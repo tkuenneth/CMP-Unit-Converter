@@ -11,6 +11,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -102,7 +103,13 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                 }
             }
             LaunchedEffect(uiState.currentDestination) {
-                navController.navigate(uiState.currentDestination.name)
+                navController.navigate(uiState.currentDestination.name) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
             AboutBottomSheet(visible = uiState.aboutVisibility == AboutVisibility.Sheet) {
                 appViewModel.setShouldShowAbout(
