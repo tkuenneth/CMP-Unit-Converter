@@ -18,21 +18,17 @@ import androidx.navigation.compose.rememberNavController
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
-import de.thomaskuenneth.cmpunitconverter.di.appModule
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverterScreen
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverterScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinApplication
+import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
 fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
-    KoinApplication(
-        application = {
-            modules(appModule)
-        }) {
+    KoinContext {
         val viewModel: AppViewModel = koinViewModel()
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         MaterialTheme(

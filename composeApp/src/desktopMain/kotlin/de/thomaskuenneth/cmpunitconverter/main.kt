@@ -14,6 +14,7 @@ import de.thomaskuenneth.cmpunitconverter.app.AboutVisibility
 import de.thomaskuenneth.cmpunitconverter.app.App
 import de.thomaskuenneth.cmpunitconverter.app.SettingsVisibility
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.di.initKoin
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.awt.Desktop
@@ -21,6 +22,7 @@ import java.awt.Desktop
 val IS_MACOS = platformName.lowercase().contains("mac os x")
 
 fun main() = application {
+    initKoin {}
     Window(
         onCloseRequest = ::exitApplication,
         title = stringResource(Res.string.app_name),
