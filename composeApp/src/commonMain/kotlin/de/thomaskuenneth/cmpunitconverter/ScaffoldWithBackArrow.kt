@@ -56,7 +56,7 @@ fun ScaffoldWithBackArrow(
             content(innerPadding, scrollBehavior)
         }
     } else {
-        content(PaddingValues.Absolute(24.dp, 24.dp, 24.dp, 24.dp), scrollBehavior)
+        content(PaddingValues.Absolute(0.dp, 0.dp, 0.dp, 0.dp), scrollBehavior)
     }
     BackHandler(shouldShowBack) {
         navigateBack()
