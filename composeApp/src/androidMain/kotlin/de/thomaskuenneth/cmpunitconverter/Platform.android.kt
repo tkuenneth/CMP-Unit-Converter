@@ -1,5 +1,6 @@
 package de.thomaskuenneth.cmpunitconverter
 
+import android.content.Context
 import android.os.Build
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -8,6 +9,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.isDark
+import org.koin.java.KoinJavaComponent.inject
+
+private val context: Context by inject(Context::class.java)
 
 actual fun shouldUseScaffold(): Boolean = true
 
@@ -47,6 +51,6 @@ actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
 
 actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
     producePath = {
-        CMPUnitConverterApp.applicationContext.filesDir.resolve(dataStoreFileName(key)).absolutePath
+        context.filesDir.resolve(dataStoreFileName(key)).absolutePath
     },
 )
