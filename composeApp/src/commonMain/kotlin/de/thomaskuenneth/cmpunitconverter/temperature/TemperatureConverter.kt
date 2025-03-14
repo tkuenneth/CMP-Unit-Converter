@@ -13,6 +13,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.thomaskuenneth.cmpunitconverter.ConvertButton
+import de.thomaskuenneth.cmpunitconverter.LearnMoreButton
 import de.thomaskuenneth.cmpunitconverter.NumberTextField
 import de.thomaskuenneth.cmpunitconverter.Result
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
@@ -56,20 +58,12 @@ fun TemperatureConverter(
         ) { unit: TemperatureUnit ->
             viewModel.setDestinationUnit(unit)
         }
-        Button(
-            onClick = { viewModel.convert() }, enabled = enabled, modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Text(text = stringResource(Res.string.convert))
-        }
+        ConvertButton(enabled = enabled) { viewModel.convert() }
         Result(
             value = convertedValue,
             unit = if (uiState.destinationUnit == TemperatureUnit.Celsius) Res.string.celsius else Res.string.fahrenheit
         )
-        if (shouldShowButton) {
-            TextButton(onClick = navigateToSupportingPane) {
-                Text(text = stringResource(Res.string.learn_more))
-            }
-        }
+        LearnMoreButton(visible = shouldShowButton, onClick = navigateToSupportingPane)
     }
 }
 

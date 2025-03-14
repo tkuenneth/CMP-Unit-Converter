@@ -13,7 +13,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.thomaskuenneth.cmpunitconverter.ConvertButton
+import de.thomaskuenneth.cmpunitconverter.LearnMoreButton
 import de.thomaskuenneth.cmpunitconverter.NumberTextField
+import de.thomaskuenneth.cmpunitconverter.Result
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -56,20 +59,12 @@ fun DistanceConverter(
         ) { unit: DistanceUnit ->
             viewModel.setDestinationUnit(unit)
         }
-        Button(
-            onClick = { viewModel.convert() }, enabled = enabled, modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Text(text = stringResource(Res.string.convert))
-        }
-        de.thomaskuenneth.cmpunitconverter.Result(
+        ConvertButton(enabled = enabled) { viewModel.convert() }
+        Result(
             value = convertedValue,
             unit = if (uiState.destinationUnit == DistanceUnit.Meter) Res.string.meter else Res.string.mile
         )
-        if (shouldShowButton) {
-            TextButton(onClick = navigateToSupportingPane) {
-                Text(text = stringResource(Res.string.learn_more))
-            }
-        }
+        LearnMoreButton(visible = shouldShowButton, onClick = navigateToSupportingPane)
     }
 }
 
