@@ -2,8 +2,6 @@ package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -12,11 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.thomaskuenneth.cmpunitconverter.NumberTextField
+import de.thomaskuenneth.cmpunitconverter.Result
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -31,7 +29,7 @@ fun TemperatureConverter(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val convertedValue by viewModel.convertedTemperature.collectAsStateWithLifecycle()
-    val enabled = remember(uiState.temperature, uiState.sourceUnit, uiState.destinationUnit) {
+    val enabled = remember(uiState.temperatureAsString, uiState.sourceUnit, uiState.destinationUnit) {
         !viewModel.getTemperatureAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
@@ -42,11 +40,12 @@ fun TemperatureConverter(
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TemperatureTextField(
-            temperature = uiState.temperature,
+        NumberTextField(
+            value = uiState.temperatureAsString,
+            placeholder = Res.string.placeholder_temperature,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
-            onValueChange = { viewModel.setTemperature(it) })
+            onValueChange = { viewModel.setTemperatureAsString(it) })
         TemperatureButtonRow(
             selected = uiState.sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
         ) { unit: TemperatureUnit ->
@@ -62,44 +61,15 @@ fun TemperatureConverter(
         ) {
             Text(text = stringResource(Res.string.convert))
         }
-        Result(value = convertedValue, unit = uiState.destinationUnit)
+        Result(
+            value = convertedValue,
+            unit = if (uiState.destinationUnit == TemperatureUnit.Celsius) Res.string.celsius else Res.string.fahrenheit
+        )
         if (shouldShowButton) {
             TextButton(onClick = navigateToSupportingPane) {
                 Text(text = stringResource(Res.string.learn_more))
             }
         }
-    }
-}
-
-@Composable
-fun TemperatureTextField(
-    temperature: String,
-    modifier: Modifier = Modifier,
-    keyboardActionCallback: () -> Unit,
-    onValueChange: (String) -> Unit
-) {
-    TextField(
-        value = temperature, onValueChange = {
-        onValueChange(it)
-    }, placeholder = {
-        Text(text = stringResource(Res.string.placeholder_temperature))
-    }, modifier = modifier, keyboardActions = KeyboardActions(onAny = {
-        keyboardActionCallback()
-    }), keyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
-    ), singleLine = true
-    )
-}
-
-@Composable
-fun Result(value: Float, unit: TemperatureUnit) {
-    val result = if (value.isNaN()) "" else "$value ${
-        if (unit == TemperatureUnit.Celsius) stringResource(Res.string.celsius) else stringResource(Res.string.fahrenheit)
-    }"
-    if (result.isNotEmpty()) {
-        Text(
-            text = result, style = MaterialTheme.typography.headlineSmall
-        )
     }
 }
 

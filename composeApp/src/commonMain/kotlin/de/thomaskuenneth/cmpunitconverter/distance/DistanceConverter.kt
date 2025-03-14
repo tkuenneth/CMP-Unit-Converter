@@ -2,8 +2,6 @@ package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -12,11 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.thomaskuenneth.cmpunitconverter.NumberTextField
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -32,7 +29,7 @@ fun DistanceConverter(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val convertedValue by viewModel.convertedDistance.collectAsStateWithLifecycle()
-    val enabled = remember(uiState.distance, uiState.sourceUnit, uiState.destinationUnit) {
+    val enabled = remember(uiState.distanceAsString, uiState.sourceUnit, uiState.destinationUnit) {
         !viewModel.getDistanceAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
@@ -43,8 +40,9 @@ fun DistanceConverter(
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        DistanceTextField(
-            distance = uiState.distance,
+        NumberTextField(
+            value = uiState.distanceAsString,
+            placeholder = Res.string.placeholder_distance,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = { viewModel.setDistance(it) })
@@ -63,41 +61,15 @@ fun DistanceConverter(
         ) {
             Text(text = stringResource(Res.string.convert))
         }
-        Result(value = convertedValue, unit = uiState.destinationUnit)
+        de.thomaskuenneth.cmpunitconverter.Result(
+            value = convertedValue,
+            unit = if (uiState.destinationUnit == DistanceUnit.Meter) Res.string.meter else Res.string.mile
+        )
         if (shouldShowButton) {
             TextButton(onClick = navigateToSupportingPane) {
                 Text(text = stringResource(Res.string.learn_more))
             }
         }
-    }
-}
-
-@Composable
-fun DistanceTextField(
-    distance: String, modifier: Modifier = Modifier, keyboardActionCallback: () -> Unit, onValueChange: (String) -> Unit
-) {
-    TextField(
-        value = distance, onValueChange = {
-        onValueChange(it)
-    }, placeholder = {
-        Text(text = stringResource(Res.string.placeholder_distance))
-    }, modifier = modifier, keyboardActions = KeyboardActions(onAny = {
-        keyboardActionCallback()
-    }), keyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
-    ), singleLine = true
-    )
-}
-
-@Composable
-fun Result(value: Float, unit: DistanceUnit) {
-    val result = if (value.isNaN()) "" else "$value ${
-        if (unit == DistanceUnit.Meter) stringResource(Res.string.meter) else stringResource(Res.string.mile)
-    }"
-    if (result.isNotEmpty()) {
-        Text(
-            text = result, style = MaterialTheme.typography.headlineSmall
-        )
     }
 }
 

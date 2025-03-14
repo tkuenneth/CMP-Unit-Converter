@@ -11,7 +11,7 @@ enum class TemperatureUnit {
 private const val KEY = "temperature"
 private const val KEY_TEMPERATURE_SOURCE_UNIT = "keyTemperatureSourceUnit"
 private const val KEY_TEMPERATURE_DESTINATION_UNIT = "keyTemperatureDestinationUnit"
-private const val KEY_TEMPERATURE = "keyTemperature"
+private const val KEY_TEMPERATURE_AS_FLOAT = "keyTemperatureAsFloat"
 
 class TemperatureRepository : BaseRepository(KEY) {
 
@@ -29,11 +29,11 @@ class TemperatureRepository : BaseRepository(KEY) {
         update(key = KEY_TEMPERATURE_DESTINATION_UNIT, value = value.name)
     }
 
-    val temperature: Flow<String>
-        get() = getFlow(KEY_TEMPERATURE, "")
+    val temperature: Flow<Float>
+        get() = getFlow(KEY_TEMPERATURE_AS_FLOAT, Float.NaN)
 
-    suspend fun setTemperature(value: String) {
-        update(key = KEY_TEMPERATURE, value = value)
+    suspend fun setTemperature(value: Float) {
+        update(key = KEY_TEMPERATURE_AS_FLOAT, value = value)
     }
 
     private fun getFlow(key: String, defaultValue: TemperatureUnit): Flow<TemperatureUnit> =

@@ -11,7 +11,7 @@ enum class DistanceUnit {
 private const val KEY = "distance"
 private const val KEY_DISTANCE_SOURCE_UNIT = "keyDistanceSourceUnit"
 private const val KEY_DISTANCE_DESTINATION_UNIT = "keyDistanceDestinationUnit"
-private const val KEY_DISTANCE = "keyDistance"
+private const val KEY_DISTANCE_AS_FLOAT = "keyDistanceAsFloat"
 
 class DistanceRepository : BaseRepository(KEY) {
 
@@ -29,11 +29,11 @@ class DistanceRepository : BaseRepository(KEY) {
         update(key = KEY_DISTANCE_DESTINATION_UNIT, value = value.name)
     }
 
-    val temperature: Flow<String>
-        get() = getFlow(KEY_DISTANCE, "")
+    val distance: Flow<Float>
+        get() = getFlow(KEY_DISTANCE_AS_FLOAT, Float.NaN)
 
-    suspend fun setDistance(value: String) {
-        update(key = KEY_DISTANCE, value = value)
+    suspend fun setDistance(value: Float) {
+        update(key = KEY_DISTANCE_AS_FLOAT, value = value)
     }
 
     private fun getFlow(key: String, defaultValue: DistanceUnit): Flow<DistanceUnit> =

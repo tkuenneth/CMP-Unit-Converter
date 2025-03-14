@@ -2,18 +2,23 @@ package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.convertToString
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class UiState(
-    val sourceUnit: TemperatureUnit, val destinationUnit: TemperatureUnit, val temperature: String
+    val sourceUnit: TemperatureUnit,
+    val destinationUnit: TemperatureUnit,
+    val temperatureAsString: String
 )
 
 class TemperatureViewModel(private val repository: TemperatureRepository) : ViewModel() {
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
-            sourceUnit = TemperatureUnit.Celsius, destinationUnit = TemperatureUnit.Fahrenheit, temperature = ""
+            sourceUnit = TemperatureUnit.Celsius,
+            destinationUnit = TemperatureUnit.Fahrenheit,
+            temperatureAsString = Float.NaN.convertToString()
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -27,7 +32,9 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
             }.collect { (sourceUnit, destinationUnit, temperature) ->
                 _uiState.update { current ->
                     current.copy(
-                        sourceUnit = sourceUnit, destinationUnit = destinationUnit, temperature = temperature
+                        sourceUnit = sourceUnit,
+                        destinationUnit = destinationUnit,
+                        temperatureAsString = temperature.convertToString()
                     )
                 }
             }
@@ -48,7 +55,7 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
         }
     }
 
-    fun getTemperatureAsFloat(): Float = uiState.value.temperature.let {
+    fun getTemperatureAsFloat(): Float = uiState.value.temperatureAsString.let {
         return try {
             it.toFloat()
         } catch (e: NumberFormatException) {
@@ -56,10 +63,10 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
         }
     }
 
-    fun setTemperature(value: String) {
-        _uiState.update { it.copy(temperature = value) }
+    fun setTemperatureAsString(value: String) {
+        _uiState.update { it.copy(temperatureAsString = value) }
         viewModelScope.launch {
-            repository.setTemperature(value)
+            repository.setTemperature(getTemperatureAsFloat())
         }
     }
 

@@ -2,18 +2,23 @@ package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.convertToString
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class UiState(
-    val sourceUnit: DistanceUnit, val destinationUnit: DistanceUnit, val distance: String
+    val sourceUnit: DistanceUnit,
+    val destinationUnit: DistanceUnit,
+    val distanceAsString: String
 )
 
 class DistanceViewModel(private val repository: DistanceRepository) : ViewModel() {
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
-            sourceUnit = DistanceUnit.Meter, destinationUnit = DistanceUnit.Mile, distance = ""
+            sourceUnit = DistanceUnit.Meter,
+            destinationUnit = DistanceUnit.Mile,
+            distanceAsString = Float.NaN.convertToString()
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -21,13 +26,15 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
     init {
         viewModelScope.launch {
             combineTransform(
-                repository.sourceUnit, repository.destinationUnit, repository.temperature
-            ) { sourceUnit, destinationUnit, temperature ->
-                emit(Triple(sourceUnit, destinationUnit, temperature))
-            }.collect { (sourceUnit, destinationUnit, temperature) ->
+                repository.sourceUnit, repository.destinationUnit, repository.distance
+            ) { sourceUnit, destinationUnit, distance ->
+                emit(Triple(sourceUnit, destinationUnit, distance))
+            }.collect { (sourceUnit, destinationUnit, distance) ->
                 _uiState.update { current ->
                     current.copy(
-                        sourceUnit = sourceUnit, destinationUnit = destinationUnit, distance = temperature
+                        sourceUnit = sourceUnit,
+                        destinationUnit = destinationUnit,
+                        distanceAsString = distance.convertToString()
                     )
                 }
             }
@@ -48,7 +55,7 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
         }
     }
 
-    fun getDistanceAsFloat(): Float = uiState.value.distance.let {
+    fun getDistanceAsFloat(): Float = uiState.value.distanceAsString.let {
         return try {
             it.toFloat()
         } catch (e: NumberFormatException) {
@@ -57,9 +64,9 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
     }
 
     fun setDistance(value: String) {
-        _uiState.update { it.copy(distance = value) }
+        _uiState.update { it.copy(distanceAsString = value) }
         viewModelScope.launch {
-            repository.setDistance(value)
+            repository.setDistance(getDistanceAsFloat())
         }
     }
 
