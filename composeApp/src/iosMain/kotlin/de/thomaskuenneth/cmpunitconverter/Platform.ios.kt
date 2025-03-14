@@ -7,10 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.colorScheme
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.Foundation.NSDocumentDirectory
-import platform.Foundation.NSFileManager
-import platform.Foundation.NSURL
-import platform.Foundation.NSUserDomainMask
+import platform.Foundation.*
 import platform.UIKit.UIDevice
 
 actual fun shouldUseScaffold(): Boolean = true
@@ -43,3 +40,24 @@ actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
         requireNotNull(documentDirectory).path + "/${dataStoreFileName(key)}"
     },
 )
+
+actual fun Float.convertToLocalizedString(digits: Int): String {
+    with(NSNumberFormatter()) {
+        numberStyle = NSNumberFormatterDecimalStyle
+        locale = NSLocale.currentLocale()
+        if (digits != -1) {
+            maximumFractionDigits = digits.toULong()
+        }
+        return if (!isNaN()) {
+            stringFromNumber(NSNumber.numberWithFloat(this@convertToLocalizedString)) ?: ""
+        } else ""
+    }
+}
+
+actual fun String.convertLocalizedStringToFloat(): Float {
+    with(NSNumberFormatter()) {
+        numberStyle = NSNumberFormatterDecimalStyle
+        locale = NSLocale.currentLocale()
+        return numberFromString(this@convertLocalizedStringToFloat)?.floatValue ?: Float.NaN
+    }
+}

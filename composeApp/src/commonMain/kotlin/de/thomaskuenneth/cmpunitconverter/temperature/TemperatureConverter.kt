@@ -4,19 +4,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.thomaskuenneth.cmpunitconverter.ConvertButton
-import de.thomaskuenneth.cmpunitconverter.LearnMoreButton
-import de.thomaskuenneth.cmpunitconverter.NumberTextField
-import de.thomaskuenneth.cmpunitconverter.Result
+import de.thomaskuenneth.cmpunitconverter.*
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -30,8 +25,9 @@ fun TemperatureConverter(
     navigateToSupportingPane: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var temperatureAsString by remember(uiState.temperature) { mutableStateOf(uiState.temperature.convertToLocalizedString()) }
     val convertedValue by viewModel.convertedTemperature.collectAsStateWithLifecycle()
-    val enabled = remember(uiState.temperatureAsString, uiState.sourceUnit, uiState.destinationUnit) {
+    val enabled = remember(temperatureAsString, uiState.sourceUnit, uiState.destinationUnit) {
         !viewModel.getTemperatureAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
@@ -43,11 +39,14 @@ fun TemperatureConverter(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         NumberTextField(
-            value = uiState.temperatureAsString,
+            value = temperatureAsString,
             placeholder = Res.string.placeholder_temperature,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
-            onValueChange = { viewModel.setTemperatureAsString(it) })
+            onValueChange = {
+                temperatureAsString = it
+                viewModel.setTemperature(it)
+            })
         TemperatureButtonRow(
             selected = uiState.sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
         ) { unit: TemperatureUnit ->

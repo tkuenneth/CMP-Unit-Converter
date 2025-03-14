@@ -2,15 +2,14 @@ package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.thomaskuenneth.cmpunitconverter.convertToFloat
-import de.thomaskuenneth.cmpunitconverter.convertToString
+import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class UiState(
     val sourceUnit: DistanceUnit,
     val destinationUnit: DistanceUnit,
-    val distanceAsString: String
+    val distance: Float
 )
 
 class DistanceViewModel(private val repository: DistanceRepository) : ViewModel() {
@@ -19,7 +18,7 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
         UiState(
             sourceUnit = DistanceUnit.Meter,
             destinationUnit = DistanceUnit.Mile,
-            distanceAsString = Float.NaN.convertToString()
+            distance = Float.NaN
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -35,7 +34,7 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
                     current.copy(
                         sourceUnit = sourceUnit,
                         destinationUnit = destinationUnit,
-                        distanceAsString = distance.convertToString()
+                        distance = distance
                     )
                 }
             }
@@ -56,12 +55,15 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
         }
     }
 
-    fun getDistanceAsFloat(): Float = uiState.value.distanceAsString.convertToFloat()
+    fun getDistanceAsFloat(): Float = uiState.value.distance
 
     fun setDistance(value: String) {
-        _uiState.update { it.copy(distanceAsString = value) }
         viewModelScope.launch {
-            repository.setDistance(getDistanceAsFloat())
+            with(value.convertLocalizedStringToFloat()) {
+                if (!isNaN()) {
+                    repository.setDistance(this)
+                }
+            }
         }
     }
 

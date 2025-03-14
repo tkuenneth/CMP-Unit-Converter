@@ -41,25 +41,9 @@ fun NumberTextField(
     )
 }
 
-fun Float.convertToString(): String = if (this.isNaN()) {
-    ""
-} else {
-    if (this % 1 == 0F) {
-        toInt().toString()
-    } else {
-        toString()
-    }
-}
-
-fun String.convertToFloat() = try {
-    toFloat()
-} catch (e: NumberFormatException) {
-    Float.NaN
-}
-
 @Composable
 fun Result(value: Float, unit: StringResource) {
-    val result = if (value.isNaN()) "" else "$value ${
+    val result = if (value.isNaN()) "" else "${value.convertToLocalizedString()} ${
         stringResource(unit)
     }"
     if (result.isNotEmpty()) {

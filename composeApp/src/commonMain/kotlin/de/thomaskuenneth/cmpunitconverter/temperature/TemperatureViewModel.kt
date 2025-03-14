@@ -2,15 +2,14 @@ package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.thomaskuenneth.cmpunitconverter.convertToFloat
-import de.thomaskuenneth.cmpunitconverter.convertToString
+import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class UiState(
     val sourceUnit: TemperatureUnit,
     val destinationUnit: TemperatureUnit,
-    val temperatureAsString: String
+    val temperature: Float
 )
 
 class TemperatureViewModel(private val repository: TemperatureRepository) : ViewModel() {
@@ -19,7 +18,7 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
         UiState(
             sourceUnit = TemperatureUnit.Celsius,
             destinationUnit = TemperatureUnit.Fahrenheit,
-            temperatureAsString = Float.NaN.convertToString()
+            temperature = Float.NaN
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -35,7 +34,7 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
                     current.copy(
                         sourceUnit = sourceUnit,
                         destinationUnit = destinationUnit,
-                        temperatureAsString = temperature.convertToString()
+                        temperature = temperature
                     )
                 }
             }
@@ -56,12 +55,15 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
         }
     }
 
-    fun getTemperatureAsFloat(): Float = uiState.value.temperatureAsString.convertToFloat()
+    fun getTemperatureAsFloat(): Float = uiState.value.temperature
 
-    fun setTemperatureAsString(value: String) {
-        _uiState.update { it.copy(temperatureAsString = value) }
+    fun setTemperature(value: String) {
         viewModelScope.launch {
-            repository.setTemperature(getTemperatureAsFloat())
+            with(value.convertLocalizedStringToFloat()) {
+                if (!isNaN()) {
+                    repository.setTemperature(this)
+                }
+            }
         }
     }
 

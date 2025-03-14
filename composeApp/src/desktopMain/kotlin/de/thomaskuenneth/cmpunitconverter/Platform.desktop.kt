@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.File
+import java.text.NumberFormat
+import java.text.ParseException
 
 actual fun shouldUseScaffold(): Boolean = false
 
@@ -45,3 +47,28 @@ actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
         File(System.getProperty("user.home"), dataStoreFileName(key)).absolutePath
     },
 )
+
+actual fun Float.convertToLocalizedString(digits: Int): String {
+    with(NumberFormat.getInstance()) {
+        isGroupingUsed = true
+        if (digits != -1) {
+            maximumFractionDigits = digits
+        }
+        return try {
+            format(toFloat())
+        } catch (_: IllegalArgumentException) {
+            ""
+        }
+    }
+}
+
+actual fun String.convertLocalizedStringToFloat(): Float {
+    with(NumberFormat.getInstance()) {
+        isGroupingUsed = true
+        return try {
+            parse(this@convertLocalizedStringToFloat)?.toFloat() ?: Float.NaN
+        } catch (_: ParseException) {
+            Float.NaN
+        }
+    }
+}
