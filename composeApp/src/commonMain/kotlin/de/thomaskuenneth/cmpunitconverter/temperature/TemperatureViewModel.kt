@@ -2,6 +2,7 @@ package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.convertToFloat
 import de.thomaskuenneth.cmpunitconverter.convertToString
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -55,13 +56,7 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
         }
     }
 
-    fun getTemperatureAsFloat(): Float = uiState.value.temperatureAsString.let {
-        return try {
-            it.toFloat()
-        } catch (e: NumberFormatException) {
-            Float.NaN
-        }
-    }
+    fun getTemperatureAsFloat(): Float = uiState.value.temperatureAsString.convertToFloat()
 
     fun setTemperatureAsString(value: String) {
         _uiState.update { it.copy(temperatureAsString = value) }

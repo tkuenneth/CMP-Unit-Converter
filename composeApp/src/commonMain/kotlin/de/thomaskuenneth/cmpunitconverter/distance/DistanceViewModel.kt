@@ -2,6 +2,7 @@ package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.convertToFloat
 import de.thomaskuenneth.cmpunitconverter.convertToString
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -55,13 +56,7 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
         }
     }
 
-    fun getDistanceAsFloat(): Float = uiState.value.distanceAsString.let {
-        return try {
-            it.toFloat()
-        } catch (e: NumberFormatException) {
-            Float.NaN
-        }
-    }
+    fun getDistanceAsFloat(): Float = uiState.value.distanceAsString.convertToFloat()
 
     fun setDistance(value: String) {
         _uiState.update { it.copy(distanceAsString = value) }

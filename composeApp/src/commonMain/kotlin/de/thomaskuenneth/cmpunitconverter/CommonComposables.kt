@@ -51,6 +51,12 @@ fun Float.convertToString(): String = if (this.isNaN()) {
     }
 }
 
+fun String.convertToFloat() = try {
+    toFloat()
+} catch (e: NumberFormatException) {
+    Float.NaN
+}
+
 @Composable
 fun Result(value: Float, unit: StringResource) {
     val result = if (value.isNaN()) "" else "$value ${
