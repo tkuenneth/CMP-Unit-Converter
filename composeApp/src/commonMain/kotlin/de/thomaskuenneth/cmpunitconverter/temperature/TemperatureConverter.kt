@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -25,9 +27,15 @@ fun TemperatureConverter(
     navigateToSupportingPane: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var temperatureAsString by remember(uiState.temperature) { mutableStateOf(uiState.temperature.convertToLocalizedString()) }
+    var textFieldValue by remember(uiState.temperature) {
+        mutableStateOf(
+            TextFieldValue(
+                text = uiState.temperature.convertToLocalizedString(), selection = TextRange(Int.MAX_VALUE)
+            )
+        )
+    }
     val convertedValue by viewModel.convertedTemperature.collectAsStateWithLifecycle()
-    val enabled = remember(temperatureAsString, uiState.sourceUnit, uiState.destinationUnit) {
+    val enabled = remember(textFieldValue, uiState.sourceUnit, uiState.destinationUnit) {
         !viewModel.getTemperatureAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
@@ -39,13 +47,13 @@ fun TemperatureConverter(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         NumberTextField(
-            value = temperatureAsString,
+            value = textFieldValue,
             placeholder = Res.string.placeholder_temperature,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = {
-                temperatureAsString = it
-                viewModel.setTemperature(it)
+                textFieldValue = it
+                viewModel.setTemperature(it.text)
             })
         TemperatureButtonRow(
             selected = uiState.sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.convert
@@ -18,20 +19,25 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun NumberTextField(
-    value: String,
+    value: TextFieldValue,
     placeholder: StringResource,
     modifier: Modifier = Modifier,
     keyboardActionCallback: () -> Unit,
-    onValueChange: (String) -> Unit
+    onValueChange: (TextFieldValue) -> Unit
 ) {
     TextField(
         value = value,
-        onValueChange = {
-            onValueChange(it)
-        }, placeholder = {
+        onValueChange = { textFieldValue ->
+            onValueChange(
+                textFieldValue.copy(
+                    text = textFieldValue.text
+                )
+            )
+        },
+        placeholder = {
             Text(text = stringResource(placeholder))
-        }, modifier = modifier,
-        keyboardActions = KeyboardActions(onAny = {
+        },
+        modifier = modifier, keyboardActions = KeyboardActions(onAny = {
             keyboardActionCallback()
         }),
         keyboardOptions = KeyboardOptions(

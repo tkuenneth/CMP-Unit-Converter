@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,9 +28,15 @@ fun DistanceConverter(
     navigateToSupportingPane: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var distanceAsString by remember(uiState.distance) { mutableStateOf(uiState.distance.convertToLocalizedString()) }
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = uiState.distance.convertToLocalizedString(), selection = TextRange(Int.MIN_VALUE)
+            )
+        )
+    }
     val convertedValue by viewModel.convertedDistance.collectAsStateWithLifecycle()
-    val enabled = remember(distanceAsString, uiState.sourceUnit, uiState.destinationUnit) {
+    val enabled = remember(textFieldValue, uiState.sourceUnit, uiState.destinationUnit) {
         !viewModel.getDistanceAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
@@ -40,13 +48,13 @@ fun DistanceConverter(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         NumberTextField(
-            value = distanceAsString,
+            value = textFieldValue,
             placeholder = Res.string.placeholder_distance,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = {
-                distanceAsString = it
-                viewModel.setDistance(it)
+                textFieldValue = it
+                viewModel.setDistance(it.text)
             })
         DistanceButtonRow(
             selected = uiState.sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
