@@ -28,10 +28,10 @@ fun DistanceConverter(
     navigateToSupportingPane: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var textFieldValue by remember {
+    var textFieldValue by remember(uiState.distance) {
         mutableStateOf(
             TextFieldValue(
-                text = uiState.distance.convertToLocalizedString(), selection = TextRange(Int.MIN_VALUE)
+                text = uiState.distance.convertToLocalizedString(), selection = TextRange(Int.MAX_VALUE)
             )
         )
     }
