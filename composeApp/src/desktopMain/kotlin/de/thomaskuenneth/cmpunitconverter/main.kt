@@ -5,10 +5,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
-import androidx.compose.ui.window.FrameWindowScope
-import androidx.compose.ui.window.MenuBar
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.coerceIn
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.app.AboutVisibility
 import de.thomaskuenneth.cmpunitconverter.app.App
@@ -109,6 +109,21 @@ fun FrameWindowScope.CMPUnitConverterMenuBar(
                         showAbout()
                     })
             }
+        }
+    }
+}
+
+@Composable
+fun FrameWindowScope.getCenteredPosition(): WindowPosition = window.locationOnScreen.let { locationOnScreen ->
+    with(LocalDensity.current) {
+        window.size.let { size ->
+            val (width, height) = Pair(size.width.toDp(), size.height.toDp())
+            val (offsetX, offsetY) = Pair(
+                (width - 400.dp) / 2, (height - 300.dp) / 2
+            )
+            WindowPosition.Absolute(
+                x = (locationOnScreen.x.toDp() + offsetX), y = (locationOnScreen.y.toDp() + offsetY)
+            )
         }
     }
 }

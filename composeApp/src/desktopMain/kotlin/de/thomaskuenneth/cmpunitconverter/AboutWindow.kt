@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.DialogWindow
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.*
 import de.thomaskuenneth.cmpunitconverter.app.About
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.about_short
@@ -14,9 +16,11 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun AboutWindow(visible: Boolean, onCloseRequest: () -> Unit) {
-    DialogWindow(
-        visible = visible,
+fun FrameWindowScope.AboutWindow(visible: Boolean, onCloseRequest: () -> Unit) {
+    if (visible) DialogWindow(
+        state = rememberDialogState(
+            position = getCenteredPosition()
+        ),
         onCloseRequest = onCloseRequest,
         icon = painterResource(Res.drawable.app_icon),
         resizable = false,
