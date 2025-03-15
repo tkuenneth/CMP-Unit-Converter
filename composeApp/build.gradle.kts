@@ -156,7 +156,7 @@ compose.desktop {
                 }
             }
             windows {
-//                iconFile.set(project.file("artwork/Souffleur.ico"))
+                iconFile.set(rootProject.file("artwork/app_icon.ico"))
                 menuGroup = "Thomas Kuenneth"
             }
         }
