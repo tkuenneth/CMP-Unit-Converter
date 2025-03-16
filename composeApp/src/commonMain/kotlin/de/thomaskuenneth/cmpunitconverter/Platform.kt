@@ -32,3 +32,5 @@ expect fun getDataStore(key: String): DataStore<Preferences>
 expect fun Float.convertToLocalizedString(digits: Int = 1): String
 
 expect fun String.convertLocalizedStringToFloat(): Float
+
+expect fun openInBrowser(url: String)

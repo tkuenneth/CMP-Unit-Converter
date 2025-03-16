@@ -1,6 +1,9 @@
 package de.thomaskuenneth.cmpunitconverter
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -79,5 +82,15 @@ actual fun String.convertLocalizedStringToFloat(): Float {
         } catch (_: ParseException) {
             Float.NaN
         }
+    }
+}
+
+actual fun openInBrowser(url: String) {
+    try {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW, Uri.parse(url)
+            ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+    } catch (_: ActivityNotFoundException) {
     }
 }

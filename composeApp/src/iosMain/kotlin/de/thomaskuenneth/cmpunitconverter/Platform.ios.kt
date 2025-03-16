@@ -8,6 +8,7 @@ import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.colorScheme
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.*
+import platform.UIKit.UIApplication
 import platform.UIKit.UIDevice
 
 actual fun shouldUseScaffold(): Boolean = true
@@ -59,5 +60,12 @@ actual fun String.convertLocalizedStringToFloat(): Float {
         numberStyle = NSNumberFormatterDecimalStyle
         locale = NSLocale.currentLocale()
         return numberFromString(this@convertLocalizedStringToFloat)?.floatValue ?: Float.NaN
+    }
+}
+
+actual fun openInBrowser(url: String) {
+    NSURL.URLWithString(url)?.let {
+        UIApplication.sharedApplication.openURL(
+            url = it, options = emptyMap<Any?, Any>(), completionHandler = {})
     }
 }
