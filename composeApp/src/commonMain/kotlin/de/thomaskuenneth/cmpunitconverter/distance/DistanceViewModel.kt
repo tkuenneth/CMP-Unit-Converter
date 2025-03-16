@@ -2,6 +2,8 @@ package de.thomaskuenneth.cmpunitconverter.distance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.DistanceSupportingPaneUseCase
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -12,7 +14,12 @@ data class UiState(
     val distance: Float
 )
 
-class DistanceViewModel(private val repository: DistanceRepository) : ViewModel() {
+const val URL_WIKIPEDIA_METER = "https://en.wikipedia.org/wiki/Metre"
+const val URL_WIKIPEDIA_MILE = "https://en.wikipedia.org/wiki/Mile"
+
+class DistanceViewModel(
+    private val repository: DistanceRepository, val supportingPaneUseCase: DistanceSupportingPaneUseCase
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
@@ -37,12 +44,14 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
                         distance = distance
                     )
                 }
+                updateSupportingPaneState(sourceUnit)
             }
         }
     }
 
     fun setSourceUnit(value: DistanceUnit) {
         _uiState.update { it.copy(sourceUnit = value) }
+        updateSupportingPaneState(value)
         viewModelScope.launch {
             repository.setDistanceSourceUnit(value)
         }
@@ -50,6 +59,7 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
 
     fun setDestinationUnit(value: DistanceUnit) {
         _uiState.update { it.copy(destinationUnit = value) }
+        updateSupportingPaneState(value)
         viewModelScope.launch {
             repository.setDistanceDestinationUnit(value)
         }
@@ -88,4 +98,22 @@ class DistanceViewModel(private val repository: DistanceRepository) : ViewModel(
     private fun Float.convertMileToMeter() = this / 0.00062137F
 
     private fun Float.convertMeterToMile() = this * 0.00062137F
+
+    private fun updateSupportingPaneState(unit: DistanceUnit) {
+        supportingPaneUseCase.update(
+            info = when (unit) {
+                DistanceUnit.Meter -> Res.string.meter_info
+
+                DistanceUnit.Mile -> Res.string.mile_info
+            }, lastClicked = when (unit) {
+                DistanceUnit.Meter -> Res.string.meter
+
+                DistanceUnit.Mile -> Res.string.mile
+            }, url = when (unit) {
+                DistanceUnit.Meter -> URL_WIKIPEDIA_METER
+
+                DistanceUnit.Mile -> URL_WIKIPEDIA_MILE
+            }
+        )
+    }
 }

@@ -18,6 +18,7 @@
     <string name="about_short">About</string>
 
     <string name="learn_more">Learn more</string>
+    <string name="read_more_on_wikipedia">Read more on Wikipedia</string>
 
     <string name="temperature">Temperature</string>
     <string name="distance">Distance</string>
@@ -31,11 +32,15 @@
     <!-- temperature -->
     <string name="placeholder_temperature">temperature</string>
     <string name="celsius">°C</string>
+    <string name="celsius_info">The Celsius scale is a temperature scale. Its unit is %1$s.</string>
     <string name="fahrenheit">°F</string>
+    <string name="fahrenheit_info">The Fahrenheit scale is a temperature scale. Its unit is %1$s.</string>
 
     <!-- distance -->
     <string name="placeholder_distance">distance</string>
     <string name="meter">m</string>
+    <string name="meter_info">The metric system is a length measurement system. Its unit is %1$s.</string>
     <string name="mile">mi</string>
+    <string name="mile_info">The imperial system is a length measurement system. Its unit is %1$s.</string>
 
 </resources>

@@ -2,6 +2,8 @@ package de.thomaskuenneth.cmpunitconverter.temperature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.TemperatureSupportingPaneUseCase
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -12,7 +14,12 @@ data class UiState(
     val temperature: Float
 )
 
-class TemperatureViewModel(private val repository: TemperatureRepository) : ViewModel() {
+const val URL_WIKIPEDIA_CELSIUS = "https://en.wikipedia.org/wiki/Celsius"
+const val URL_WIKIPEDIA_FAHRENHEIT = "https://en.wikipedia.org/wiki/Fahrenheit"
+
+class TemperatureViewModel(
+    private val repository: TemperatureRepository, val supportingPaneUseCase: TemperatureSupportingPaneUseCase
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
@@ -37,12 +44,14 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
                         temperature = temperature
                     )
                 }
+                updateSupportingPaneState(sourceUnit)
             }
         }
     }
 
     fun setSourceUnit(value: TemperatureUnit) {
         _uiState.update { it.copy(sourceUnit = value) }
+        updateSupportingPaneState(value)
         viewModelScope.launch {
             repository.setTemperatureSourceUnit(value)
         }
@@ -50,6 +59,7 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
 
     fun setDestinationUnit(value: TemperatureUnit) {
         _uiState.update { it.copy(destinationUnit = value) }
+        updateSupportingPaneState(value)
         viewModelScope.launch {
             repository.setTemperatureDestinationUnit(value)
         }
@@ -88,4 +98,22 @@ class TemperatureViewModel(private val repository: TemperatureRepository) : View
     private fun Float.convertFahrenheitToCelsius() = (this - 32F) / 1.8F
 
     private fun Float.convertCelsiusToFahrenheit() = (this * 1.8F) + 32F
+
+    private fun updateSupportingPaneState(unit: TemperatureUnit) {
+        supportingPaneUseCase.update(
+            info = when (unit) {
+                TemperatureUnit.Celsius -> Res.string.celsius_info
+
+                TemperatureUnit.Fahrenheit -> Res.string.fahrenheit_info
+            }, lastClicked = when (unit) {
+                TemperatureUnit.Celsius -> Res.string.celsius
+
+                TemperatureUnit.Fahrenheit -> Res.string.fahrenheit
+            }, url = when (unit) {
+                TemperatureUnit.Celsius -> URL_WIKIPEDIA_CELSIUS
+
+                TemperatureUnit.Fahrenheit -> URL_WIKIPEDIA_FAHRENHEIT
+            }
+        )
+    }
 }
