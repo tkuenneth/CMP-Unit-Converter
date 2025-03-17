@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,8 +17,6 @@ import de.thomaskuenneth.cmpunitconverter.di.initKoin
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.awt.Desktop
-
-val IS_MACOS = platformName.lowercase().contains("mac os x")
 
 fun main() = application {
     initKoin {}
@@ -68,7 +65,7 @@ fun FrameWindowScope.CMPUnitConverterMenuBar(
 ) {
     val backHandlerState by backHandlerState.collectAsStateWithLifecycle()
     MenuBar {
-        if (!IS_MACOS) {
+        if (operatingSystem != OperatingSystem.MacOS) {
             Menu(text = stringResource(Res.string.file)) {
                 Item(
                     text = stringResource(Res.string.settings), onClick = showSettings
@@ -102,7 +99,7 @@ fun FrameWindowScope.CMPUnitConverterMenuBar(
                     backHandlerState.onBack()
                 })
         }
-        if (!IS_MACOS) {
+        if (operatingSystem != OperatingSystem.MacOS) {
             Menu(text = stringResource(Res.string.help)) {
                 Item(
                     text = stringResource(Res.string.about), onClick = {

@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.awt.Desktop
 import java.io.File
-import java.net.URI
 import java.text.NumberFormat
 import java.text.ParseException
 
@@ -75,10 +73,4 @@ actual fun String.convertLocalizedStringToFloat(): Float {
     }
 }
 
-actual fun openInBrowser(url: String) {
-    with(Desktop.getDesktop()) {
-        if (isSupported(Desktop.Action.BROWSE)) {
-            browse(URI.create(url))
-        }
-    }
-}
+actual fun openInBrowser(url: String) = browse(url)
