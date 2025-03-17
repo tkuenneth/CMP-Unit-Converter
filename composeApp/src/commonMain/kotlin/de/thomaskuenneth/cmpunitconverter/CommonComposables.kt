@@ -36,7 +36,7 @@ fun NumberTextField(
         onValueChange = { textFieldValue ->
             onValueChange(
                 textFieldValue.copy(
-                    text = textFieldValue.text
+                    text = textFieldValue.text.filter { it.isDigit() || it == '.' || it == ',' }
                 )
             )
         },
