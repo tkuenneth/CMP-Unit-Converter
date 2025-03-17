@@ -44,7 +44,7 @@ actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
 
 actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
     producePath = {
-        File(System.getProperty("user.home"), dataStoreFileName(key)).absolutePath
+        File(getConfigurationDir(), dataStoreFileName(key)).absolutePath
     },
 )
 

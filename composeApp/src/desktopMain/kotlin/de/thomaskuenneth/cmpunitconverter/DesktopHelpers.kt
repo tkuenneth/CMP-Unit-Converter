@@ -2,6 +2,7 @@ package de.thomaskuenneth.cmpunitconverter
 
 import java.awt.Desktop
 import java.awt.desktop.PreferencesHandler
+import java.io.File
 import java.net.URI
 
 enum class OperatingSystem {
@@ -19,6 +20,14 @@ val operatingSystem = platformName.lowercase().let { platformName ->
         OperatingSystem.Unknown
     }
 }
+
+fun getConfigurationDir(): File = File(
+    System.getProperty("user.home") ?: ".", when (operatingSystem) {
+        OperatingSystem.MacOS -> "Library/Application Support/CMPUnitConverter"
+        OperatingSystem.Windows -> "AppData\\Roaming\\CMPUnitConverter"
+        else -> ".CMPUnitConverter"
+    }
+).also { it.mkdirs() }
 
 fun Desktop.installPreferencesHandler(handler: PreferencesHandler) {
     if (isSupported(Desktop.Action.APP_PREFERENCES)) {
