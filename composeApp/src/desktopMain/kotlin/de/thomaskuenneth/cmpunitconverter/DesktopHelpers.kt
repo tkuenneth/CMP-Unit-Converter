@@ -25,8 +25,8 @@ fun getConfigurationDir(): File {
     val home = System.getProperty("user.home") ?: "."
     val dir = File(
         home, when (operatingSystem) {
-            OperatingSystem.MacOS -> "Library/Application Support/CMPUnitConverter"
-            OperatingSystem.Windows -> "AppData\\Roaming\\CMPUnitConverter"
+            OperatingSystem.MacOS -> "Library${File.separator}Application Support${File.separator}CMPUnitConverter"
+            OperatingSystem.Windows -> "AppData${File.separator}Roaming${File.separator}CMPUnitConverter"
             else -> ".CMPUnitConverter"
         }
     )
