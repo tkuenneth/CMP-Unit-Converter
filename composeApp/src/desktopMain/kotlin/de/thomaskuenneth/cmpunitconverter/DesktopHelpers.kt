@@ -21,13 +21,22 @@ val operatingSystem = platformName.lowercase().let { platformName ->
     }
 }
 
-fun getConfigurationDir(): File = File(
-    System.getProperty("user.home") ?: ".", when (operatingSystem) {
-        OperatingSystem.MacOS -> "Library/Application Support/CMPUnitConverter"
-        OperatingSystem.Windows -> "AppData\\Roaming\\CMPUnitConverter"
-        else -> ".CMPUnitConverter"
+fun getConfigurationDir(): File {
+    val home = System.getProperty("user.home") ?: "."
+    val dir = File(
+        home, when (operatingSystem) {
+            OperatingSystem.MacOS -> "Library/Application Support/CMPUnitConverter"
+            OperatingSystem.Windows -> "AppData\\Roaming\\CMPUnitConverter"
+            else -> ".CMPUnitConverter"
+        }
+    )
+    dir.mkdirs()
+    return if (dir.exists() && dir.isDirectory && dir.canRead() && dir.canWrite()) {
+        dir
+    } else {
+        File(home)
     }
-).also { it.mkdirs() }
+}
 
 fun Desktop.installPreferencesHandler(handler: PreferencesHandler) {
     if (isSupported(Desktop.Action.APP_PREFERENCES)) {
