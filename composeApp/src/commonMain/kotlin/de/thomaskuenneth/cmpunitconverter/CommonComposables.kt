@@ -2,6 +2,8 @@ package de.thomaskuenneth.cmpunitconverter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -15,10 +17,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.convert
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.learn_more
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.read_more_on_wikipedia
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.distance.DistanceUnit
+import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureUnit
+import kotlinx.datetime.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -55,9 +57,7 @@ fun NumberTextField(
 
 @Composable
 fun Result(value: Float, unit: StringResource) {
-    val result = if (value.isNaN()) "" else "${value.convertToLocalizedString()} ${
-        stringResource(unit)
-    }"
+    val result = value.convertToStringWithUnit(unit)
     if (result.isNotEmpty()) {
         Text(
             text = result, style = MaterialTheme.typography.headlineSmall
@@ -91,6 +91,7 @@ fun ConvertButton(
 fun ThreePaneScaffoldScope.SupportingPane(
     info: StringResource = Res.string.learn_more,
     unit: StringResource = Res.string.learn_more,
+    elements: List<HistoryEntity> = emptyList(),
     readMoreOnWikipedia: () -> Unit = {}
 ) {
     AnimatedPane {
@@ -110,6 +111,57 @@ fun ThreePaneScaffoldScope.SupportingPane(
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().weight(1F)
+            ) {
+                items(elements) { element ->
+                    Column {
+                        Text(
+                            text = stringResource(
+                                Res.string.conversion_summary,
+                                element.sourceValue.convertToStringWithUnit(element.sourceUnit.toUnit()),
+                                element.destinationValue.convertToStringWithUnit(
+                                    element.destinationUnit.toUnit()
+                                )
+                            ),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text =
+                                Instant.fromEpochMilliseconds(element.timestamp)
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()).format(LocalDateTime.Format {
+                                        chars("Converted on ")
+                                        year()
+                                        chars("-")
+                                        monthNumber()
+                                        chars("-")
+                                        dayOfMonth()
+                                        chars(" at ")
+                                        hour()
+                                        chars(":")
+                                        minute()
+                                    }),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                }
+            }
         }
     }
+}
+
+@Composable
+fun Float.convertToStringWithUnit(unit: StringResource): String = if (isNaN()) "" else "${convertToLocalizedString()} ${
+    stringResource(unit)
+}"
+
+fun String.toUnit(): StringResource = when (this) {
+    TemperatureUnit.Celsius.name -> Res.string.celsius
+    TemperatureUnit.Fahrenheit.name -> Res.string.fahrenheit
+    DistanceUnit.Meter.name -> Res.string.meter
+    DistanceUnit.Mile.name -> Res.string.mile
+    else -> Res.string.celsius
 }

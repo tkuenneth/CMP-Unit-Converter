@@ -81,15 +81,26 @@ class TemperatureViewModel(
     val convertedTemperature: StateFlow<Float> = _convertedTemperature.asStateFlow()
 
     fun convert() {
-        getTemperatureAsFloat().let { value ->
+        getTemperatureAsFloat().let { sourceValue ->
             val valueInCelsius = when (uiState.value.sourceUnit) {
-                TemperatureUnit.Celsius -> value
-                TemperatureUnit.Fahrenheit -> value.convertFahrenheitToCelsius()
+                TemperatureUnit.Celsius -> sourceValue
+                TemperatureUnit.Fahrenheit -> sourceValue.convertFahrenheitToCelsius()
             }
-            _convertedTemperature.update {
-                when (uiState.value.destinationUnit) {
-                    TemperatureUnit.Celsius -> valueInCelsius
-                    TemperatureUnit.Fahrenheit -> valueInCelsius.convertCelsiusToFahrenheit()
+            with(uiState.value) {
+                _convertedTemperature.update {
+                    when (destinationUnit) {
+                        TemperatureUnit.Celsius -> valueInCelsius
+                        TemperatureUnit.Fahrenheit -> valueInCelsius.convertCelsiusToFahrenheit()
+                    }.also { destinationValue ->
+                        viewModelScope.launch {
+                            supportingPaneUseCase.persist(
+                                sourceUnit = sourceUnit,
+                                sourceValue = sourceValue,
+                                destinationUnit = destinationUnit,
+                                destinationValue = destinationValue
+                            )
+                        }
+                    }
                 }
             }
         }

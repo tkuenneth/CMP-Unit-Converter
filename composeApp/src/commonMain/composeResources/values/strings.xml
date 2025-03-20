@@ -19,6 +19,7 @@
 
     <string name="learn_more">Learn more</string>
     <string name="read_more_on_wikipedia">Read more on Wikipedia</string>
+    <string name="conversion_summary">%1$s is equivalent to %2$s</string>
 
     <string name="temperature">Temperature</string>
     <string name="distance">Distance</string>

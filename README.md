@@ -6,6 +6,7 @@ This repo contains a real-world example of a *Compose Multiplatform* app. *CMP U
 - [Compose Material 3 Adaptive](https://developer.android.com/jetpack/androidx/releases/compose-material3-adaptive)
 - [DataStore](https://developer.android.com/kotlin/multiplatform/datastore)
 - [Navigation Compose](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-navigation-routing.html)
+- [Room](https://developer.android.com/kotlin/multiplatform/room)
 
 Things worth noting:
 

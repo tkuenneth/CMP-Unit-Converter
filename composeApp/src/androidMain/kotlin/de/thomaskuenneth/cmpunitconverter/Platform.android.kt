@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.isDark
 import org.koin.java.KoinJavaComponent.inject
@@ -93,4 +95,12 @@ actual fun openInBrowser(url: String) {
             ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
     } catch (_: ActivityNotFoundException) {
     }
+}
+
+actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    val dbFile = context.getDatabasePath("CMPUnitConverter.db")
+    return Room.databaseBuilder<AppDatabase>(
+        context = context,
+        name = dbFile.absolutePath
+    )
 }

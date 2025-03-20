@@ -5,6 +5,7 @@
 -keep class kotlinx.serialization.** { *; }
 -keep class org.jetbrains.skia.** { *; }
 -keep class org.jetbrains.skiko.** { *; }
+-keep class * extends androidx.room.RoomDatabase { <init>(); }
 
 -dontnote kotlinx.serialization.AnnotationsKt
 -dontnote kotlinx.serialization.SerializationKt

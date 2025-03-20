@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.room.RoomDatabase
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import okio.Path.Companion.toPath
 
@@ -34,3 +35,5 @@ expect fun Float.convertToLocalizedString(digits: Int = 1): String
 expect fun String.convertLocalizedStringToFloat(): Float
 
 expect fun openInBrowser(url: String)
+
+expect fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase>

@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 group = "de.thomaskuenneth.cmpunitconverter"
@@ -82,6 +84,12 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewModel)
+
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
+
+            implementation(libs.kotlinx.datetime)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -118,7 +126,21 @@ android {
 }
 
 dependencies {
+    listOf(
+        "kspAndroid",
+        "kspIosArm64",
+        "kspIosX64",
+        "kspIosSimulatorArm64",
+        "kspDesktop"
+    ).forEach {
+        add(it, libs.androidx.room.compiler)
+    }
+
     debugImplementation(compose.uiTooling)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 val macExtraPlistKeys: String

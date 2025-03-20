@@ -81,15 +81,26 @@ class DistanceViewModel(
     val convertedDistance: StateFlow<Float> = _convertedDistance.asStateFlow()
 
     fun convert() {
-        getDistanceAsFloat().let { value ->
-            val valueInCelsius = when (uiState.value.sourceUnit) {
-                DistanceUnit.Meter -> value
-                DistanceUnit.Mile -> value.convertMileToMeter()
+        getDistanceAsFloat().let { sourceValue ->
+            val valueInMeter = when (uiState.value.sourceUnit) {
+                DistanceUnit.Meter -> sourceValue
+                DistanceUnit.Mile -> sourceValue.convertMileToMeter()
             }
-            _convertedDistance.update {
-                when (uiState.value.destinationUnit) {
-                    DistanceUnit.Meter -> valueInCelsius
-                    DistanceUnit.Mile -> valueInCelsius.convertMeterToMile()
+            with(uiState.value) {
+                _convertedDistance.update {
+                    when (destinationUnit) {
+                        DistanceUnit.Meter -> valueInMeter
+                        DistanceUnit.Mile -> valueInMeter.convertMeterToMile()
+                    }.also { destinationValue ->
+                        viewModelScope.launch {
+                            supportingPaneUseCase.persist(
+                                sourceUnit = sourceUnit,
+                                sourceValue = sourceValue,
+                                destinationUnit = destinationUnit,
+                                destinationValue = destinationValue
+                            )
+                        }
+                    }
                 }
             }
         }

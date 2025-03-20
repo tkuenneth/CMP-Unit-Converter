@@ -104,12 +104,7 @@ fun SingleChoiceSegmentedButtonRowScope.SegmentedTemperatureButton(
             index = unit.ordinal, count = TemperatureUnit.entries.size
         ), label = {
             Text(
-                text = stringResource(
-                    when (unit) {
-                        TemperatureUnit.Celsius -> Res.string.celsius
-                        TemperatureUnit.Fahrenheit -> Res.string.fahrenheit
-                    }
-                )
+                text = stringResource(unit.name.toUnit())
             )
         })
 }

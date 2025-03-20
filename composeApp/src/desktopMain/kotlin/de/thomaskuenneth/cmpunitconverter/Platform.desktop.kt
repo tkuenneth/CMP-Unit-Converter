@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.colorScheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,3 +76,11 @@ actual fun String.convertLocalizedStringToFloat(): Float {
 }
 
 actual fun openInBrowser(url: String) = browse(url)
+
+actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    with(File(getConfigurationDir(), "CMPUnitConverter.db")) {
+        return Room.databaseBuilder<AppDatabase>(
+            name = absolutePath
+        )
+    }
+}
