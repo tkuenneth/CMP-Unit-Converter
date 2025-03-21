@@ -20,8 +20,7 @@ fun TemperatureConverterScreen(
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     SupportingPaneScaffold(
-        directive = navigator.scaffoldDirective,
-        mainPane = {
+        directive = navigator.scaffoldDirective, mainPane = {
             TemperatureConverter(
                 viewModel = viewModel,
                 scrollBehavior = scrollBehavior,
@@ -29,17 +28,15 @@ fun TemperatureConverterScreen(
             ) {
                 navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
             }
-        },
-        supportingPane = {
+        }, supportingPane = {
             with(viewModel.supportingPaneUseCase) {
                 val uiState by stateFlow.collectAsStateWithLifecycle()
                 SupportingPane(
-                    info = uiState.current.info,
-                    unit = uiState.current.unit,
-                    elements = uiState.elements
-                ) { openInBrowser() }
+                    uiState = uiState,
+                    readMoreOnWikipedia = ::openInBrowser,
+                    clearConversionsHistory = ::clearConversionsHistory
+                )
             }
-        },
-        value = navigator.scaffoldValue
+        }, value = navigator.scaffoldValue
     )
 }

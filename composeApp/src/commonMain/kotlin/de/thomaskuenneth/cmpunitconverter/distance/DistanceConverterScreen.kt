@@ -29,15 +29,14 @@ fun DistanceConverterScreen(
             ) {
                 navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
             }
-        },
-        supportingPane = {
+        }, supportingPane = {
             with(viewModel.supportingPaneUseCase) {
                 val uiState by stateFlow.collectAsStateWithLifecycle()
                 SupportingPane(
-                    info = uiState.current.info,
-                    unit = uiState.current.unit,
-                    uiState.elements
-                ) { openInBrowser() }
+                    uiState = uiState,
+                    readMoreOnWikipedia = ::openInBrowser,
+                    clearConversionsHistory = ::clearConversionsHistory
+                )
             }
         },
         value = navigator.scaffoldValue

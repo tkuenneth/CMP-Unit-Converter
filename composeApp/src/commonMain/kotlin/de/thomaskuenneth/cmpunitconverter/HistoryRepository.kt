@@ -22,4 +22,8 @@ class HistoryRepository {
             )
         )
     }
+
+    suspend fun clearConversionsHistory() {
+        historyDao.deleteAll()
+    }
 }

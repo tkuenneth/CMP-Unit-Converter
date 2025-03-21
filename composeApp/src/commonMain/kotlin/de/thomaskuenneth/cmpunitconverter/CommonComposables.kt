@@ -2,10 +2,12 @@ package de.thomaskuenneth.cmpunitconverter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -126,65 +128,89 @@ fun UnitsAndScalesButtonRow(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ThreePaneScaffoldScope.SupportingPane(
-    info: StringResource = Res.string.learn_more,
-    unit: StringResource = Res.string.learn_more,
-    elements: List<HistoryEntity> = emptyList(),
-    readMoreOnWikipedia: () -> Unit = {}
+    uiState: SupportingPaneUseCase.UiState,
+    readMoreOnWikipedia: () -> Unit = {},
+    clearConversionsHistory: () -> Unit = {}
 ) {
-    AnimatedPane {
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(all = 24.dp)
-        ) {
-            Text(
-                text = stringResource(info, stringResource(unit)),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            TextButton(onClick = readMoreOnWikipedia) {
+    with(uiState) {
+        AnimatedPane {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(horizontal = 24.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = stringResource(Res.string.read_more_on_wikipedia),
+                    text = stringResource(current.info, stringResource(current.unit)),
                     color = MaterialTheme.colorScheme.onBackground
                 )
-            }
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth().weight(1F)
-            ) {
-                items(elements) { element ->
-                    Column {
-                        Text(
-                            text = stringResource(
-                                Res.string.conversion_summary,
-                                element.sourceValue.convertToStringWithUnit(element.sourceUnit.unit),
-                                element.destinationValue.convertToStringWithUnit(
-                                    element.destinationUnit.unit
-                                )
-                            ),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text =
-                                Instant.fromEpochMilliseconds(element.timestamp)
-                                    .toLocalDateTime(TimeZone.currentSystemDefault()).format(LocalDateTime.Format {
-                                        chars("Converted on ")
-                                        year()
-                                        chars("-")
-                                        monthNumber()
-                                        chars("-")
-                                        dayOfMonth()
-                                        chars(" at ")
-                                        hour()
-                                        chars(":")
-                                        minute()
-                                    }),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onBackground
+                OutlinedButton(onClick = readMoreOnWikipedia) {
+                    Text(
+                        text = stringResource(Res.string.read_more_on_wikipedia)
+                    )
+                }
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = stringResource(Res.string.conversions_history),
+                        modifier = Modifier.weight(1F),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    OutlinedIconButton(onClick = clearConversionsHistory, enabled = elements.isNotEmpty()) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = stringResource(Res.string.clear_history)
                         )
                     }
                 }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    if (elements.isNotEmpty()) {
+                        elements.forEach { element ->
+                            Column {
+                                Text(
+                                    text = stringResource(
+                                        Res.string.conversion_summary,
+                                        element.sourceValue.convertToStringWithUnit(element.sourceUnit.unit),
+                                        element.destinationValue.convertToStringWithUnit(
+                                            element.destinationUnit.unit
+                                        )
+                                    ),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                                Text(
+                                    text =
+                                        Instant.fromEpochMilliseconds(element.timestamp)
+                                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                                            .format(LocalDateTime.Format {
+                                                chars("Converted on ")
+                                                year()
+                                                chars("-")
+                                                monthNumber()
+                                                chars("-")
+                                                dayOfMonth()
+                                                chars(" at ")
+                                                hour()
+                                                chars(":")
+                                                minute()
+                                            }),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
+                    } else {
+                        Text(
+                            text = stringResource(Res.string.no_conversions),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

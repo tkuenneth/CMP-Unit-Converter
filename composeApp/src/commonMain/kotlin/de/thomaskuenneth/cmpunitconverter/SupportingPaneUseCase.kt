@@ -54,6 +54,12 @@ abstract class SupportingPaneUseCase(private val entries: List<UnitsAndScales>, 
         openInBrowser(mutableStateFlow.value.current.url)
     }
 
+    fun clearConversionsHistory() {
+        scope.launch {
+            historyRepository.clearConversionsHistory()
+        }
+    }
+
     suspend fun persist(
         sourceUnit: UnitsAndScales,
         sourceValue: Float,

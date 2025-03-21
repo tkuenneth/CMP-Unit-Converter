@@ -33,11 +33,11 @@ interface HistoryDao {
     @Insert
     suspend fun insert(item: HistoryEntity)
 
-    @Query("SELECT count(*) FROM HistoryEntity")
-    suspend fun count(): Int
-
     @Query("SELECT * FROM HistoryEntity")
     fun getAllAsFlow(): Flow<List<HistoryEntity>>
+
+    @Query("DELETE FROM HistoryEntity")
+    suspend fun deleteAll()
 }
 
 @Entity

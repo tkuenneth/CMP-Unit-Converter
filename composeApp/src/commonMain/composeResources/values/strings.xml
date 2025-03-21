@@ -20,6 +20,7 @@
     <string name="learn_more">Learn more</string>
     <string name="read_more_on_wikipedia">Read more on Wikipedia</string>
     <string name="conversion_summary">%1$s is equivalent to %2$s</string>
+    <string name="clear_history">Clear history</string>
 
     <string name="temperature">Temperature</string>
     <string name="distance">Distance</string>
@@ -29,6 +30,8 @@
 
     <string name="convert">Convert</string>
     <string name="template">%1$s %2$s</string>
+    <string name="conversions_history">Conversions history</string>
+    <string name="no_conversions">No conversions yet</string>
 
     <!-- temperature -->
     <string name="placeholder_temperature">temperature</string>
