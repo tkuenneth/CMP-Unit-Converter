@@ -41,14 +41,13 @@ class TemperatureViewModel(
                         temperature = temperature
                     )
                 }
-                updateSupportingPaneState(sourceUnit)
             }
         }
     }
 
     fun setSourceUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(sourceUnit = value) }
-        updateSupportingPaneState(value)
+        supportingPaneUseCase.update(value)
         viewModelScope.launch {
             repository.setTemperatureSourceUnit(value)
         }
@@ -56,7 +55,7 @@ class TemperatureViewModel(
 
     fun setDestinationUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(destinationUnit = value) }
-        updateSupportingPaneState(value)
+        supportingPaneUseCase.update(value)
         viewModelScope.launch {
             repository.setTemperatureDestinationUnit(value)
         }
@@ -108,8 +107,4 @@ class TemperatureViewModel(
     private fun Float.convertFahrenheitToCelsius() = (this - 32F) / 1.8F
 
     private fun Float.convertCelsiusToFahrenheit() = (this * 1.8F) + 32F
-
-    private fun updateSupportingPaneState(unit: UnitsAndScales) {
-        supportingPaneUseCase.update(unit)
-    }
 }

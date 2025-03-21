@@ -14,9 +14,6 @@ data class UiState(
     val distance: Float
 )
 
-const val URL_WIKIPEDIA_METER = "https://en.wikipedia.org/wiki/Metre"
-const val URL_WIKIPEDIA_MILE = "https://en.wikipedia.org/wiki/Mile"
-
 class DistanceViewModel(
     private val repository: DistanceRepository, val supportingPaneUseCase: DistanceSupportingPaneUseCase
 ) : ViewModel() {
@@ -44,14 +41,13 @@ class DistanceViewModel(
                         distance = distance
                     )
                 }
-                updateSupportingPaneState(sourceUnit)
             }
         }
     }
 
     fun setSourceUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(sourceUnit = value) }
-        updateSupportingPaneState(value)
+        supportingPaneUseCase.update(value)
         viewModelScope.launch {
             repository.setDistanceSourceUnit(value)
         }
@@ -59,7 +55,7 @@ class DistanceViewModel(
 
     fun setDestinationUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(destinationUnit = value) }
-        updateSupportingPaneState(value)
+        supportingPaneUseCase.update(value)
         viewModelScope.launch {
             repository.setDistanceDestinationUnit(value)
         }
@@ -111,8 +107,4 @@ class DistanceViewModel(
     private fun Float.convertMileToMeter() = this / 0.00062137F
 
     private fun Float.convertMeterToMile() = this * 0.00062137F
-
-    private fun updateSupportingPaneState(unit: UnitsAndScales) {
-        supportingPaneUseCase.update(unit)
-    }
 }
