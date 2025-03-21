@@ -22,6 +22,7 @@ fun main() = application {
     initKoin {}
     Window(
         onCloseRequest = ::exitApplication,
+        state = rememberWindowState(width = 840.dp, height = 600.dp),
         title = stringResource(Res.string.app_name),
         icon = painterResource(Res.drawable.app_icon),
     ) {
