@@ -1,22 +1,22 @@
 package de.thomaskuenneth.cmpunitconverter.temperature
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.*
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,56 +55,27 @@ fun TemperatureConverter(
                 textFieldValue = it
                 viewModel.setTemperature(it.text)
             })
-        TemperatureButtonRow(
-            selected = uiState.sourceUnit, label = Res.string.from, modifier = Modifier.padding(bottom = 16.dp)
-        ) { unit: TemperatureUnit ->
+        UnitsAndScalesButtonRow(
+            entries = TemperatureUnit,
+            selected = uiState.sourceUnit,
+            label = Res.string.from,
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) { unit: UnitsAndScales ->
             viewModel.setSourceUnit(unit)
         }
-        TemperatureButtonRow(
-            selected = uiState.destinationUnit, label = Res.string.to, modifier = Modifier.padding(bottom = 16.dp)
-        ) { unit: TemperatureUnit ->
+        UnitsAndScalesButtonRow(
+            entries = TemperatureUnit,
+            selected = uiState.destinationUnit,
+            label = Res.string.to,
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) { unit: UnitsAndScales ->
             viewModel.setDestinationUnit(unit)
         }
         ConvertButton(enabled = enabled) { viewModel.convert() }
         Result(
             value = convertedValue,
-            unit = if (uiState.destinationUnit == TemperatureUnit.Celsius) Res.string.celsius else Res.string.fahrenheit
+            unit = if (uiState.destinationUnit == UnitsAndScales.Celsius) Res.string.celsius else Res.string.fahrenheit
         )
         LearnMoreButton(visible = shouldShowButton, onClick = navigateToSupportingPane)
     }
-}
-
-@Composable
-fun TemperatureButtonRow(
-    selected: TemperatureUnit, label: StringResource, modifier: Modifier = Modifier, onClick: (TemperatureUnit) -> Unit
-) {
-    Row {
-        Text(
-            modifier = Modifier.alignByBaseline().width(80.dp),
-            text = stringResource(label),
-            textAlign = TextAlign.Start
-        )
-        SingleChoiceSegmentedButtonRow(modifier = modifier.alignByBaseline()) {
-            SegmentedTemperatureButton(
-                selected = selected == TemperatureUnit.Celsius, unit = TemperatureUnit.Celsius, onClick = onClick
-            )
-            SegmentedTemperatureButton(
-                selected = selected == TemperatureUnit.Fahrenheit, unit = TemperatureUnit.Fahrenheit, onClick = onClick
-            )
-        }
-    }
-}
-
-@Composable
-fun SingleChoiceSegmentedButtonRowScope.SegmentedTemperatureButton(
-    selected: Boolean, unit: TemperatureUnit, onClick: (TemperatureUnit) -> Unit
-) {
-    SegmentedButton(
-        selected = selected, onClick = { onClick(unit) }, shape = SegmentedButtonDefaults.itemShape(
-            index = unit.ordinal, count = TemperatureUnit.entries.size
-        ), label = {
-            Text(
-                text = stringResource(unit.name.toUnit())
-            )
-        })
 }

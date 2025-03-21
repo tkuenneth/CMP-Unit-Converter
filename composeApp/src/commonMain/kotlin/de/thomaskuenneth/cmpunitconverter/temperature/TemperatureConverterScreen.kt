@@ -34,8 +34,8 @@ fun TemperatureConverterScreen(
             with(viewModel.supportingPaneUseCase) {
                 val uiState by stateFlow.collectAsStateWithLifecycle()
                 SupportingPane(
-                    info = uiState.info,
-                    unit = uiState.lastClicked,
+                    info = uiState.current.info,
+                    unit = uiState.current.unit,
                     elements = uiState.elements
                 ) { openInBrowser() }
             }

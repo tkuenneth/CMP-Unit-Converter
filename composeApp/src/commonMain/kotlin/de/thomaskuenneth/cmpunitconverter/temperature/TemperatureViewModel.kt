@@ -3,19 +3,16 @@ package de.thomaskuenneth.cmpunitconverter.temperature
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.thomaskuenneth.cmpunitconverter.TemperatureSupportingPaneUseCase
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class UiState(
-    val sourceUnit: TemperatureUnit,
-    val destinationUnit: TemperatureUnit,
+    val sourceUnit: UnitsAndScales,
+    val destinationUnit: UnitsAndScales,
     val temperature: Float
 )
-
-const val URL_WIKIPEDIA_CELSIUS = "https://en.wikipedia.org/wiki/Celsius"
-const val URL_WIKIPEDIA_FAHRENHEIT = "https://en.wikipedia.org/wiki/Fahrenheit"
 
 class TemperatureViewModel(
     private val repository: TemperatureRepository, val supportingPaneUseCase: TemperatureSupportingPaneUseCase
@@ -23,8 +20,8 @@ class TemperatureViewModel(
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
-            sourceUnit = TemperatureUnit.Celsius,
-            destinationUnit = TemperatureUnit.Fahrenheit,
+            sourceUnit = UnitsAndScales.Celsius,
+            destinationUnit = UnitsAndScales.Fahrenheit,
             temperature = Float.NaN
         )
     )
@@ -49,7 +46,7 @@ class TemperatureViewModel(
         }
     }
 
-    fun setSourceUnit(value: TemperatureUnit) {
+    fun setSourceUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(sourceUnit = value) }
         updateSupportingPaneState(value)
         viewModelScope.launch {
@@ -57,7 +54,7 @@ class TemperatureViewModel(
         }
     }
 
-    fun setDestinationUnit(value: TemperatureUnit) {
+    fun setDestinationUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(destinationUnit = value) }
         updateSupportingPaneState(value)
         viewModelScope.launch {
@@ -83,14 +80,16 @@ class TemperatureViewModel(
     fun convert() {
         getTemperatureAsFloat().let { sourceValue ->
             val valueInCelsius = when (uiState.value.sourceUnit) {
-                TemperatureUnit.Celsius -> sourceValue
-                TemperatureUnit.Fahrenheit -> sourceValue.convertFahrenheitToCelsius()
+                UnitsAndScales.Celsius -> sourceValue
+                UnitsAndScales.Fahrenheit -> sourceValue.convertFahrenheitToCelsius()
+                else -> Float.NaN
             }
             with(uiState.value) {
                 _convertedTemperature.update {
                     when (destinationUnit) {
-                        TemperatureUnit.Celsius -> valueInCelsius
-                        TemperatureUnit.Fahrenheit -> valueInCelsius.convertCelsiusToFahrenheit()
+                        UnitsAndScales.Celsius -> valueInCelsius
+                        UnitsAndScales.Fahrenheit -> valueInCelsius.convertCelsiusToFahrenheit()
+                        else -> Float.NaN
                     }.also { destinationValue ->
                         viewModelScope.launch {
                             supportingPaneUseCase.persist(
@@ -110,21 +109,7 @@ class TemperatureViewModel(
 
     private fun Float.convertCelsiusToFahrenheit() = (this * 1.8F) + 32F
 
-    private fun updateSupportingPaneState(unit: TemperatureUnit) {
-        supportingPaneUseCase.update(
-            info = when (unit) {
-                TemperatureUnit.Celsius -> Res.string.celsius_info
-
-                TemperatureUnit.Fahrenheit -> Res.string.fahrenheit_info
-            }, lastClicked = when (unit) {
-                TemperatureUnit.Celsius -> Res.string.celsius
-
-                TemperatureUnit.Fahrenheit -> Res.string.fahrenheit
-            }, url = when (unit) {
-                TemperatureUnit.Celsius -> URL_WIKIPEDIA_CELSIUS
-
-                TemperatureUnit.Fahrenheit -> URL_WIKIPEDIA_FAHRENHEIT
-            }
-        )
+    private fun updateSupportingPaneState(unit: UnitsAndScales) {
+        supportingPaneUseCase.update(unit)
     }
 }

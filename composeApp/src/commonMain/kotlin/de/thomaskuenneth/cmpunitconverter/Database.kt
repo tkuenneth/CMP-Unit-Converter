@@ -43,9 +43,9 @@ interface HistoryDao {
 @Entity
 data class HistoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val sourceUnit: String,
+    val sourceUnit: UnitsAndScales,
     val sourceValue: Float,
-    val destinationUnit: String,
+    val destinationUnit: UnitsAndScales,
     val destinationValue: Float,
     val timestamp: Long
 )

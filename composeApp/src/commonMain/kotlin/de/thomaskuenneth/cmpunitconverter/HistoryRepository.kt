@@ -9,12 +9,14 @@ class HistoryRepository {
 
     val elements = historyDao.getAllAsFlow().map { it }
 
-    suspend fun persist(sourceUnit: Enum<*>, sourceValue: Float, destinationUnit: Enum<*>, destinationValue: Float) {
+    suspend fun persist(
+        sourceUnit: UnitsAndScales, sourceValue: Float, destinationUnit: UnitsAndScales, destinationValue: Float
+    ) {
         historyDao.insert(
             HistoryEntity(
-                sourceUnit = sourceUnit.name,
+                sourceUnit = sourceUnit,
                 sourceValue = sourceValue,
-                destinationUnit = destinationUnit.name,
+                destinationUnit = destinationUnit,
                 destinationValue = destinationValue,
                 timestamp = Clock.System.now().toEpochMilliseconds()
             )

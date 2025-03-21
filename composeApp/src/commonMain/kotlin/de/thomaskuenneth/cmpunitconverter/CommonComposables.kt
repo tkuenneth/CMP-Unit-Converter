@@ -16,10 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
-import de.thomaskuenneth.cmpunitconverter.distance.DistanceUnit
-import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureUnit
 import kotlinx.datetime.*
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -86,6 +85,44 @@ fun ConvertButton(
     }
 }
 
+@Composable
+fun SingleChoiceSegmentedButtonRowScope.SegmentedUnitsAndScalesButton(
+    selected: Boolean, unit: UnitsAndScales, entries: List<UnitsAndScales>, onClick: (UnitsAndScales) -> Unit
+) {
+    SegmentedButton(
+        selected = selected, onClick = { onClick(unit) }, shape = SegmentedButtonDefaults.itemShape(
+            index = entries.indexOf(unit), count = entries.size
+        ), label = {
+            Text(
+                text = stringResource(unit.unit)
+            )
+        })
+}
+
+@Composable
+fun UnitsAndScalesButtonRow(
+    entries: List<UnitsAndScales>,
+    selected: UnitsAndScales,
+    label: StringResource,
+    modifier: Modifier = Modifier,
+    onClick: (UnitsAndScales) -> Unit
+) {
+    Row {
+        Text(
+            modifier = Modifier.alignByBaseline().width(80.dp),
+            text = stringResource(label),
+            textAlign = TextAlign.Start
+        )
+        SingleChoiceSegmentedButtonRow(modifier = modifier.alignByBaseline()) {
+            entries.forEach { unit ->
+                SegmentedUnitsAndScalesButton(
+                    selected = selected == unit, unit = unit, entries = entries, onClick = onClick
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ThreePaneScaffoldScope.SupportingPane(
@@ -120,9 +157,9 @@ fun ThreePaneScaffoldScope.SupportingPane(
                         Text(
                             text = stringResource(
                                 Res.string.conversion_summary,
-                                element.sourceValue.convertToStringWithUnit(element.sourceUnit.toUnit()),
+                                element.sourceValue.convertToStringWithUnit(element.sourceUnit.unit),
                                 element.destinationValue.convertToStringWithUnit(
-                                    element.destinationUnit.toUnit()
+                                    element.destinationUnit.unit
                                 )
                             ),
                             style = MaterialTheme.typography.bodyLarge,
@@ -157,11 +194,3 @@ fun ThreePaneScaffoldScope.SupportingPane(
 fun Float.convertToStringWithUnit(unit: StringResource): String = if (isNaN()) "" else "${convertToLocalizedString()} ${
     stringResource(unit)
 }"
-
-fun String.toUnit(): StringResource = when (this) {
-    TemperatureUnit.Celsius.name -> Res.string.celsius
-    TemperatureUnit.Fahrenheit.name -> Res.string.fahrenheit
-    DistanceUnit.Meter.name -> Res.string.meter
-    DistanceUnit.Mile.name -> Res.string.mile
-    else -> Res.string.celsius
-}

@@ -3,14 +3,14 @@ package de.thomaskuenneth.cmpunitconverter.distance
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.thomaskuenneth.cmpunitconverter.DistanceSupportingPaneUseCase
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class UiState(
-    val sourceUnit: DistanceUnit,
-    val destinationUnit: DistanceUnit,
+    val sourceUnit: UnitsAndScales,
+    val destinationUnit: UnitsAndScales,
     val distance: Float
 )
 
@@ -23,8 +23,8 @@ class DistanceViewModel(
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
-            sourceUnit = DistanceUnit.Meter,
-            destinationUnit = DistanceUnit.Mile,
+            sourceUnit = UnitsAndScales.Meter,
+            destinationUnit = UnitsAndScales.Mile,
             distance = Float.NaN
         )
     )
@@ -49,7 +49,7 @@ class DistanceViewModel(
         }
     }
 
-    fun setSourceUnit(value: DistanceUnit) {
+    fun setSourceUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(sourceUnit = value) }
         updateSupportingPaneState(value)
         viewModelScope.launch {
@@ -57,7 +57,7 @@ class DistanceViewModel(
         }
     }
 
-    fun setDestinationUnit(value: DistanceUnit) {
+    fun setDestinationUnit(value: UnitsAndScales) {
         _uiState.update { it.copy(destinationUnit = value) }
         updateSupportingPaneState(value)
         viewModelScope.launch {
@@ -83,14 +83,16 @@ class DistanceViewModel(
     fun convert() {
         getDistanceAsFloat().let { sourceValue ->
             val valueInMeter = when (uiState.value.sourceUnit) {
-                DistanceUnit.Meter -> sourceValue
-                DistanceUnit.Mile -> sourceValue.convertMileToMeter()
+                UnitsAndScales.Meter -> sourceValue
+                UnitsAndScales.Mile -> sourceValue.convertMileToMeter()
+                else -> Float.NaN
             }
             with(uiState.value) {
                 _convertedDistance.update {
                     when (destinationUnit) {
-                        DistanceUnit.Meter -> valueInMeter
-                        DistanceUnit.Mile -> valueInMeter.convertMeterToMile()
+                        UnitsAndScales.Meter -> valueInMeter
+                        UnitsAndScales.Mile -> valueInMeter.convertMeterToMile()
+                        else -> Float.NaN
                     }.also { destinationValue ->
                         viewModelScope.launch {
                             supportingPaneUseCase.persist(
@@ -110,21 +112,7 @@ class DistanceViewModel(
 
     private fun Float.convertMeterToMile() = this * 0.00062137F
 
-    private fun updateSupportingPaneState(unit: DistanceUnit) {
-        supportingPaneUseCase.update(
-            info = when (unit) {
-                DistanceUnit.Meter -> Res.string.meter_info
-
-                DistanceUnit.Mile -> Res.string.mile_info
-            }, lastClicked = when (unit) {
-                DistanceUnit.Meter -> Res.string.meter
-
-                DistanceUnit.Mile -> Res.string.mile
-            }, url = when (unit) {
-                DistanceUnit.Meter -> URL_WIKIPEDIA_METER
-
-                DistanceUnit.Mile -> URL_WIKIPEDIA_MILE
-            }
-        )
+    private fun updateSupportingPaneState(unit: UnitsAndScales) {
+        supportingPaneUseCase.update(unit)
     }
 }
