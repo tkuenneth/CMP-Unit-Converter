@@ -8,17 +8,17 @@ class DistanceViewModel(
     repository: DistanceRepository, val supportingPaneUseCase: DistanceSupportingPaneUseCase
 ) : AbstractViewModel(repository = repository, supportingPaneUseCase = supportingPaneUseCase) {
 
-    fun convert() {
+    override fun convert() {
         convertSourceUnitToDestinationUnit(sourceUnitToBaseUnit = { sourceValue, unit ->
             when (unit) {
                 UnitsAndScales.Meter -> sourceValue
                 UnitsAndScales.Mile -> sourceValue.convertMileToMeter()
                 else -> Float.NaN
             }
-        }, baseUnitToDestinationUnit = { valueInMeter, destinationUnit ->
+        }, baseUnitToDestinationUnit = { destinationValue, destinationUnit ->
             when (destinationUnit) {
-                UnitsAndScales.Meter -> valueInMeter
-                UnitsAndScales.Mile -> valueInMeter.convertMeterToMile()
+                UnitsAndScales.Meter -> destinationValue
+                UnitsAndScales.Mile -> destinationValue.convertMeterToMile()
                 else -> Float.NaN
             }
         })

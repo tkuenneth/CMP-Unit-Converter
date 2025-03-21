@@ -18,7 +18,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.*
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DistanceConverter(

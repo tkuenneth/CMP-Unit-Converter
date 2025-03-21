@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class AbstractViewModel(
-    private val repository: BaseRepository, private val supportingPaneUseCase: DistanceSupportingPaneUseCase
+    private val repository: BaseRepository, private val supportingPaneUseCase: SupportingPaneUseCase
 ) : ViewModel() {
 
     data class UiState(
@@ -69,6 +69,8 @@ abstract class AbstractViewModel(
             }
         }
     }
+
+    abstract fun convert()
 
     protected fun convertSourceUnitToDestinationUnit(
         sourceUnitToBaseUnit: (Float, UnitsAndScales) -> Float,

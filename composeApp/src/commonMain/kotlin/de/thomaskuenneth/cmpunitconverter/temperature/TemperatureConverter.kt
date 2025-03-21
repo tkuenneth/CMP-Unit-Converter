@@ -27,16 +27,16 @@ fun TemperatureConverter(
     navigateToSupportingPane: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var textFieldValue by remember(uiState.temperature) {
+    var textFieldValue by remember(uiState.value) {
         mutableStateOf(
             TextFieldValue(
-                text = uiState.temperature.convertToLocalizedString(), selection = TextRange(Int.MAX_VALUE)
+                text = uiState.value.convertToLocalizedString(), selection = TextRange(Int.MAX_VALUE)
             )
         )
     }
-    val convertedValue by viewModel.convertedTemperature.collectAsStateWithLifecycle()
+    val convertedValue by viewModel.convertedValue.collectAsStateWithLifecycle()
     val enabled = remember(textFieldValue, uiState.sourceUnit, uiState.destinationUnit) {
-        !viewModel.getTemperatureAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
+        !viewModel.getValueAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
         modifier = Modifier
@@ -53,7 +53,7 @@ fun TemperatureConverter(
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = {
                 textFieldValue = it
-                viewModel.setTemperature(it.text)
+                viewModel.setValue(it.text)
             })
         UnitsAndScalesButtonRow(
             entries = TemperatureUnit,
