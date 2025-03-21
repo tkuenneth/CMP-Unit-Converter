@@ -28,16 +28,16 @@ fun DistanceConverter(
     navigateToSupportingPane: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var textFieldValue by remember(uiState.distance) {
+    var textFieldValue by remember(uiState.value) {
         mutableStateOf(
             TextFieldValue(
-                text = uiState.distance.convertToLocalizedString(), selection = TextRange(Int.MAX_VALUE)
+                text = uiState.value.convertToLocalizedString(), selection = TextRange(Int.MAX_VALUE)
             )
         )
     }
-    val convertedValue by viewModel.convertedDistance.collectAsStateWithLifecycle()
+    val convertedValue by viewModel.convertedValue.collectAsStateWithLifecycle()
     val enabled = remember(textFieldValue, uiState.sourceUnit, uiState.destinationUnit) {
-        !viewModel.getDistanceAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
+        !viewModel.getValueAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
         modifier = Modifier
@@ -54,7 +54,7 @@ fun DistanceConverter(
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = {
                 textFieldValue = it
-                viewModel.setDistance(it.text)
+                viewModel.setValue(it.text)
             })
         UnitsAndScalesButtonRow(
             entries = DistanceUnit,

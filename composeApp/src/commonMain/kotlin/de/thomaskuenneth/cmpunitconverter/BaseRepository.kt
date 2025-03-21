@@ -1,44 +1,18 @@
 package de.thomaskuenneth.cmpunitconverter
 
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
-abstract class BaseRepository(key: String) {
+interface BaseRepository {
 
-    private val dataStore = getDataStore(key)
+    val sourceUnit: Flow<UnitsAndScales>
 
-    protected fun getFlow(key: String, defaultValue: String): Flow<String> {
-        return dataStore.data.map {
-            it[stringPreferencesKey(key)] ?: defaultValue
-        }.flowOn(Dispatchers.IO)
-    }
+    suspend fun setSourceUnit(value: UnitsAndScales)
 
-    protected fun getFlow(key: String, defaultValue: Float): Flow<Float> {
-        return dataStore.data.map {
-            it[floatPreferencesKey(key)] ?: defaultValue
-        }.flowOn(Dispatchers.IO)
-    }
+    val destinationUnit: Flow<UnitsAndScales>
 
-    protected suspend fun update(key: String, value: String) {
-        return withContext(Dispatchers.IO) {
-            dataStore.edit {
-                it[stringPreferencesKey(key)] = value
-            }
-        }
-    }
+    suspend fun setDestinationUnit(value: UnitsAndScales)
 
-    protected suspend fun update(key: String, value: Float) {
-        return withContext(Dispatchers.IO) {
-            dataStore.edit {
-                it[floatPreferencesKey(key)] = value
-            }
-        }
-    }
+    val value: Flow<Float>
+
+    suspend fun setValue(value: Float)
 }

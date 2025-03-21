@@ -1,7 +1,6 @@
 package de.thomaskuenneth.cmpunitconverter.app
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import de.thomaskuenneth.cmpunitconverter.BaseRepository
+import de.thomaskuenneth.cmpunitconverter.AbstractBaseRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -13,7 +12,7 @@ enum class ColorSchemeMode {
 private const val KEY = "app"
 private const val KEY_COLOR_SCHEME_MODE = "keyColorSchemeMode"
 
-class AppRepository : BaseRepository(KEY) {
+class AppRepository : AbstractBaseRepository(KEY) {
 
     val colorSchemeMode: Flow<ColorSchemeMode>
         get() = getFlow(KEY_COLOR_SCHEME_MODE, ColorSchemeMode.System)

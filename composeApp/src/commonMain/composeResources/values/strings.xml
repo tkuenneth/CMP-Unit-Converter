@@ -33,6 +33,9 @@
     <string name="conversions_history">Conversions history</string>
     <string name="no_conversions">No conversions yet</string>
 
+    <!-- undefined -->
+    <string name="undefined">??</string>
+
     <!-- temperature -->
     <string name="placeholder_temperature">temperature</string>
     <string name="celsius">°C</string>

@@ -1,107 +1,27 @@
 package de.thomaskuenneth.cmpunitconverter.distance
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.AbstractViewModel
 import de.thomaskuenneth.cmpunitconverter.DistanceSupportingPaneUseCase
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
-import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-
-data class UiState(
-    val sourceUnit: UnitsAndScales,
-    val destinationUnit: UnitsAndScales,
-    val distance: Float
-)
 
 class DistanceViewModel(
-    private val repository: DistanceRepository, val supportingPaneUseCase: DistanceSupportingPaneUseCase
-) : ViewModel() {
-
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
-        UiState(
-            sourceUnit = UnitsAndScales.Meter,
-            destinationUnit = UnitsAndScales.Mile,
-            distance = Float.NaN
-        )
-    )
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            combineTransform(
-                repository.sourceUnit, repository.destinationUnit, repository.distance
-            ) { sourceUnit, destinationUnit, distance ->
-                emit(Triple(sourceUnit, destinationUnit, distance))
-            }.collect { (sourceUnit, destinationUnit, distance) ->
-                _uiState.update { current ->
-                    current.copy(
-                        sourceUnit = sourceUnit,
-                        destinationUnit = destinationUnit,
-                        distance = distance
-                    )
-                }
-            }
-        }
-    }
-
-    fun setSourceUnit(value: UnitsAndScales) {
-        _uiState.update { it.copy(sourceUnit = value) }
-        supportingPaneUseCase.update(value)
-        viewModelScope.launch {
-            repository.setDistanceSourceUnit(value)
-        }
-    }
-
-    fun setDestinationUnit(value: UnitsAndScales) {
-        _uiState.update { it.copy(destinationUnit = value) }
-        supportingPaneUseCase.update(value)
-        viewModelScope.launch {
-            repository.setDistanceDestinationUnit(value)
-        }
-    }
-
-    fun getDistanceAsFloat(): Float = uiState.value.distance
-
-    fun setDistance(value: String) {
-        viewModelScope.launch {
-            with(value.convertLocalizedStringToFloat()) {
-                if (!isNaN()) {
-                    repository.setDistance(this)
-                }
-            }
-        }
-    }
-
-    private val _convertedDistance: MutableStateFlow<Float> = MutableStateFlow(Float.NaN)
-    val convertedDistance: StateFlow<Float> = _convertedDistance.asStateFlow()
+    repository: DistanceRepository, val supportingPaneUseCase: DistanceSupportingPaneUseCase
+) : AbstractViewModel(repository = repository, supportingPaneUseCase = supportingPaneUseCase) {
 
     fun convert() {
-        getDistanceAsFloat().let { sourceValue ->
-            val valueInMeter = when (uiState.value.sourceUnit) {
+        convertSourceUnitToDestinationUnit(sourceUnitToBaseUnit = { sourceValue, unit ->
+            when (unit) {
                 UnitsAndScales.Meter -> sourceValue
                 UnitsAndScales.Mile -> sourceValue.convertMileToMeter()
                 else -> Float.NaN
             }
-            with(uiState.value) {
-                _convertedDistance.update {
-                    when (destinationUnit) {
-                        UnitsAndScales.Meter -> valueInMeter
-                        UnitsAndScales.Mile -> valueInMeter.convertMeterToMile()
-                        else -> Float.NaN
-                    }.also { destinationValue ->
-                        viewModelScope.launch {
-                            supportingPaneUseCase.persist(
-                                sourceUnit = sourceUnit,
-                                sourceValue = sourceValue,
-                                destinationUnit = destinationUnit,
-                                destinationValue = destinationValue
-                            )
-                        }
-                    }
-                }
+        }, baseUnitToDestinationUnit = { valueInMeter, destinationUnit ->
+            when (destinationUnit) {
+                UnitsAndScales.Meter -> valueInMeter
+                UnitsAndScales.Mile -> valueInMeter.convertMeterToMile()
+                else -> Float.NaN
             }
-        }
+        })
     }
 
     private fun Float.convertMileToMeter() = this / 0.00062137F

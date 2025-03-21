@@ -1,5 +1,6 @@
 package de.thomaskuenneth.cmpunitconverter.distance
 
+import de.thomaskuenneth.cmpunitconverter.AbstractBaseRepository
 import de.thomaskuenneth.cmpunitconverter.BaseRepository
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import kotlinx.coroutines.flow.Flow
@@ -10,26 +11,26 @@ private const val KEY_DISTANCE_SOURCE_UNIT = "keyDistanceSourceUnit"
 private const val KEY_DISTANCE_DESTINATION_UNIT = "keyDistanceDestinationUnit"
 private const val KEY_DISTANCE_AS_FLOAT = "keyDistanceAsFloat"
 
-class DistanceRepository : BaseRepository(KEY) {
+class DistanceRepository : AbstractBaseRepository(KEY), BaseRepository {
 
-    val sourceUnit: Flow<UnitsAndScales>
+    override val sourceUnit: Flow<UnitsAndScales>
         get() = getFlow(KEY_DISTANCE_SOURCE_UNIT, UnitsAndScales.Meter)
 
-    suspend fun setDistanceSourceUnit(value: UnitsAndScales) {
+    override suspend fun setSourceUnit(value: UnitsAndScales) {
         update(key = KEY_DISTANCE_SOURCE_UNIT, value = value.name)
     }
 
-    val destinationUnit: Flow<UnitsAndScales>
+    override val destinationUnit: Flow<UnitsAndScales>
         get() = getFlow(KEY_DISTANCE_DESTINATION_UNIT, UnitsAndScales.Meter)
 
-    suspend fun setDistanceDestinationUnit(value: UnitsAndScales) {
+    override suspend fun setDestinationUnit(value: UnitsAndScales) {
         update(key = KEY_DISTANCE_DESTINATION_UNIT, value = value.name)
     }
 
-    val distance: Flow<Float>
+    override val value: Flow<Float>
         get() = getFlow(KEY_DISTANCE_AS_FLOAT, Float.NaN)
 
-    suspend fun setDistance(value: Float) {
+    override suspend fun setValue(value: Float) {
         update(key = KEY_DISTANCE_AS_FLOAT, value = value)
     }
 
