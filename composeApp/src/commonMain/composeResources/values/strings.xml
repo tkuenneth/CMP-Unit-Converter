@@ -42,6 +42,8 @@
     <string name="celsius_info">The Celsius scale is a temperature scale. Its unit is %1$s.</string>
     <string name="fahrenheit">°F</string>
     <string name="fahrenheit_info">The Fahrenheit scale is a temperature scale. Its unit is %1$s.</string>
+    <string name="kelvin">K</string>
+    <string name="kelvin_info">The Kelvin scale is an absolute temperature scale. Its unit is %1$s.</string>
 
     <!-- distance -->
     <string name="placeholder_distance">distance</string>

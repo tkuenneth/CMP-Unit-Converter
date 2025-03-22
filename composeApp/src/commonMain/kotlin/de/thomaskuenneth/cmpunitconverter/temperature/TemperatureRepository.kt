@@ -4,7 +4,6 @@ import de.thomaskuenneth.cmpunitconverter.AbstractBaseRepository
 import de.thomaskuenneth.cmpunitconverter.ConverterRepository
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 private const val KEY = "temperature"
 private const val KEY_TEMPERATURE_SOURCE_UNIT = "keyTemperatureSourceUnit"

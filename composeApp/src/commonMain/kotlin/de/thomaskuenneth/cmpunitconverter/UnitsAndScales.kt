@@ -15,6 +15,9 @@ enum class UnitsAndScales(val unit: StringResource, val info: StringResource, va
     Fahrenheit(
         unit = Res.string.fahrenheit, info = Res.string.fahrenheit_info, url = "https://en.wikipedia.org/wiki/Fahrenheit"
     ),
+    Kelvin(
+        unit = Res.string.kelvin, info = Res.string.kelvin_info, url = "https://en.wikipedia.org/wiki/Kelvin"
+    ),
 
     // Distance
     Meter(
@@ -25,6 +28,6 @@ enum class UnitsAndScales(val unit: StringResource, val info: StringResource, va
     ),
 }
 
-val TemperatureUnit = listOf(UnitsAndScales.Celsius, UnitsAndScales.Fahrenheit)
+val TemperatureUnit = listOf(UnitsAndScales.Celsius, UnitsAndScales.Fahrenheit, UnitsAndScales.Kelvin)
 
 val DistanceUnit = listOf(UnitsAndScales.Meter, UnitsAndScales.Mile)
