@@ -1,12 +1,19 @@
 package de.thomaskuenneth.cmpunitconverter.temperature
 
-import de.thomaskuenneth.cmpunitconverter.AbstractViewModel
-import de.thomaskuenneth.cmpunitconverter.TemperatureSupportingPaneUseCase
+import de.thomaskuenneth.cmpunitconverter.AbstractConverterViewModel
+import de.thomaskuenneth.cmpunitconverter.TemperatureUnit
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.placeholder_temperature
 
 class TemperatureViewModel(
-    repository: TemperatureRepository, val supportingPaneUseCase: TemperatureSupportingPaneUseCase
-) : AbstractViewModel(repository = repository, supportingPaneUseCase = supportingPaneUseCase) {
+    repository: TemperatureRepository, supportingPaneUseCase: TemperatureSupportingPaneUseCase
+) : AbstractConverterViewModel(
+    entries = TemperatureUnit,
+    placeholder = Res.string.placeholder_temperature,
+    repository = repository,
+    supportingPaneUseCase = supportingPaneUseCase
+) {
 
     override fun convert() {
         convertSourceUnitToDestinationUnit(sourceUnitToBaseUnit = { sourceValue, unit ->

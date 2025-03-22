@@ -7,18 +7,30 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 
-abstract class AbstractViewModel(
-    private val repository: BaseRepository, private val supportingPaneUseCase: SupportingPaneUseCase
+abstract class AbstractConverterViewModel(
+    entries: List<UnitsAndScales>,
+    placeholder: StringResource,
+    private val repository: ConverterRepository,
+    val supportingPaneUseCase: AbstractSupportingPaneUseCase
 ) : ViewModel() {
 
     data class UiState(
-        val sourceUnit: UnitsAndScales, val destinationUnit: UnitsAndScales, val value: Float
+        val sourceUnit: UnitsAndScales,
+        val destinationUnit: UnitsAndScales,
+        val value: Float,
+        val entries: List<UnitsAndScales>,
+        val placeholder: StringResource
     )
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
-            sourceUnit = UnitsAndScales.Undefined, destinationUnit = UnitsAndScales.Undefined, value = Float.NaN
+            sourceUnit = UnitsAndScales.Undefined,
+            destinationUnit = UnitsAndScales.Undefined,
+            value = Float.NaN,
+            entries = entries,
+            placeholder = placeholder
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -43,6 +55,7 @@ abstract class AbstractViewModel(
     }
 
     fun setSourceUnit(value: UnitsAndScales) {
+        _convertedValue.update { Float.NaN }
         _uiState.update { it.copy(sourceUnit = value) }
         supportingPaneUseCase.update(value)
         viewModelScope.launch {
@@ -51,6 +64,7 @@ abstract class AbstractViewModel(
     }
 
     fun setDestinationUnit(value: UnitsAndScales) {
+        _convertedValue.update { Float.NaN }
         _uiState.update { it.copy(destinationUnit = value) }
         supportingPaneUseCase.update(value)
         viewModelScope.launch {
@@ -63,7 +77,7 @@ abstract class AbstractViewModel(
     fun setValue(value: String) {
         viewModelScope.launch {
             with(value.convertLocalizedStringToFloat()) {
-                if (!isNaN()) {
+                if (!isNaN() || value.isEmpty()) {
                     repository.setValue(this)
                 }
             }

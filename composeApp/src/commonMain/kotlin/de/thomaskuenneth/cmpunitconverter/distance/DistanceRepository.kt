@@ -1,7 +1,7 @@
 package de.thomaskuenneth.cmpunitconverter.distance
 
 import de.thomaskuenneth.cmpunitconverter.AbstractBaseRepository
-import de.thomaskuenneth.cmpunitconverter.BaseRepository
+import de.thomaskuenneth.cmpunitconverter.ConverterRepository
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,7 +11,7 @@ private const val KEY_DISTANCE_SOURCE_UNIT = "keyDistanceSourceUnit"
 private const val KEY_DISTANCE_DESTINATION_UNIT = "keyDistanceDestinationUnit"
 private const val KEY_DISTANCE_AS_FLOAT = "keyDistanceAsFloat"
 
-class DistanceRepository : AbstractBaseRepository(KEY), BaseRepository {
+class DistanceRepository : AbstractBaseRepository(KEY), ConverterRepository {
 
     override val sourceUnit: Flow<UnitsAndScales>
         get() = getFlow(KEY_DISTANCE_SOURCE_UNIT, UnitsAndScales.Meter)

@@ -2,7 +2,7 @@ package de.thomaskuenneth.cmpunitconverter
 
 import kotlinx.coroutines.flow.Flow
 
-interface BaseRepository {
+interface ConverterRepository {
 
     val sourceUnit: Flow<UnitsAndScales>
 

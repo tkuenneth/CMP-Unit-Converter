@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmpunitconverter.distance
+package de.thomaskuenneth.cmpunitconverter.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,12 +16,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.*
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.from
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.to
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DistanceConverter(
-    viewModel: DistanceViewModel,
+fun Converter(
+    viewModel: AbstractConverterViewModel,
     scrollBehavior: TopAppBarScrollBehavior,
     shouldShowButton: Boolean,
     navigateToSupportingPane: () -> Unit
@@ -48,7 +50,7 @@ fun DistanceConverter(
     ) {
         NumberTextField(
             value = textFieldValue,
-            placeholder = Res.string.placeholder_distance,
+            placeholder = uiState.placeholder,
             modifier = Modifier.padding(bottom = 16.dp),
             keyboardActionCallback = { viewModel.convert() },
             onValueChange = {
@@ -56,7 +58,7 @@ fun DistanceConverter(
                 viewModel.setValue(it.text)
             })
         UnitsAndScalesButtonRow(
-            entries = DistanceUnit,
+            entries = uiState.entries,
             selected = uiState.sourceUnit,
             label = Res.string.from,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -64,7 +66,7 @@ fun DistanceConverter(
             viewModel.setSourceUnit(unit)
         }
         UnitsAndScalesButtonRow(
-            entries = DistanceUnit,
+            entries = uiState.entries,
             selected = uiState.destinationUnit,
             label = Res.string.to,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -72,9 +74,9 @@ fun DistanceConverter(
             viewModel.setDestinationUnit(unit)
         }
         ConvertButton(enabled = enabled) { viewModel.convert() }
-        Result(
+        ResultWithUnit(
             value = convertedValue,
-            unit = if (uiState.destinationUnit == UnitsAndScales.Meter) Res.string.meter else Res.string.mile
+            unit = uiState.destinationUnit
         )
         LearnMoreButton(visible = shouldShowButton, onClick = navigateToSupportingPane)
     }

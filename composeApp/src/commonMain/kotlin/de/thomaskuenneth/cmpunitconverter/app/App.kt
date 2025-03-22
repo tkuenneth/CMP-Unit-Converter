@@ -17,9 +17,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
+import de.thomaskuenneth.cmpunitconverter.composables.ConverterScreen
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
-import de.thomaskuenneth.cmpunitconverter.distance.DistanceConverterScreen
-import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureConverterScreen
+import de.thomaskuenneth.cmpunitconverter.distance.DistanceViewModel
+import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
@@ -84,16 +85,16 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                 startDestination = uiState.currentDestination.name
             ) {
                 composable(route = AppDestinations.Temperature.name) {
-                    TemperatureConverterScreen(
+                    ConverterScreen(
                         navigator = threePaneScaffoldNavigator,
-                        viewModel = koinViewModel(),
+                        viewModel = koinViewModel<TemperatureViewModel>(),
                         scrollBehavior = scrollBehavior
                     )
                 }
                 composable(route = AppDestinations.Distance.name) {
-                    DistanceConverterScreen(
+                    ConverterScreen(
                         navigator = threePaneScaffoldNavigator,
-                        viewModel = koinViewModel(),
+                        viewModel = koinViewModel<DistanceViewModel>(),
                         scrollBehavior = scrollBehavior
                     )
                 }

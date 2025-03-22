@@ -1,10 +1,8 @@
-package de.thomaskuenneth.cmpunitconverter
+package de.thomaskuenneth.cmpunitconverter.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -15,120 +13,16 @@ import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import de.thomaskuenneth.cmpunitconverter.AbstractSupportingPaneUseCase
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import kotlinx.datetime.*
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-
-
-@Composable
-fun NumberTextField(
-    value: TextFieldValue,
-    placeholder: StringResource,
-    modifier: Modifier = Modifier,
-    keyboardActionCallback: () -> Unit,
-    onValueChange: (TextFieldValue) -> Unit
-) {
-    TextField(
-        value = value,
-        onValueChange = { textFieldValue ->
-            onValueChange(
-                textFieldValue.copy(
-                    text = textFieldValue.text.filter { it.isDigit() || it == '.' || it == ',' }
-                )
-            )
-        },
-        placeholder = {
-            Text(text = stringResource(placeholder))
-        },
-        modifier = modifier, keyboardActions = KeyboardActions(onAny = {
-            keyboardActionCallback()
-        }),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
-        ),
-        singleLine = true
-    )
-}
-
-@Composable
-fun Result(value: Float, unit: StringResource) {
-    val result = value.convertToStringWithUnit(unit)
-    if (result.isNotEmpty()) {
-        Text(
-            text = result, style = MaterialTheme.typography.headlineSmall
-        )
-    }
-}
-
-@Composable
-fun LearnMoreButton(visible: Boolean, onClick: () -> Unit) {
-    if (visible) {
-        TextButton(onClick = onClick) {
-            Text(text = stringResource(Res.string.learn_more))
-        }
-    }
-}
-
-@Composable
-fun ConvertButton(
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    Button(
-        onClick = onClick, enabled = enabled, modifier = Modifier.padding(bottom = 16.dp)
-    ) {
-        Text(text = stringResource(Res.string.convert))
-    }
-}
-
-@Composable
-fun SingleChoiceSegmentedButtonRowScope.SegmentedUnitsAndScalesButton(
-    selected: Boolean, unit: UnitsAndScales, entries: List<UnitsAndScales>, onClick: (UnitsAndScales) -> Unit
-) {
-    SegmentedButton(
-        selected = selected, onClick = { onClick(unit) }, shape = SegmentedButtonDefaults.itemShape(
-            index = entries.indexOf(unit), count = entries.size
-        ), label = {
-            Text(
-                text = stringResource(unit.unit)
-            )
-        })
-}
-
-@Composable
-fun UnitsAndScalesButtonRow(
-    entries: List<UnitsAndScales>,
-    selected: UnitsAndScales,
-    label: StringResource,
-    modifier: Modifier = Modifier,
-    onClick: (UnitsAndScales) -> Unit
-) {
-    Row {
-        Text(
-            modifier = Modifier.alignByBaseline().width(80.dp),
-            text = stringResource(label),
-            textAlign = TextAlign.Start
-        )
-        SingleChoiceSegmentedButtonRow(modifier = modifier.alignByBaseline()) {
-            entries.forEach { unit ->
-                SegmentedUnitsAndScalesButton(
-                    selected = selected == unit, unit = unit, entries = entries, onClick = onClick
-                )
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ThreePaneScaffoldScope.SupportingPane(
-    uiState: SupportingPaneUseCase.UiState,
+    uiState: AbstractSupportingPaneUseCase.UiState,
     readMoreOnWikipedia: () -> Unit = {},
     clearConversionsHistory: () -> Unit = {}
 ) {
@@ -215,8 +109,3 @@ fun ThreePaneScaffoldScope.SupportingPane(
         }
     }
 }
-
-@Composable
-fun Float.convertToStringWithUnit(unit: StringResource): String = if (isNaN()) "" else "${convertToLocalizedString()} ${
-    stringResource(unit)
-}"

@@ -1,12 +1,19 @@
 package de.thomaskuenneth.cmpunitconverter.distance
 
-import de.thomaskuenneth.cmpunitconverter.AbstractViewModel
-import de.thomaskuenneth.cmpunitconverter.DistanceSupportingPaneUseCase
+import de.thomaskuenneth.cmpunitconverter.AbstractConverterViewModel
+import de.thomaskuenneth.cmpunitconverter.DistanceUnit
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.placeholder_distance
 
 class DistanceViewModel(
-    repository: DistanceRepository, val supportingPaneUseCase: DistanceSupportingPaneUseCase
-) : AbstractViewModel(repository = repository, supportingPaneUseCase = supportingPaneUseCase) {
+    repository: DistanceRepository, supportingPaneUseCase: DistanceSupportingPaneUseCase
+) : AbstractConverterViewModel(
+    entries = DistanceUnit,
+    placeholder = Res.string.placeholder_distance,
+    repository = repository,
+    supportingPaneUseCase = supportingPaneUseCase
+) {
 
     override fun convert() {
         convertSourceUnitToDestinationUnit(sourceUnitToBaseUnit = { sourceValue, unit ->

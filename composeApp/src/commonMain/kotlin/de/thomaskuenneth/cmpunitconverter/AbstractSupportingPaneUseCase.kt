@@ -10,12 +10,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class TemperatureSupportingPaneUseCase :
-    SupportingPaneUseCase(entries = TemperatureUnit, initial = UnitsAndScales.Celsius)
-
-class DistanceSupportingPaneUseCase : SupportingPaneUseCase(entries = DistanceUnit, initial = UnitsAndScales.Meter)
-
-abstract class SupportingPaneUseCase(private val entries: List<UnitsAndScales>, initial: UnitsAndScales) :
+abstract class AbstractSupportingPaneUseCase(private val entries: List<UnitsAndScales>, initial: UnitsAndScales) :
     KoinComponent {
 
     data class UiState(

@@ -1,4 +1,4 @@
-package de.thomaskuenneth.cmpunitconverter.distance
+package de.thomaskuenneth.cmpunitconverter.composables
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -10,19 +10,18 @@ import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.thomaskuenneth.cmpunitconverter.SupportingPane
+import de.thomaskuenneth.cmpunitconverter.AbstractConverterViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun DistanceConverterScreen(
+fun ConverterScreen(
     navigator: ThreePaneScaffoldNavigator<Nothing>,
-    viewModel: DistanceViewModel,
+    viewModel: AbstractConverterViewModel,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     SupportingPaneScaffold(
-        directive = navigator.scaffoldDirective,
-        mainPane = {
-            DistanceConverter(
+        directive = navigator.scaffoldDirective, mainPane = {
+            Converter(
                 viewModel = viewModel,
                 scrollBehavior = scrollBehavior,
                 shouldShowButton = navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
@@ -38,7 +37,6 @@ fun DistanceConverterScreen(
                     clearConversionsHistory = ::clearConversionsHistory
                 )
             }
-        },
-        value = navigator.scaffoldValue
+        }, value = navigator.scaffoldValue
     )
 }

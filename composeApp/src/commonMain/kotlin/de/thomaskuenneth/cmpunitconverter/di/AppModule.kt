@@ -6,8 +6,8 @@ import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureRepository
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureViewModel
 import de.thomaskuenneth.cmpunitconverter.app.AppRepository
 import de.thomaskuenneth.cmpunitconverter.app.AppViewModel
-import de.thomaskuenneth.cmpunitconverter.TemperatureSupportingPaneUseCase
-import de.thomaskuenneth.cmpunitconverter.DistanceSupportingPaneUseCase
+import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureSupportingPaneUseCase
+import de.thomaskuenneth.cmpunitconverter.distance.DistanceSupportingPaneUseCase
 import de.thomaskuenneth.cmpunitconverter.HistoryRepository
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf

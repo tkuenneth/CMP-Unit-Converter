@@ -1,7 +1,7 @@
 package de.thomaskuenneth.cmpunitconverter.temperature
 
 import de.thomaskuenneth.cmpunitconverter.AbstractBaseRepository
-import de.thomaskuenneth.cmpunitconverter.BaseRepository
+import de.thomaskuenneth.cmpunitconverter.ConverterRepository
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,7 +11,7 @@ private const val KEY_TEMPERATURE_SOURCE_UNIT = "keyTemperatureSourceUnit"
 private const val KEY_TEMPERATURE_DESTINATION_UNIT = "keyTemperatureDestinationUnit"
 private const val KEY_TEMPERATURE_AS_FLOAT = "keyTemperatureAsFloat"
 
-class TemperatureRepository : AbstractBaseRepository(KEY), BaseRepository {
+class TemperatureRepository : AbstractBaseRepository(KEY), ConverterRepository {
 
     override val sourceUnit: Flow<UnitsAndScales>
         get() = getFlow(KEY_TEMPERATURE_SOURCE_UNIT, UnitsAndScales.Celsius)
