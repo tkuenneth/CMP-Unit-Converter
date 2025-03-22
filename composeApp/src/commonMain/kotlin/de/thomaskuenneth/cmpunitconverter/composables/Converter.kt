@@ -37,7 +37,7 @@ fun Converter(
         )
     }
     val convertedValue by viewModel.convertedValue.collectAsStateWithLifecycle()
-    val enabled = remember(textFieldValue, uiState.sourceUnit, uiState.destinationUnit) {
+    val enabled = remember(uiState.value, uiState.sourceUnit, uiState.destinationUnit) {
         !viewModel.getValueAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
     }
     Column(
@@ -52,7 +52,7 @@ fun Converter(
             value = textFieldValue,
             placeholder = uiState.placeholder,
             modifier = Modifier.padding(bottom = 16.dp),
-            keyboardActionCallback = { viewModel.convert() },
+            keyboardActionCallback = { if (enabled) viewModel.convert() },
             onValueChange = {
                 textFieldValue = it
                 viewModel.setValue(it.text)
