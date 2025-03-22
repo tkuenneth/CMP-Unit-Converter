@@ -33,7 +33,4 @@ class DistanceRepository : AbstractBaseRepository(KEY), ConverterRepository {
     override suspend fun setValue(value: Float) {
         update(key = KEY_DISTANCE_AS_FLOAT, value = value)
     }
-
-    private fun getFlow(key: String, defaultValue: UnitsAndScales): Flow<UnitsAndScales> =
-        getFlow(key, defaultValue.name).map { UnitsAndScales.valueOf(it) }
 }

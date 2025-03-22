@@ -41,4 +41,7 @@ abstract class AbstractBaseRepository(key: String) {
             }
         }
     }
+
+    protected fun getFlow(key: String, defaultValue: UnitsAndScales): Flow<UnitsAndScales> =
+        getFlow(key, defaultValue.name).map { UnitsAndScales.valueOf(it) }
 }
