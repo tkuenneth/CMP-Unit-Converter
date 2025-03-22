@@ -20,12 +20,14 @@ class TemperatureViewModel(
             when (unit) {
                 UnitsAndScales.Celsius -> sourceValue
                 UnitsAndScales.Fahrenheit -> sourceValue.convertFahrenheitToCelsius()
+                UnitsAndScales.Kelvin -> sourceValue.convertKelvinToCelsius()
                 else -> Float.NaN
             }
         }, baseUnitToDestinationUnit = { destinationValue, destinationUnit ->
             when (destinationUnit) {
                 UnitsAndScales.Celsius -> destinationValue
                 UnitsAndScales.Fahrenheit -> destinationValue.convertCelsiusToFahrenheit()
+                UnitsAndScales.Kelvin -> destinationValue.convertCelsiusToKelvin()
                 else -> Float.NaN
             }
         })
@@ -34,4 +36,8 @@ class TemperatureViewModel(
     private fun Float.convertFahrenheitToCelsius() = (this - 32F) / 1.8F
 
     private fun Float.convertCelsiusToFahrenheit() = (this * 1.8F) + 32F
+
+    private fun Float.convertKelvinToCelsius() = this - 273.15F
+
+    private fun Float.convertCelsiusToKelvin() = this + 273.15f
 }

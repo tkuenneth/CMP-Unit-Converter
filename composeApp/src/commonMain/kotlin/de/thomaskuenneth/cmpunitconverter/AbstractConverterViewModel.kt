@@ -74,13 +74,9 @@ abstract class AbstractConverterViewModel(
 
     fun getValueAsFloat(): Float = uiState.value.value
 
-    fun setValue(value: String) {
+    fun setValue(value: Float) {
         viewModelScope.launch {
-            with(value.convertLocalizedStringToFloat()) {
-                if (!isNaN() || value.isEmpty()) {
-                    repository.setValue(this)
-                }
-            }
+            repository.setValue(value)
         }
     }
 
