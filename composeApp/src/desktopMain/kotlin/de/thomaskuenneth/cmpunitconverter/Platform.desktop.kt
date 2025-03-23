@@ -77,13 +77,12 @@ actual fun String.convertLocalizedStringToFloat(): Float {
 
 actual fun openInBrowser(url: String) = browse(url)
 
-actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> =
     with(File(getDirectoryForType(DirectoryType.Database), "CMPUnitConverter.db")) {
-        return Room.databaseBuilder<AppDatabase>(
+        Room.databaseBuilder<AppDatabase>(
             name = absolutePath
         )
     }
-}
 
 actual fun getDirectoryForType(type: DirectoryType): String {
     val home = System.getProperty("user.home") ?: "."
