@@ -30,17 +30,9 @@ actual fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme {
 actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
 }
 
-@OptIn(ExperimentalForeignApi::class)
 actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
     producePath = {
-        val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
-            directory = NSDocumentDirectory,
-            inDomain = NSUserDomainMask,
-            appropriateForURL = null,
-            create = false,
-            error = null,
-        )
-        requireNotNull(documentDirectory).path + "/${dataStoreFileName(key)}"
+        "${getDirectoryForType(DirectoryType.Configuration)}/${dataStoreFileName(key)}"
     },
 )
 
@@ -72,21 +64,25 @@ actual fun openInBrowser(url: String) {
     }
 }
 
-actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    val dbFilePath = documentDirectory() + "/CMPUnitConverter.db"
-    return Room.databaseBuilder<AppDatabase>(
-        name = dbFilePath,
-    )
-}
+actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> =
+    getDirectoryForType(DirectoryType.Database).let { dir ->
+        Room.databaseBuilder<AppDatabase>(
+            name = "$dir/CMPUnitConverter.db"
+        )
+    }
 
 @OptIn(ExperimentalForeignApi::class)
-private fun documentDirectory(): String {
-    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
-        directory = NSDocumentDirectory,
+actual fun getDirectoryForType(type: DirectoryType): String {
+    val url = NSFileManager.defaultManager.URLForDirectory(
+        directory = when (type) {
+            DirectoryType.Configuration -> NSApplicationSupportDirectory
+            DirectoryType.Database -> NSApplicationSupportDirectory
+            DirectoryType.Files -> NSDocumentDirectory
+        },
         inDomain = NSUserDomainMask,
         appropriateForURL = null,
-        create = false,
+        create = true,
         error = null,
     )
-    return requireNotNull(documentDirectory?.path)
+    return url?.path ?: NSFileManager.defaultManager.currentDirectoryPath
 }

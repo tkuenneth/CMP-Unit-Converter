@@ -46,7 +46,7 @@ actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
 
 actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
     producePath = {
-        File(getConfigurationDir(), dataStoreFileName(key)).absolutePath
+        File(getDirectoryForType(DirectoryType.Configuration), dataStoreFileName(key)).absolutePath
     },
 )
 
@@ -78,9 +78,33 @@ actual fun String.convertLocalizedStringToFloat(): Float {
 actual fun openInBrowser(url: String) = browse(url)
 
 actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    with(File(getConfigurationDir(), "CMPUnitConverter.db")) {
+    with(File(getDirectoryForType(DirectoryType.Database), "CMPUnitConverter.db")) {
         return Room.databaseBuilder<AppDatabase>(
             name = absolutePath
         )
+    }
+}
+
+actual fun getDirectoryForType(type: DirectoryType): String {
+    val home = System.getProperty("user.home") ?: "."
+    val path = mutableListOf<String>().apply {
+        add(home)
+        addAll(
+            when (operatingSystem) {
+                OperatingSystem.MacOS -> listOf("Library", "Application Support", "CMPUnitConverter")
+
+                OperatingSystem.Windows -> listOf("AppData", "Roaming", "CMPUnitConverter")
+
+                else -> listOf(".CMPUnitConverter")
+            }
+        )
+//        add(type.name)
+    }.joinToString(File.separator)
+    with(File(path).apply { mkdirs() }) {
+        return if (exists() && isDirectory && canRead() && canWrite()) {
+            absolutePath
+        } else {
+            home
+        }
     }
 }

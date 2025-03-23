@@ -37,3 +37,9 @@ expect fun String.convertLocalizedStringToFloat(): Float
 expect fun openInBrowser(url: String)
 
 expect fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase>
+
+enum class DirectoryType {
+    Configuration, Database, Files
+}
+
+expect fun getDirectoryForType(type: DirectoryType): String

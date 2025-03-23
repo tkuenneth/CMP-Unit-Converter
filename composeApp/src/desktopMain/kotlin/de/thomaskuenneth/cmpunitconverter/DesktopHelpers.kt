@@ -2,7 +2,6 @@ package de.thomaskuenneth.cmpunitconverter
 
 import java.awt.Desktop
 import java.awt.desktop.PreferencesHandler
-import java.io.File
 import java.net.URI
 
 enum class OperatingSystem {
@@ -18,23 +17,6 @@ val operatingSystem = platformName.lowercase().let { platformName ->
         OperatingSystem.Linux
     } else {
         OperatingSystem.Unknown
-    }
-}
-
-fun getConfigurationDir(): File {
-    val home = System.getProperty("user.home") ?: "."
-    val dir = File(
-        home, when (operatingSystem) {
-            OperatingSystem.MacOS -> "Library${File.separator}Application Support${File.separator}CMPUnitConverter"
-            OperatingSystem.Windows -> "AppData${File.separator}Roaming${File.separator}CMPUnitConverter"
-            else -> ".CMPUnitConverter"
-        }
-    )
-    dir.mkdirs()
-    return if (dir.exists() && dir.isDirectory && dir.canRead() && dir.canWrite()) {
-        dir
-    } else {
-        File(home)
     }
 }
 

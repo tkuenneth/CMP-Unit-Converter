@@ -15,6 +15,7 @@ import androidx.room.RoomDatabase
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.isDark
 import org.koin.java.KoinJavaComponent.inject
+import java.io.File
 import java.text.NumberFormat
 import java.text.ParseException
 
@@ -58,7 +59,7 @@ actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
 
 actual fun getDataStore(key: String): DataStore<Preferences> = createDataStore(
     producePath = {
-        context.filesDir.resolve(dataStoreFileName(key)).absolutePath
+        "${getDirectoryForType(DirectoryType.Configuration)}${File.separator}${dataStoreFileName(key)}"
     },
 )
 
@@ -97,10 +98,12 @@ actual fun openInBrowser(url: String) {
     }
 }
 
-actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    val dbFile = context.getDatabasePath("CMPUnitConverter.db")
-    return Room.databaseBuilder<AppDatabase>(
-        context = context,
-        name = dbFile.absolutePath
-    )
+actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> = Room.databaseBuilder<AppDatabase>(
+    context = context,
+    name = context.getDatabasePath("CMPUnitConverter.db").absolutePath
+)
+
+actual fun getDirectoryForType(type: DirectoryType): String = when (type) {
+    DirectoryType.Database -> throw IllegalArgumentException("Use context.getDatabasePath() instead")
+    else -> context.filesDir.absolutePath
 }
