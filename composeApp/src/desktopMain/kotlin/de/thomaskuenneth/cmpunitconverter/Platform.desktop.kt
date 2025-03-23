@@ -98,7 +98,7 @@ actual fun getDirectoryForType(type: DirectoryType): String {
                 else -> listOf(".CMPUnitConverter")
             }
         )
-//        add(type.name)
+        add(type.name)
     }.joinToString(File.separator)
     with(File(path).apply { mkdirs() }) {
         return if (exists() && isDirectory && canRead() && canWrite()) {
