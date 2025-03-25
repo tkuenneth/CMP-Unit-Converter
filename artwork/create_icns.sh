@@ -17,3 +17,6 @@ cp artwork_desktop_1024x1024.png app_icon_desktop.iconset/icon_512x512@2x.png
 iconutil -c icns app_icon_desktop.iconset
 rm -R app_icon_desktop.iconset
 rm artwork_desktop_1024x1024.png
+
+# iOS
+rsvg-convert -w 1024 -h 1024 artwork_ios.svg -o ../iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png
