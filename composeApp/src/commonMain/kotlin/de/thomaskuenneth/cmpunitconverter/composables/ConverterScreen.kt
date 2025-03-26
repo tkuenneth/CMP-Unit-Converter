@@ -33,6 +33,7 @@ fun ConverterScreen(
                 val uiState by stateFlow.collectAsStateWithLifecycle()
                 SupportingPane(
                     uiState = uiState,
+                    showUnits = navigator.scaffoldValue[SupportingPaneScaffoldRole.Main] == PaneAdaptedValue.Hidden,
                     readMoreOnWikipedia = ::openInBrowser,
                     clearConversionsHistory = ::clearConversionsHistory
                 )

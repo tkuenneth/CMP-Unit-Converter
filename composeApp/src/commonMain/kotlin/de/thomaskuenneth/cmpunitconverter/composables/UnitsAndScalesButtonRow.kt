@@ -16,16 +16,18 @@ import org.jetbrains.compose.resources.stringResource
 fun UnitsAndScalesButtonRow(
     entries: List<UnitsAndScales>,
     selected: UnitsAndScales,
-    label: StringResource,
+    label: StringResource? = null,
     modifier: Modifier = Modifier,
     onClick: (UnitsAndScales) -> Unit
 ) {
     Row {
-        Text(
-            modifier = Modifier.alignByBaseline().width(80.dp),
-            text = stringResource(label),
-            textAlign = TextAlign.Start
-        )
+        label?.run {
+            Text(
+                modifier = Modifier.alignByBaseline().width(80.dp),
+                text = stringResource(this),
+                textAlign = TextAlign.Start
+            )
+        }
         SingleChoiceSegmentedButtonRow(modifier = modifier.alignByBaseline()) {
             entries.forEach { unit ->
                 SegmentedUnitsAndScalesButton(

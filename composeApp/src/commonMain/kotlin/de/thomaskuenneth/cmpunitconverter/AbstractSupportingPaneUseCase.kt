@@ -14,14 +14,14 @@ abstract class AbstractSupportingPaneUseCase(private val entries: List<UnitsAndS
     KoinComponent {
 
     data class UiState(
-        val current: UnitsAndScales, val elements: List<HistoryEntity>
+        val entries: List<UnitsAndScales>, val current: UnitsAndScales, val elements: List<HistoryEntity>
     )
 
     private val historyRepository: HistoryRepository by inject<HistoryRepository>()
 
     private val mutableStateFlow: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
-            current = initial, elements = emptyList()
+            entries = entries, current = initial, elements = emptyList()
         )
     )
     val stateFlow: StateFlow<UiState> = mutableStateFlow.asStateFlow()
@@ -45,8 +45,8 @@ abstract class AbstractSupportingPaneUseCase(private val entries: List<UnitsAndS
         mutableStateFlow.update { state -> state.copy(current = value) }
     }
 
-    fun openInBrowser() {
-        openInBrowser(mutableStateFlow.value.current.url)
+    fun openInBrowser(value: UnitsAndScales) {
+        openInBrowser(value.url)
     }
 
     fun clearConversionsHistory() {
