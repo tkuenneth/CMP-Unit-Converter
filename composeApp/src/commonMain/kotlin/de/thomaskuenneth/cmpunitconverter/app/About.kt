@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import de.thomaskuenneth.cmpunitconverter.BUILD_NUMBER
 import de.thomaskuenneth.cmpunitconverter.VERSION
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_icon
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_name
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.artwork_no_background
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -26,7 +26,8 @@ fun About(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(Res.drawable.app_icon), null, modifier = Modifier.size(96.dp)
+            painter = painterResource(Res.drawable.artwork_no_background), null,
+            modifier = Modifier.size(96.dp)
         )
         Text(
             text = stringResource(Res.string.app_name),
