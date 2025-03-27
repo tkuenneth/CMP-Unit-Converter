@@ -6,7 +6,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldScope
@@ -58,12 +60,12 @@ fun ThreePaneScaffoldScope.SupportingPane(
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.headlineSmall
                 )
-                OutlinedIconButton(onClick = clearConversionsHistory, enabled = uiState.elements.isNotEmpty()) {
-                    Icon(
-                        Icons.Default.Clear,
-                        contentDescription = stringResource(Res.string.clear_history)
-                    )
-                }
+                OutlinedIconButtonWithTooltip(
+                    icon = Icons.Default.Clear,
+                    contentDescription = stringResource(Res.string.clear_conversions_history),
+                    onClick = clearConversionsHistory,
+                    enabled = uiState.elements.isNotEmpty()
+                )
             }
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
