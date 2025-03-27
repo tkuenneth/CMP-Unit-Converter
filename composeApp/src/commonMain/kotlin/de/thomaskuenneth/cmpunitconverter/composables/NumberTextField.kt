@@ -10,6 +10,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import de.thomaskuenneth.cmpunitconverter.convertLocalizedStringToFloat
 import de.thomaskuenneth.cmpunitconverter.convertToLocalizedString
 import org.jetbrains.compose.resources.StringResource
@@ -18,7 +19,9 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun NumberTextField(
     value: Float,
-    placeholder: StringResource,
+    label: StringResource,
+    unit: UnitsAndScales,
+    placeholder: String,
     modifier: Modifier = Modifier,
     keyboardActionCallback: () -> Unit,
     onValueChange: (Float) -> Unit
@@ -58,8 +61,9 @@ fun NumberTextField(
                 }
             }
         },
+        label = { Text(text = "${stringResource(label)} (${stringResource(unit.unit)})") },
         placeholder = {
-            Text(text = stringResource(placeholder))
+            Text(text = placeholder)
         },
         modifier = modifier, keyboardActions = KeyboardActions(onAny = {
             keyboardActionCallback()

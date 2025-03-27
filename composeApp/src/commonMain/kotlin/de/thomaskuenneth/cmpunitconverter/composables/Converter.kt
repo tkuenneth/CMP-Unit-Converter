@@ -1,11 +1,13 @@
 package de.thomaskuenneth.cmpunitconverter.composables
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,8 +20,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.AbstractConverterViewModel
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.clear_history
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.from
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.to
+import de.thomaskuenneth.cmpunitconverter.convertToLocalizedString
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,12 +47,27 @@ fun Converter(
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        NumberTextField(
-            value = uiState.value,
-            placeholder = uiState.placeholder,
-            modifier = Modifier.padding(bottom = 16.dp),
-            keyboardActionCallback = { if (enabled) viewModel.convert() },
-            onValueChange = { viewModel.setValue(it) })
+        Row(
+            modifier = Modifier.padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
+            NumberTextField(
+                value = uiState.value,
+                label = uiState.placeholder,
+                unit = uiState.sourceUnit,
+                placeholder = 1234.56F.convertToLocalizedString(),
+                keyboardActionCallback = { if (enabled) viewModel.convert() },
+                onValueChange = { viewModel.setValue(it) })
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedIconButton(
+                onClick = { viewModel.setValue(Float.NaN) },
+                enabled = !uiState.value.isNaN(),
+                modifier = Modifier.alignByBaseline()
+            ) {
+                Icon(
+                    Icons.Default.Clear, contentDescription = stringResource(Res.string.clear_history)
+                )
+            }
+        }
         UnitsAndScalesButtonRow(
             entries = uiState.entries,
             selected = uiState.sourceUnit,
