@@ -68,7 +68,7 @@ abstract class AbstractConverterViewModel(
     }
 
     fun handleOpenInBrowserResult(result: Boolean) {
-        if (result) {
+        if (!result) {
             setSnackbarVisibility(SnackbarVisibility.Message(Res.string.something_went_wrong))
         }
     }
