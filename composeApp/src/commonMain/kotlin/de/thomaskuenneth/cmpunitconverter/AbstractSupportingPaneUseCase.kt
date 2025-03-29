@@ -45,8 +45,8 @@ abstract class AbstractSupportingPaneUseCase(private val entries: List<UnitsAndS
         mutableStateFlow.update { state -> state.copy(current = value) }
     }
 
-    fun openInBrowser(value: UnitsAndScales) {
-        openInBrowser(value.url)
+    fun openInBrowser(value: UnitsAndScales, completionHandler: (Boolean) -> Unit) {
+        openInBrowser(url = value.url, completionHandler = completionHandler)
     }
 
     fun clearConversionsHistory() {

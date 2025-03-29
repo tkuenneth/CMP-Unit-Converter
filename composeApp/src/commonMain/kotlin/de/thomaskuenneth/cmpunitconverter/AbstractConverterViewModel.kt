@@ -2,6 +2,8 @@ package de.thomaskuenneth.cmpunitconverter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.something_went_wrong
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combineTransform
@@ -16,12 +18,18 @@ abstract class AbstractConverterViewModel(
     val supportingPaneUseCase: AbstractSupportingPaneUseCase
 ) : ViewModel() {
 
+    sealed class SnackbarVisibility {
+        data object Hidden : SnackbarVisibility()
+        data class Message(val message: StringResource) : SnackbarVisibility()
+    }
+
     data class UiState(
         val sourceUnit: UnitsAndScales,
         val destinationUnit: UnitsAndScales,
         val value: Float,
         val entries: List<UnitsAndScales>,
-        val placeholder: StringResource
+        val placeholder: StringResource,
+        val snackbarVisibility: SnackbarVisibility
     )
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
@@ -30,7 +38,8 @@ abstract class AbstractConverterViewModel(
             destinationUnit = UnitsAndScales.Undefined,
             value = Float.NaN,
             entries = entries,
-            placeholder = placeholder
+            placeholder = placeholder,
+            snackbarVisibility = SnackbarVisibility.Hidden
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -51,6 +60,16 @@ abstract class AbstractConverterViewModel(
                     )
                 }
             }
+        }
+    }
+
+    fun setSnackbarVisibility(visibility: SnackbarVisibility) {
+        _uiState.update { state -> state.copy(snackbarVisibility = visibility) }
+    }
+
+    fun handleOpenInBrowserResult(result: Boolean) {
+        if (result) {
+            setSnackbarVisibility(SnackbarVisibility.Message(Res.string.something_went_wrong))
         }
     }
 

@@ -33,6 +33,8 @@
     <string name="convert">Convert</string>
     <string name="template">%1$s %2$s</string>
 
+    <string name="something_went_wrong">Something went wrong</string>
+
     <!-- undefined -->
     <string name="undefined">??</string>
 
