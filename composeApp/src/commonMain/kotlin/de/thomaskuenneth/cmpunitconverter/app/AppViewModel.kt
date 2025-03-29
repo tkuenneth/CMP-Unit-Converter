@@ -25,11 +25,6 @@ data class UiState(
 
 class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
-    init {
-        repository.colorSchemeMode.onEach { colorSchemeMode -> setColorSchemeMode(colorSchemeMode) }
-            .launchIn(viewModelScope)
-    }
-
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
             currentDestination = AppDestinations.Temperature,
@@ -39,6 +34,11 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    init {
+        repository.colorSchemeMode.onEach { colorSchemeMode -> setColorSchemeMode(colorSchemeMode) }
+            .launchIn(viewModelScope)
+    }
 
     fun setCurrentDestination(destination: AppDestinations) {
         _uiState.update { state -> state.copy(currentDestination = destination) }
