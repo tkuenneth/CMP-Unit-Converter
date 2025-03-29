@@ -2,6 +2,7 @@ package de.thomaskuenneth.cmpunitconverter
 
 import java.awt.Desktop
 import java.awt.desktop.PreferencesHandler
+import java.io.IOException
 import java.net.URI
 
 enum class OperatingSystem {
@@ -26,10 +27,18 @@ fun Desktop.installPreferencesHandler(handler: PreferencesHandler) {
     }
 }
 
-fun browse(url: String) {
+fun browse(url: String, completionHandler: (Boolean) -> Unit = {}) {
     with(Desktop.getDesktop()) {
-        if (isSupported(Desktop.Action.BROWSE)) {
-            browse(URI.create(url))
-        }
+        val result = if (isSupported(Desktop.Action.BROWSE)) {
+            try {
+                browse(URI.create(url))
+                true
+            } catch (e: IOException) {
+                false
+            } catch (e: SecurityException) {
+                false
+            }
+        } else false
+        completionHandler(result)
     }
 }

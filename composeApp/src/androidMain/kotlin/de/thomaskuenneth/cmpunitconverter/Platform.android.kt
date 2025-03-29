@@ -88,14 +88,17 @@ actual fun String.convertLocalizedStringToFloat(): Float {
     }
 }
 
-actual fun openInBrowser(url: String) {
-    try {
+actual fun openInBrowser(url: String, completionHandler: (Boolean) -> Unit) {
+    val result = try {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW, Uri.parse(url)
             ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+        true
     } catch (_: ActivityNotFoundException) {
+        false
     }
+    completionHandler(result)
 }
 
 actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> = Room.databaseBuilder<AppDatabase>(

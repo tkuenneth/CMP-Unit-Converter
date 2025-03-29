@@ -75,7 +75,8 @@ actual fun String.convertLocalizedStringToFloat(): Float {
     }
 }
 
-actual fun openInBrowser(url: String) = browse(url)
+actual fun openInBrowser(url: String, completionHandler: (Boolean) -> Unit) =
+    browse(url = url, completionHandler = completionHandler)
 
 actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> =
     with(File(getDirectoryForType(DirectoryType.Database), "CMPUnitConverter.db")) {

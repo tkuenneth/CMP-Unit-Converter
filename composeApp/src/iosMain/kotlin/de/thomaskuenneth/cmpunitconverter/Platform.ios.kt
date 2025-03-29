@@ -57,10 +57,11 @@ actual fun String.convertLocalizedStringToFloat(): Float {
     }
 }
 
-actual fun openInBrowser(url: String) {
+actual fun openInBrowser(url: String, completionHandler: (Boolean) -> Unit) {
     NSURL.URLWithString(url)?.let {
         UIApplication.sharedApplication.openURL(
-            url = it, options = emptyMap<Any?, Any>(), completionHandler = {})
+            url = it, options = emptyMap<Any?, Any>(), completionHandler = completionHandler
+        )
     }
 }
 
