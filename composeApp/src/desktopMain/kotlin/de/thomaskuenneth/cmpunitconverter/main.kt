@@ -9,9 +9,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.thomaskuenneth.cmpunitconverter.app.AboutVisibility
 import de.thomaskuenneth.cmpunitconverter.app.App
-import de.thomaskuenneth.cmpunitconverter.app.SettingsVisibility
+import de.thomaskuenneth.cmpunitconverter.app.DialogOrSheetVisibility
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
 import de.thomaskuenneth.cmpunitconverter.di.initKoin
 import org.jetbrains.compose.resources.painterResource
@@ -41,12 +40,12 @@ fun main() = application {
                 navigateToTemperature = { viewModel.setCurrentDestination(AppDestinations.Temperature) },
                 navigateToDistance = { viewModel.setCurrentDestination(AppDestinations.Distance) },
             )
-            AboutWindow(visible = uiState.aboutVisibility == AboutVisibility.Window) {
+            AboutWindow(visible = uiState.aboutVisibility == DialogOrSheetVisibility.Window) {
                 viewModel.setShouldShowAbout(
                     false
                 )
             }
-            SettingsWindow(visible = uiState.settingsVisibility == SettingsVisibility.Window) {
+            SettingsWindow(visible = uiState.settingsVisibility == DialogOrSheetVisibility.Window) {
                 viewModel.setShouldShowSettings(
                     false
                 )

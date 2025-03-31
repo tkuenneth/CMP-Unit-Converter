@@ -8,18 +8,14 @@ import de.thomaskuenneth.cmpunitconverter.shouldShowSettingsInSeparateWindow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-enum class AboutVisibility {
-    Hidden, Sheet, Window
-}
-
-enum class SettingsVisibility {
+enum class DialogOrSheetVisibility {
     Hidden, Sheet, Window
 }
 
 data class UiState(
     val currentDestination: AppDestinations,
-    val aboutVisibility: AboutVisibility,
-    val settingsVisibility: SettingsVisibility,
+    val aboutVisibility: DialogOrSheetVisibility,
+    val settingsVisibility: DialogOrSheetVisibility,
     val colorSchemeMode: ColorSchemeMode,
 )
 
@@ -28,8 +24,8 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(
         UiState(
             currentDestination = AppDestinations.Temperature,
-            aboutVisibility = AboutVisibility.Hidden,
-            settingsVisibility = SettingsVisibility.Hidden,
+            aboutVisibility = DialogOrSheetVisibility.Hidden,
+            settingsVisibility = DialogOrSheetVisibility.Hidden,
             colorSchemeMode = ColorSchemeMode.System
         )
     )
@@ -48,8 +44,8 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
         _uiState.update { state ->
             state.copy(
                 aboutVisibility = when (shouldShowAbout) {
-                    false -> AboutVisibility.Hidden
-                    true -> if (shouldShowAboutInSeparateWindow()) AboutVisibility.Window else AboutVisibility.Sheet
+                    false -> DialogOrSheetVisibility.Hidden
+                    true -> if (shouldShowAboutInSeparateWindow()) DialogOrSheetVisibility.Window else DialogOrSheetVisibility.Sheet
                 }
             )
         }
@@ -59,8 +55,8 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
         _uiState.update { state ->
             state.copy(
                 settingsVisibility = when (shouldShowSettings) {
-                    false -> SettingsVisibility.Hidden
-                    true -> if (shouldShowSettingsInSeparateWindow()) SettingsVisibility.Window else SettingsVisibility.Sheet
+                    false -> DialogOrSheetVisibility.Hidden
+                    true -> if (shouldShowSettingsInSeparateWindow()) DialogOrSheetVisibility.Window else DialogOrSheetVisibility.Sheet
                 }
             )
         }

@@ -108,12 +108,12 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                     restoreState = true
                 }
             }
-            AboutBottomSheet(visible = uiState.aboutVisibility == AboutVisibility.Sheet) {
+            AboutBottomSheet(visible = uiState.aboutVisibility == DialogOrSheetVisibility.Sheet) {
                 appViewModel.setShouldShowAbout(
                     false
                 )
             }
-            SettingsBottomSheet(visible = uiState.settingsVisibility == SettingsVisibility.Sheet) {
+            SettingsBottomSheet(visible = uiState.settingsVisibility == DialogOrSheetVisibility.Sheet) {
                 appViewModel.setShouldShowSettings(
                     false
                 )
