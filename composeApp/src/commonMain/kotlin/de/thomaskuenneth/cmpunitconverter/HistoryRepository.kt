@@ -3,9 +3,7 @@ package de.thomaskuenneth.cmpunitconverter
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
 
-class HistoryRepository {
-
-    private val historyDao = getRoomDatabase(getDatabaseBuilder()).getHistoryDao()
+class HistoryRepository(private val historyDao: HistoryDao) {
 
     val elements = historyDao.getAllAsFlow().map { it }
 
