@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import de.thomaskuenneth.cmpunitconverter.AbstractSupportingPaneUseCase
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
-import kotlinx.datetime.*
+import de.thomaskuenneth.cmpunitconverter.convertToLocalizedDate
+import de.thomaskuenneth.cmpunitconverter.convertToLocalizedTime
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -85,25 +86,17 @@ fun ThreePaneScaffoldScope.SupportingPane(
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                            Text(
-                                text =
-                                    Instant.fromEpochMilliseconds(element.timestamp)
-                                        .toLocalDateTime(TimeZone.currentSystemDefault())
-                                        .format(LocalDateTime.Format {
-                                            chars("Converted on ")
-                                            year()
-                                            chars("-")
-                                            monthNumber()
-                                            chars("-")
-                                            dayOfMonth()
-                                            chars(" at ")
-                                            hour()
-                                            chars(":")
-                                            minute()
-                                        }),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
+                            with(element.timestamp) {
+                                Text(
+                                    text = stringResource(
+                                        Res.string.converted_on,
+                                        convertToLocalizedDate(),
+                                        convertToLocalizedTime()
+                                    ),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
                         }
                     }
                 } else {

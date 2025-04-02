@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.text.format.DateFormat
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -110,3 +111,7 @@ actual fun getDirectoryForType(type: DirectoryType): String = when (type) {
     DirectoryType.Database -> throw IllegalArgumentException("Use context.getDatabasePath() instead")
     else -> context.filesDir.absolutePath
 }
+
+actual fun Long.convertToLocalizedDate(): String = DateFormat.getDateFormat(context).format(this)
+
+actual fun Long.convertToLocalizedTime(): String = DateFormat.getTimeFormat(context).format(this)

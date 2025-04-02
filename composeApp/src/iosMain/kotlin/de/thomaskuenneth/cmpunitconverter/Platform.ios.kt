@@ -87,3 +87,19 @@ actual fun getDirectoryForType(type: DirectoryType): String {
     )
     return url?.path ?: NSFileManager.defaultManager.currentDirectoryPath
 }
+
+actual fun Long.convertToLocalizedDate(): String {
+    NSDateFormatter().apply {
+        dateStyle = NSDateFormatterShortStyle
+        locale = NSLocale.currentLocale
+        return stringFromDate(NSDate.dateWithTimeIntervalSince1970(toDouble() / 1000.0))
+    }
+}
+
+actual fun Long.convertToLocalizedTime(): String {
+    NSDateFormatter().apply {
+        timeStyle = NSDateFormatterShortStyle
+        locale = NSLocale.currentLocale
+        return stringFromDate(NSDate.dateWithTimeIntervalSince1970(toDouble() / 1000.0))
+    }
+}

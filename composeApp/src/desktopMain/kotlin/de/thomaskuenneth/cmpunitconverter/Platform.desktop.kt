@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.File
+import java.text.DateFormat
 import java.text.NumberFormat
 import java.text.ParseException
 
@@ -108,3 +109,7 @@ actual fun getDirectoryForType(type: DirectoryType): String {
         }
     }
 }
+
+actual fun Long.convertToLocalizedDate(): String = DateFormat.getDateInstance(DateFormat.SHORT).format(this)
+
+actual fun Long.convertToLocalizedTime(): String = DateFormat.getTimeInstance(DateFormat.SHORT).format(this)

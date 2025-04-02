@@ -23,6 +23,7 @@
     <string name="conversions_history">Conversions history</string>
     <string name="no_conversions">No conversions yet</string>
     <string name="clear_conversions_history">Clear conversions history</string>
+    <string name="converted_on">Converted on %1$s at %2$s</string>
 
     <string name="temperature">Temperature</string>
     <string name="distance">Distance</string>

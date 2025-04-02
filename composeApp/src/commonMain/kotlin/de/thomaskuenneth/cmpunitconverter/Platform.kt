@@ -43,3 +43,7 @@ enum class DirectoryType {
 }
 
 expect fun getDirectoryForType(type: DirectoryType): String
+
+expect fun Long.convertToLocalizedDate(): String
+
+expect fun Long.convertToLocalizedTime(): String
