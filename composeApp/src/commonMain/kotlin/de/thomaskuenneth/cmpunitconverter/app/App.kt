@@ -5,6 +5,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.layout.HingePolicy
+import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -41,6 +44,14 @@ fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+fun createAndRememberNavigator() = rememberSupportingPaneScaffoldNavigator(
+    scaffoldDirective = calculatePaneScaffoldDirective(
+        windowAdaptiveInfo = currentWindowAdaptiveInfo(), verticalHingePolicy = HingePolicy.AlwaysAvoid
+    )
+)
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun CMPUnitConverter(appViewModel: AppViewModel) {
@@ -49,8 +60,8 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
         mutableStateMapOf<AppDestinations, ThreePaneScaffoldNavigator<Nothing>>()
     }
     key(navigatorStateMap) {
-        navigatorStateMap[AppDestinations.Temperature] = rememberSupportingPaneScaffoldNavigator()
-        navigatorStateMap[AppDestinations.Distance] = rememberSupportingPaneScaffoldNavigator()
+        navigatorStateMap[AppDestinations.Temperature] = createAndRememberNavigator()
+        navigatorStateMap[AppDestinations.Distance] = createAndRememberNavigator()
     }
     ScaffoldWithBackArrow(
         shouldShowBack = navigatorStateMap[uiState.currentDestination]!!.canNavigateBack(),

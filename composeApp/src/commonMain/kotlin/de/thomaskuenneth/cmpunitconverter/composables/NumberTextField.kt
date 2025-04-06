@@ -1,5 +1,6 @@
 package de.thomaskuenneth.cmpunitconverter.composables
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
@@ -65,7 +66,7 @@ fun NumberTextField(
         placeholder = {
             Text(text = placeholder)
         },
-        modifier = modifier, keyboardActions = KeyboardActions(onAny = {
+        modifier = modifier.imePadding(), keyboardActions = KeyboardActions(onAny = {
             keyboardActionCallback()
         }),
         keyboardOptions = KeyboardOptions(

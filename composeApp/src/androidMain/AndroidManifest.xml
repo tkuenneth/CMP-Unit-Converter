@@ -9,14 +9,14 @@
             android:supportsRtl="true"
             android:enableOnBackInvokedCallback="true"
             android:name=".CMPUnitConverterApp"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar" tools:targetApi="tiramisu">
+            android:appCategory="productivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" tools:targetApi="tiramisu">
         <activity
             android:exported="true"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
+            android:windowSoftInputMode="adjustResize"
             android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
