@@ -18,9 +18,9 @@ adaptive-navigation = "1.0.1"
 datastore = "1.1.4"
 koin = "4.1.0-Beta5"
 navigationCompose = "2.8.0-alpha10"
-ksp = "2.1.20-1.0.31"
-sqlite = "2.5.0-rc03"
-room = "2.7.0-rc03"
+ksp = "2.1.20-2.0.0"
+sqlite = "2.5.0"
+room = "2.7.0"
 kotlinxDatetime = "0.6.0"
 
 [libraries]
