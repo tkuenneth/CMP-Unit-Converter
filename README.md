@@ -1,6 +1,8 @@
 # Welcome to CMP Unit Converter
 
-This repo contains a real-world example of a *Compose Multiplatform* app. *CMP Unit Converter* runs on Android, iOS, and the Desktop. As its name suggests, you can convert between various units. While this may provide some value, the main goal is to show how to use Compose Multiplatform and a couple of other multiplatform libraries, for example:
+This repo contains a real-world example of a *Compose Multiplatform* app. *CMP Unit Converter* runs on Android, iOS, and the Desktop. As its name suggests, you can convert between various units and scales. While this may provide some value, the main goal of the app and the accompanying series on [dev.to](https://dev.to/tkuenneth/series/30921) is to show how to use Compose Multiplatform and a couple of other multiplatform libraries while focusing on platform integration.
+
+Among others, these libraries are used:
 
 - [Koin](https://insert-koin.io/)
 - [Compose Material 3 Adaptive](https://developer.android.com/jetpack/androidx/releases/compose-material3-adaptive)
@@ -8,11 +10,7 @@ This repo contains a real-world example of a *Compose Multiplatform* app. *CMP U
 - [Navigation Compose](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-navigation-routing.html)
 - [Room](https://developer.android.com/kotlin/multiplatform/room)
 
-Things worth noting:
-
-- Strong focus on platform integration: on the Desktop, there's menu bar support including access to settings
-- Navigate to top-level destinations using the menu bar (including keyboard shortcuts)
-- Support for dark and light mode
+Unlike many other samples, this one has a strong focus on platform integration. For example, on the Desktop, you can access the settings, the *About* dialog, and all top-level destinations from the menu bar. On Android and iOS, a top app bar is used. The app supports dark and light mode on all platforms. Database and configuration files are stored in the preferred locations.
 
 ### What's up next?
 
