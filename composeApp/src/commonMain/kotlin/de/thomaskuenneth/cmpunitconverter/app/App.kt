@@ -3,7 +3,10 @@ package de.thomaskuenneth.cmpunitconverter.app
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.HingePolicy
@@ -11,7 +14,14 @@ import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.runtime.*
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -26,21 +36,18 @@ import de.thomaskuenneth.cmpunitconverter.distance.DistanceViewModel
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
 fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
-    KoinContext {
-        val viewModel: AppViewModel = koinViewModel()
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-        MaterialTheme(
-            colorScheme = defaultColorScheme(uiState.colorSchemeMode)
-        ) {
-            platformContent(viewModel)
-            CMPUnitConverter(viewModel)
-        }
+    val viewModel: AppViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    MaterialTheme(
+        colorScheme = defaultColorScheme(uiState.colorSchemeMode)
+    ) {
+        platformContent(viewModel)
+        CMPUnitConverter(viewModel)
     }
 }
 
