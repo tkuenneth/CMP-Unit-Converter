@@ -6,10 +6,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import de.thomaskuenneth.cmpunitconverter.app.AppViewModel
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.about_short
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_name
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.back
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.settings_short
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -17,17 +30,19 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ScaffoldWithBackArrow(
     shouldShowBack: Boolean,
-    navigateBack: () -> Unit,
+    navigateBack: suspend () -> Unit,
     viewModel: AppViewModel,
     content: @Composable (PaddingValues, TopAppBarScrollBehavior) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    val navigateBackAsync: () -> Unit = { scope.launch { navigateBack() } }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             if (shouldUseScaffold()) CenterAlignedTopAppBar(
                 navigationIcon = {
-                    if (shouldShowBack) IconButton(onClick = navigateBack) {
+                    if (shouldShowBack) IconButton(onClick = navigateBackAsync) {
                         Icon(
                             Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(Res.string.back)
@@ -53,7 +68,7 @@ fun ScaffoldWithBackArrow(
         }) { innerPadding ->
         content(innerPadding, scrollBehavior)
         BackHandler(shouldShowBack) {
-            navigateBack()
+            navigateBackAsync()
         }
     }
 }

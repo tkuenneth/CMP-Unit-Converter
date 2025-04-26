@@ -57,7 +57,7 @@ fun createAndRememberNavigator() = rememberSupportingPaneScaffoldNavigator(
 fun CMPUnitConverter(appViewModel: AppViewModel) {
     val uiState by appViewModel.uiState.collectAsStateWithLifecycle()
     val navigatorStateMap = remember {
-        mutableStateMapOf<AppDestinations, ThreePaneScaffoldNavigator<Nothing>>()
+        mutableStateMapOf<AppDestinations, ThreePaneScaffoldNavigator<Any>>()
     }
     key(navigatorStateMap) {
         navigatorStateMap[AppDestinations.Temperature] = createAndRememberNavigator()

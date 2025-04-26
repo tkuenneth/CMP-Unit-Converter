@@ -1,6 +1,11 @@
 package de.thomaskuenneth.cmpunitconverter.composables
 
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
@@ -10,19 +15,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.AbstractConverterViewModel
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ConverterScreen(
-    navigator: ThreePaneScaffoldNavigator<Nothing>,
+    navigator: ThreePaneScaffoldNavigator<Any>,
     viewModel: AbstractConverterViewModel,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     val viewModelState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember(viewModelState) { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
         SupportingPaneScaffold(
             directive = navigator.scaffoldDirective, mainPane = {
@@ -31,7 +39,7 @@ fun ConverterScreen(
                     scrollBehavior = scrollBehavior,
                     shouldShowButton = navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden
                 ) {
-                    navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
+                    scope.launch { navigator.navigateTo(SupportingPaneScaffoldRole.Supporting) }
                 }
             }, supportingPane = {
                 with(viewModel.supportingPaneUseCase) {

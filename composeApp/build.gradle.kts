@@ -81,7 +81,6 @@ kotlin {
             implementation(libs.adaptive.navigation)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
-            implementation(libs.datastore)
             implementation(libs.datastore.preferences)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)

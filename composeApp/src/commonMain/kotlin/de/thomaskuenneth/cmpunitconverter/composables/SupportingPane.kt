@@ -1,7 +1,13 @@
 package de.thomaskuenneth.cmpunitconverter.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -11,21 +17,31 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldScope
-import androidx.compose.runtime.*
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldPaneScope
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.thomaskuenneth.cmpunitconverter.AbstractSupportingPaneUseCase
 import de.thomaskuenneth.cmpunitconverter.UnitsAndScales
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.clear_conversions_history
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.conversion_summary
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.conversions_history
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.converted_on
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.no_conversions
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.read_more_on_wikipedia
 import de.thomaskuenneth.cmpunitconverter.convertToLocalizedDate
 import de.thomaskuenneth.cmpunitconverter.convertToLocalizedTime
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun ThreePaneScaffoldScope.SupportingPane(
+fun ThreePaneScaffoldPaneScope.SupportingPane(
     uiState: AbstractSupportingPaneUseCase.UiState,
     showUnits: Boolean,
     readMoreOnWikipedia: (UnitsAndScales) -> Unit = {},
