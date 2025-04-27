@@ -46,8 +46,8 @@ fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
     MaterialTheme(
         colorScheme = defaultColorScheme(uiState.colorSchemeMode)
     ) {
-        platformContent(viewModel)
         CMPUnitConverter(viewModel)
+        platformContent(viewModel)
     }
 }
 

@@ -20,6 +20,7 @@ abstract class AbstractBaseRepository(key: String) {
         }.flowOn(Dispatchers.IO)
     }
 
+    @Suppress("SameParameterValue")
     protected fun getFlow(key: String, defaultValue: Float): Flow<Float> {
         return dataStore.data.map {
             it[floatPreferencesKey(key)] ?: defaultValue
