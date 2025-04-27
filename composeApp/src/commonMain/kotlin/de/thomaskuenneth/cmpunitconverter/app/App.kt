@@ -1,5 +1,8 @@
 package de.thomaskuenneth.cmpunitconverter.app
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
@@ -100,8 +103,11 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
             val threePaneScaffoldNavigator = navigatorStateMap[uiState.currentDestination]!!
             NavHost(
                 navController = navController,
-                startDestination = uiState.currentDestination.name
-            ) {
+                startDestination = uiState.currentDestination.name,
+                enterTransition = { fadeIn(animationSpec = tween(300)) },
+                exitTransition = { fadeOut(animationSpec = tween(300)) },
+                popEnterTransition = { fadeIn(animationSpec = tween(300)) },
+                popExitTransition = { fadeOut(animationSpec = tween(300)) }) {
                 composable(route = AppDestinations.Temperature.name) {
                     ConverterScreen(
                         navigator = threePaneScaffoldNavigator,
