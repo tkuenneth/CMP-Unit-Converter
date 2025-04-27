@@ -10,6 +10,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +34,9 @@ fun ConverterScreen(
     val scope = rememberCoroutineScope()
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
         SupportingPaneScaffold(
-            directive = navigator.scaffoldDirective, mainPane = {
+            directive = navigator.scaffoldDirective,
+            value = navigator.scaffoldValue,
+            mainPane = {
                 Converter(
                     viewModel = viewModel,
                     scrollBehavior = scrollBehavior,
@@ -41,7 +44,8 @@ fun ConverterScreen(
                 ) {
                     scope.launch { navigator.navigateTo(SupportingPaneScaffoldRole.Supporting) }
                 }
-            }, supportingPane = {
+            },
+            supportingPane = {
                 with(viewModel.supportingPaneUseCase) {
                     val supportingPaneState by stateFlow.collectAsStateWithLifecycle()
                     SupportingPane(
@@ -56,7 +60,8 @@ fun ConverterScreen(
                         clearConversionsHistory = ::clearConversionsHistory
                     )
                 }
-            }, value = navigator.scaffoldValue
+            },
+            paneExpansionState = rememberPaneExpansionState()
         )
         viewModelState.snackbarVisibility.let { visibility ->
             if (visibility is AbstractConverterViewModel.SnackbarVisibility.Message) {
