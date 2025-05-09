@@ -33,6 +33,7 @@ import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.clear_c
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.conversion_summary
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.conversions_history
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.converted_on
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.learn_more_long
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.no_conversions
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.read_more_on_wikipedia
 import de.thomaskuenneth.cmpunitconverter.convertToLocalizedDate
@@ -56,10 +57,17 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             if (showUnits) {
-                UnitsAndScalesButtonRow(
-                    entries = uiState.entries,
-                    selected = current,
-                    onClick = { current = it })
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(Res.string.learn_more_long),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    UnitsAndScalesButtonRow(
+                        entries = uiState.entries,
+                        selected = current,
+                        onClick = { current = it })
+                }
             }
             Text(
                 text = stringResource(current.info, stringResource(current.unit)),
