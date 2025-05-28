@@ -9,13 +9,29 @@ import androidx.room.RoomDatabase
 import de.thomaskuenneth.cmpunitconverter.app.ColorSchemeMode
 import de.thomaskuenneth.cmpunitconverter.app.colorScheme
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.Foundation.*
+import platform.Foundation.NSApplicationSupportDirectory
+import platform.Foundation.NSDate
+import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSDateFormatterShortStyle
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSLocale
+import platform.Foundation.NSNumber
+import platform.Foundation.NSNumberFormatter
+import platform.Foundation.NSNumberFormatterDecimalStyle
+import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.currentLocale
+import platform.Foundation.dateWithTimeIntervalSince1970
+import platform.Foundation.numberWithFloat
 import platform.UIKit.UIApplication
 import platform.UIKit.UIDevice
 
 actual fun shouldUseScaffold(): Boolean = true
 
 actual fun shouldShowAboutInSeparateWindow(): Boolean = false
+
+actual fun shouldShowExtendedAboutDialogCheckbox(): Boolean = false
 
 actual fun shouldShowSettingsInSeparateWindow(): Boolean = false
 

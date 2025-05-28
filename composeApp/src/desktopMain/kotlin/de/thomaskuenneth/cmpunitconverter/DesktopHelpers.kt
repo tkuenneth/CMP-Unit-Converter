@@ -1,6 +1,7 @@
 package de.thomaskuenneth.cmpunitconverter
 
 import java.awt.Desktop
+import java.awt.desktop.AboutHandler
 import java.awt.desktop.PreferencesHandler
 import java.io.IOException
 import java.net.URI
@@ -27,15 +28,21 @@ fun Desktop.installPreferencesHandler(handler: PreferencesHandler) {
     }
 }
 
+fun Desktop.installAboutHandler(handler: AboutHandler?) {
+    if (isSupported(Desktop.Action.APP_ABOUT)) {
+        setAboutHandler(handler)
+    }
+}
+
 fun browse(url: String, completionHandler: (Boolean) -> Unit = {}) {
     with(Desktop.getDesktop()) {
         val result = if (isSupported(Desktop.Action.BROWSE)) {
             try {
                 browse(URI.create(url))
                 true
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 false
-            } catch (e: SecurityException) {
+            } catch (_: SecurityException) {
                 false
             }
         } else false

@@ -5,7 +5,12 @@ import androidx.lifecycle.viewModelScope
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.shouldShowAboutInSeparateWindow
 import de.thomaskuenneth.cmpunitconverter.shouldShowSettingsInSeparateWindow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 enum class DialogOrSheetVisibility {
@@ -17,6 +22,7 @@ data class UiState(
     val aboutVisibility: DialogOrSheetVisibility,
     val settingsVisibility: DialogOrSheetVisibility,
     val colorSchemeMode: ColorSchemeMode,
+    val showExtendedAboutDialog: Boolean,
 )
 
 class AppViewModel(private val repository: AppRepository) : ViewModel() {
@@ -26,7 +32,8 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
             currentDestination = AppDestinations.Temperature,
             aboutVisibility = DialogOrSheetVisibility.Hidden,
             settingsVisibility = DialogOrSheetVisibility.Hidden,
-            colorSchemeMode = ColorSchemeMode.System
+            colorSchemeMode = ColorSchemeMode.System,
+            showExtendedAboutDialog = false,
         )
     )
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -34,6 +41,11 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
     init {
         repository.colorSchemeMode.onEach { colorSchemeMode -> setColorSchemeMode(colorSchemeMode) }
             .launchIn(viewModelScope)
+        repository.showExtendedAboutDialog.onEach { showExtendedAboutDialog ->
+            setShowExtendedAboutDialog(
+                showExtendedAboutDialog
+            )
+        }.launchIn(viewModelScope)
     }
 
     fun setCurrentDestination(destination: AppDestinations) {
@@ -66,6 +78,13 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
         _uiState.update { state -> state.copy(colorSchemeMode = colorSchemeMode) }
         viewModelScope.launch {
             repository.setColorSchemeMode(colorSchemeMode)
+        }
+    }
+
+    fun setShowExtendedAboutDialog(showExtendedAboutDialog: Boolean) {
+        _uiState.update { state -> state.copy(showExtendedAboutDialog = showExtendedAboutDialog) }
+        viewModelScope.launch {
+            repository.setShowExtendedAboutDialog(showExtendedAboutDialog)
         }
     }
 }

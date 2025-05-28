@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.*
+import androidx.compose.ui.window.DialogWindow
+import androidx.compose.ui.window.FrameWindowScope
+import androidx.compose.ui.window.rememberDialogState
 import de.thomaskuenneth.cmpunitconverter.app.About
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
 import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.about_short

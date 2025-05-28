@@ -7,11 +7,27 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.*
+import androidx.compose.ui.window.FrameWindowScope
+import androidx.compose.ui.window.MenuBar
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.thomaskuenneth.cmpunitconverter.app.App
 import de.thomaskuenneth.cmpunitconverter.app.DialogOrSheetVisibility
-import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.*
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.Res
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.about
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_icon
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.app_name
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.back
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.distance
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.file
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.help
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.navigate
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.quit
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.settings
+import de.thomaskuenneth.cmpunitconverter.composeapp.generated.resources.temperature
 import de.thomaskuenneth.cmpunitconverter.di.initKoin
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -26,12 +42,19 @@ fun main() = application {
         icon = painterResource(Res.drawable.app_icon),
     ) {
         App { viewModel ->
-            LaunchedEffect(Unit) {
-                with(Desktop.getDesktop()) {
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            with(Desktop.getDesktop()) {
+                LaunchedEffect(Unit) {
                     installPreferencesHandler { viewModel.setShouldShowSettings(true) }
                 }
+                LaunchedEffect(uiState.showExtendedAboutDialog) {
+                    if (uiState.showExtendedAboutDialog) {
+                        installAboutHandler { viewModel.setShouldShowAbout(true) }
+                    } else {
+                        installAboutHandler(null)
+                    }
+                }
             }
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             CMPUnitConverterMenuBar(
                 currentDestination = uiState.currentDestination,
                 exit = ::exitApplication,

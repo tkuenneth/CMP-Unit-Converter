@@ -9,6 +9,7 @@
     <string name="back">Back</string>
     <string name="settings">Settings\u2026</string>
     <string name="settings_short">Settings</string>
+    <string name="show_extended_about_dialog">Show extended About dialog</string>
 
     <string name="file">File</string>
     <string name="quit">Quit</string>

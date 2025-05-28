@@ -6,7 +6,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.text.format.DateFormat
-import androidx.compose.material3.*
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
@@ -25,6 +29,8 @@ private val context: Context by inject(Context::class.java)
 actual fun shouldUseScaffold(): Boolean = true
 
 actual fun shouldShowAboutInSeparateWindow(): Boolean = false
+
+actual fun shouldShowExtendedAboutDialogCheckbox(): Boolean = false
 
 actual fun shouldShowSettingsInSeparateWindow(): Boolean = false
 

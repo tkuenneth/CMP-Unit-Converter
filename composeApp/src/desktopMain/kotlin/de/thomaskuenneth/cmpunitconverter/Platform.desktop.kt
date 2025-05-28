@@ -22,9 +22,20 @@ actual fun shouldUseScaffold(): Boolean = false
 
 actual fun shouldShowAboutInSeparateWindow(): Boolean = true
 
+actual fun shouldShowExtendedAboutDialogCheckbox(): Boolean = operatingSystem == OperatingSystem.MacOS
+
 actual fun shouldShowSettingsInSeparateWindow(): Boolean = true
 
-actual val platformName: String = System.getProperty("os.name") ?: ""
+actual val platformName: String = StringBuilder().also {
+    val osName = System.getProperty("os.name") ?: ""
+    val osVersion = System.getProperty("os.version") ?: ""
+    val javaVendorVersion = System.getProperty("java.vendor.version") ?: ""
+    val javaVendor = System.getProperty("java.vendor") ?: ""
+    val osArch = System.getProperty("os.arch") ?: ""
+    it.append(" $osName $osVersion")
+    it.appendLine()
+    it.append("$javaVendor $javaVendorVersion ($osArch)")
+}.toString()
 
 @Composable
 actual fun defaultColorScheme(colorSchemeMode: ColorSchemeMode): ColorScheme {
