@@ -35,7 +35,7 @@ val (humanReadableVersionString, buildNumber) = with(content) {
 val appleId = System.getenv("PROD_MACOS_NOTARIZATION_APPLE_ID") ?: ""
 val appleTeamId = System.getenv("PROD_MACOS_NOTARIZATION_TEAM_ID") ?: ""
 val notarizationPassword = System.getenv("PROD_MACOS_NOTARIZATION_PWD") ?: ""
-val osOtherThanLinux = !System.getProperty("os.name").lowercase().contains("linux")
+val isMacOS = !System.getProperty("os.name").lowercase().contains("mac os x")
 
 kotlin {
     androidTarget {
@@ -44,7 +44,7 @@ kotlin {
         }
     }
 
-    if (osOtherThanLinux) listOf(
+    if (isMacOS) listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
@@ -131,7 +131,7 @@ dependencies {
         "kspAndroid",
         "kspDesktop"
     ).apply {
-        if (osOtherThanLinux)
+        if (isMacOS)
             addAll(
                 listOf(
                     "kspIosArm64",
