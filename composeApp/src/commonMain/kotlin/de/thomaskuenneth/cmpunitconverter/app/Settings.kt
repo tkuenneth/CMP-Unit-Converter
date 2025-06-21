@@ -2,7 +2,6 @@ package de.thomaskuenneth.cmpunitconverter.app
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +35,6 @@ fun Settings(viewModel: AppViewModel = koinViewModel(), modifier: Modifier = Mod
     val onClick: (ColorSchemeMode) -> Unit = { viewModel.setColorSchemeMode(it) }
     Column(
         modifier = modifier
-            .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -78,7 +76,7 @@ fun Settings(viewModel: AppViewModel = koinViewModel(), modifier: Modifier = Mod
 @Composable
 fun SettingsBottomSheet(visible: Boolean, closeSheet: () -> Unit) {
     if (visible) {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
         ModalBottomSheet(sheetState = sheetState, onDismissRequest = { closeSheet() }) {
             Settings(modifier = Modifier.align(Alignment.CenterHorizontally))
         }
@@ -104,4 +102,3 @@ fun SingleChoiceSegmentedButtonRowScope.SegmentedColorSchemeButton(
             )
         })
 }
-

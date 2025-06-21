@@ -13,6 +13,7 @@
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" tools:targetApi="tiramisu">
         <activity
             android:exported="true"
+            android:configChanges="screenSize|screenLayout"
             android:windowSoftInputMode="adjustResize"
             android:name=".MainActivity">
             <intent-filter>

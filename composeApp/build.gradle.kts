@@ -35,7 +35,7 @@ val (humanReadableVersionString, buildNumber) = with(content) {
 val appleId = System.getenv("PROD_MACOS_NOTARIZATION_APPLE_ID") ?: ""
 val appleTeamId = System.getenv("PROD_MACOS_NOTARIZATION_TEAM_ID") ?: ""
 val notarizationPassword = System.getenv("PROD_MACOS_NOTARIZATION_PWD") ?: ""
-val isMacOS = !System.getProperty("os.name").lowercase().contains("mac os x")
+val isMacOS = System.getProperty("os.name").lowercase().contains("mac os x")
 
 kotlin {
     androidTarget {

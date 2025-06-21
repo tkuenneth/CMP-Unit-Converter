@@ -74,21 +74,25 @@ fun ThreePaneScaffoldPaneScope.Converter(
                     modifier = Modifier.alignByBaseline()
                 )
             }
-            UnitsAndScalesButtonRow(
-                entries = uiState.entries,
-                selected = uiState.sourceUnit,
-                label = Res.string.from,
-                modifier = Modifier.padding(bottom = 16.dp)
-            ) { unit: UnitsAndScales ->
-                viewModel.setSourceUnit(unit)
-            }
-            UnitsAndScalesButtonRow(
-                entries = uiState.entries,
-                selected = uiState.destinationUnit,
-                label = Res.string.to,
-                modifier = Modifier.padding(bottom = 16.dp)
-            ) { unit: UnitsAndScales ->
-                viewModel.setDestinationUnit(unit)
+            Column(horizontalAlignment = Alignment.Start) {
+                UnitsAndScalesButtonRow(
+                    entries = uiState.entries,
+                    selected = uiState.sourceUnit,
+                    label = Res.string.from,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) { unit: UnitsAndScales ->
+                    viewModel.setSourceUnit(unit)
+                }
+                val filtered = uiState.entries.filter { it.unit != uiState.sourceUnit.unit }
+                val selected = with(uiState.destinationUnit) { if (filtered.contains(this)) this else filtered.first() }
+                UnitsAndScalesButtonRow(
+                    entries = filtered,
+                    selected = selected,
+                    label = Res.string.to,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) { unit: UnitsAndScales ->
+                    viewModel.setDestinationUnit(unit)
+                }
             }
             ConvertButton(enabled = enabled) { viewModel.convert() }
             ResultWithUnit(
