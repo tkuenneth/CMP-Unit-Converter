@@ -43,7 +43,7 @@ fun ThreePaneScaffoldPaneScope.Converter(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val convertedValue by viewModel.convertedValue.collectAsStateWithLifecycle()
     val enabled = remember(uiState.value, uiState.sourceUnit, uiState.destinationUnit) {
-        !viewModel.getValueAsFloat().isNaN() && uiState.sourceUnit != uiState.destinationUnit
+        !viewModel.getValueAsFloat().isNaN()
     }
     AnimatedPane {
         Column(
@@ -84,7 +84,11 @@ fun ThreePaneScaffoldPaneScope.Converter(
                     viewModel.setSourceUnit(unit)
                 }
                 val filtered = uiState.entries.filter { it.unit != uiState.sourceUnit.unit }
-                val selected = with(uiState.destinationUnit) { if (filtered.contains(this)) this else filtered.first() }
+                val selected = with(uiState.destinationUnit) {
+                    if (filtered.contains(this)) this else filtered.first().also {
+                        viewModel.setDestinationUnit(it)
+                    }
+                }
                 UnitsAndScalesButtonRow(
                     entries = filtered,
                     selected = selected,
