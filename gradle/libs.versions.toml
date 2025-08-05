@@ -16,6 +16,7 @@ kotlinx-coroutines = "1.10.2"
 adaptive = "1.1.2"
 datastore = "1.1.7"
 koin = "4.1.0"
+material3 = "1.9.0-alpha04"
 navigationCompose = "2.9.0-beta01"
 ksp = "2.2.0-2.0.2"
 sqlite = "2.5.2"
@@ -45,6 +46,7 @@ androidx-lifecycle-viewmodel-compose = { group = "org.jetbrains.androidx.lifecyc
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
+material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
