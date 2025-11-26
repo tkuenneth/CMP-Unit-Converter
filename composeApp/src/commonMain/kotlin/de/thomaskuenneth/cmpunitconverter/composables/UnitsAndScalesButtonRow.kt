@@ -30,8 +30,8 @@ import org.jetbrains.compose.resources.stringResource
 fun UnitsAndScalesButtonRow(
     entries: List<UnitsAndScales>,
     selected: UnitsAndScales,
-    label: StringResource? = null,
     modifier: Modifier = Modifier,
+    label: StringResource? = null,
     onClick: (UnitsAndScales) -> Unit
 ) {
     Row {
@@ -45,7 +45,7 @@ fun UnitsAndScalesButtonRow(
         val overflowMenuButton: @Composable (ButtonGroupMenuState) -> Unit = { menuState ->
             OutlinedIconButton(
                 onClick = {
-                    if (menuState.isExpanded) {
+                    if (menuState.isShowing) {
                         menuState.dismiss()
                     } else {
                         menuState.show()
