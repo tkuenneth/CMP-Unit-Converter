@@ -15,7 +15,9 @@ fun OutlinedIconButtonWithTooltip(
     modifier: Modifier = Modifier
 ) {
     TooltipBox(
-        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(), tooltip = {
+        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+            positioning = TooltipAnchorPosition.Above
+        ), tooltip = {
             PlainTooltip {
                 Text(text = contentDescription)
             }

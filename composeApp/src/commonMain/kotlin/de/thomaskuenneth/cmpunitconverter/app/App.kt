@@ -13,19 +13,12 @@ import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.layout.HingePolicy
-import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
-import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
-import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.expressiveLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,13 +27,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
+import de.thomaskuenneth.cmpunitconverter.NavigationState
 import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
 import de.thomaskuenneth.cmpunitconverter.composables.ConverterScreen
 import de.thomaskuenneth.cmpunitconverter.defaultColorScheme
 import de.thomaskuenneth.cmpunitconverter.distance.DistanceViewModel
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureViewModel
+import androidx.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -57,28 +51,14 @@ fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
     }
 }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-fun createAndRememberNavigator() = rememberSupportingPaneScaffoldNavigator(
-    scaffoldDirective = calculatePaneScaffoldDirective(
-        windowAdaptiveInfo = currentWindowAdaptiveInfo(), verticalHingePolicy = HingePolicy.AlwaysAvoid
-    )
-)
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun CMPUnitConverter(appViewModel: AppViewModel) {
     val uiState by appViewModel.uiState.collectAsStateWithLifecycle()
-    val navigatorStateMap = remember {
-        mutableStateMapOf<AppDestinations, ThreePaneScaffoldNavigator<Any>>()
-    }
-    key(navigatorStateMap) {
-        navigatorStateMap[AppDestinations.Temperature] = createAndRememberNavigator()
-        navigatorStateMap[AppDestinations.Distance] = createAndRememberNavigator()
-    }
+    val navigationState = remember { NavigationState() }
     ScaffoldWithBackArrow(
-        shouldShowBack = navigatorStateMap[uiState.currentDestination]!!.canNavigateBack(),
-        navigateBack = navigatorStateMap[uiState.currentDestination]!!::navigateBack,
+        shouldShowBack = navigationState.canNavigateBack,
+        navigateBack = { navigationState.navigateBack() },
         viewModel = appViewModel
     ) { paddingValues, scrollBehavior ->
         NavigationSuiteScaffold(
@@ -103,7 +83,6 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                 }
             }) {
             val navController = rememberNavController()
-            val threePaneScaffoldNavigator = navigatorStateMap[uiState.currentDestination]!!
             NavHost(
                 navController = navController,
                 startDestination = uiState.currentDestination.name,
@@ -113,14 +92,14 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                 popExitTransition = { fadeOut(animationSpec = tween(300)) }) {
                 composable(route = AppDestinations.Temperature.name) {
                     ConverterScreen(
-                        navigator = threePaneScaffoldNavigator,
+                        navigationState = navigationState,
                         viewModel = koinViewModel<TemperatureViewModel>(),
                         scrollBehavior = scrollBehavior
                     )
                 }
                 composable(route = AppDestinations.Distance.name) {
                     ConverterScreen(
-                        navigator = threePaneScaffoldNavigator,
+                        navigationState = navigationState,
                         viewModel = koinViewModel<DistanceViewModel>(),
                         scrollBehavior = scrollBehavior
                     )

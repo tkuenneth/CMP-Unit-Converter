@@ -67,8 +67,5 @@ fun ScaffoldWithBackArrow(
                 title = { Text(text = stringResource(Res.string.app_name)) })
         }) { innerPadding ->
         content(innerPadding, scrollBehavior)
-        BackHandler(shouldShowBack) {
-            navigateBackAsync()
-        }
     }
 }

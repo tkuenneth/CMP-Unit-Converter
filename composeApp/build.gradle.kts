@@ -58,6 +58,11 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
+        all {
+            compilerOptions {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
         val desktopMain by getting
 
         androidMain.dependencies {
