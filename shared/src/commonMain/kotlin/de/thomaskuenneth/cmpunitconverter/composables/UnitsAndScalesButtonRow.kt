@@ -3,8 +3,8 @@ package de.thomaskuenneth.cmpunitconverter.composables
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import de.thomaskuenneth.cmpunitconverter.AppIcons
+import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ButtonGroupMenuState
@@ -53,7 +53,7 @@ fun UnitsAndScalesButtonRow(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.MoreVert,
+                    imageVector = vectorResource(AppIcons.MoreVert),
                     contentDescription = null
                 )
             }

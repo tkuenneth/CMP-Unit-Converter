@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
+import de.thomaskuenneth.cmpunitconverter.AppIcons
+import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -86,7 +86,7 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 OutlinedIconButtonWithTooltip(
-                    icon = Icons.Default.Clear,
+                    icon = vectorResource(AppIcons.Clear),
                     contentDescription = stringResource(Res.string.clear_conversions_history),
                     onClick = clearConversionsHistory,
                     enabled = uiState.elements.isNotEmpty()

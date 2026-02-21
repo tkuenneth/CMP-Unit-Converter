@@ -12,6 +12,10 @@ Among others, these libraries are used:
 
 Unlike many other samples, this one has a strong focus on platform integration. For example, on the Desktop, you can access the settings, the *About* dialog, and all top-level destinations from the menu bar. On Android and iOS, a top app bar is used. The app supports dark and light mode on all platforms. Database and configuration files are stored in the preferred locations.
 
+### A note about icons
+
+The [official Android Compose documentation on Material icons](https://developer.android.com/develop/ui/compose/graphics/images/material) recommends against adding *material-icons-extended* as a direct dependency (it is very large and can significantly increase build time) and instead suggests copying only the icons you need or using [Google Font Icons](https://fonts.google.com/icons) (e.g. as SVG or Android vector drawable). This app follows that approach: the icons in use are stored as vector drawables in `shared/src/commonMain/composeResources/drawable/` and referenced via `AppIcons`. Those icon assets are from the [Material Design Icons](https://github.com/google/material-design-icons) project (Apache License 2.0).
+
 ### What's up next?
 
 - Regularly updating dependencies

@@ -35,6 +35,7 @@ import de.thomaskuenneth.cmpunitconverter.distance.DistanceViewModel
 import de.thomaskuenneth.cmpunitconverter.temperature.TemperatureViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -72,7 +73,7 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                         onClick = { appViewModel.setCurrentDestination(it) },
                         icon = {
                             Icon(
-                                imageVector = it.icon,
+                                imageVector = vectorResource(it.iconRes),
                                 contentDescription = stringResource(it.contentDescription)
                             )
                         },

@@ -2,10 +2,8 @@ package de.thomaskuenneth.cmpunitconverter
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
+import de.thomaskuenneth.cmpunitconverter.AppIcons
+import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,7 +42,7 @@ fun ScaffoldWithBackArrow(
                 navigationIcon = {
                     if (shouldShowBack) IconButton(onClick = navigateBackAsync) {
                         Icon(
-                            Icons.AutoMirrored.Default.ArrowBack,
+                            vectorResource(AppIcons.ArrowBack),
                             contentDescription = stringResource(Res.string.back)
                         )
                     }
@@ -53,13 +51,13 @@ fun ScaffoldWithBackArrow(
                 actions = {
                     IconButton(onClick = { viewModel.setShouldShowSettings(true) }) {
                         Icon(
-                            Icons.Default.Settings,
+                            vectorResource(AppIcons.Settings),
                             contentDescription = stringResource(Res.string.settings_short)
                         )
                     }
                     IconButton(onClick = { viewModel.setShouldShowAbout(true) }) {
                         Icon(
-                            Icons.Default.Info,
+                            vectorResource(AppIcons.Info),
                             contentDescription = stringResource(Res.string.about_short)
                         )
                     }

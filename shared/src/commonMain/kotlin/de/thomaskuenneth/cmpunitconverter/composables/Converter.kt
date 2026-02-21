@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
+import de.thomaskuenneth.cmpunitconverter.AppIcons
+import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -67,7 +67,7 @@ fun ThreePaneScaffoldPaneScope.Converter(
                     onValueChange = { viewModel.setValue(it) })
                 Spacer(modifier = Modifier.width(16.dp))
                 OutlinedIconButtonWithTooltip(
-                    icon = Icons.Default.Clear,
+                    icon = vectorResource(AppIcons.Clear),
                     contentDescription = stringResource(Res.string.clear),
                     onClick = { viewModel.setValue(Float.NaN) },
                     enabled = !uiState.value.isNaN(),
