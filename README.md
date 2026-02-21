@@ -9,8 +9,14 @@ Among others, these libraries are used:
 - [DataStore](https://developer.android.com/kotlin/multiplatform/datastore)
 - [Navigation Compose](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-navigation-routing.html)
 - [Room](https://developer.android.com/kotlin/multiplatform/room)
+- [Lifecycle (ViewModel / Runtime Compose)](https://developer.android.com/jetpack/androidx/releases/lifecycle)
+- [Kotlinx DateTime](https://github.com/Kotlin/kotlinx-datetime)
 
 Unlike many other samples, this one has a strong focus on platform integration. For example, on the Desktop, you can access the settings, the *About* dialog, and all top-level destinations from the menu bar. On Android and iOS, a top app bar is used. The app supports dark and light mode on all platforms. Database and configuration files are stored in the preferred locations.
+
+### Noteworthy
+
+This project uses the [new recommended Compose Multiplatform project structure](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/): a shared multiplatform library module (`:shared`) consumed by separate app modules for Android (`:composeApp`) and desktop (`:desktopApp`), rather than a single module combining the app and shared code.
 
 ### A note about icons
 
