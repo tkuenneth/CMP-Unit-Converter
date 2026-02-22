@@ -1,11 +1,8 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import java.io.FileInputStream
 import java.io.InputStreamReader
 
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
 
@@ -28,10 +25,6 @@ val (humanReadableVersionString, buildNumber) = with(content) {
         regexSecond.find(this)?.groupValues?.get(1)
     )
 }
-
-val appleId = System.getenv("PROD_MACOS_NOTARIZATION_APPLE_ID") ?: ""
-val appleTeamId = System.getenv("PROD_MACOS_NOTARIZATION_TEAM_ID") ?: ""
-val notarizationPassword = System.getenv("PROD_MACOS_NOTARIZATION_PWD") ?: ""
 
 android {
     namespace = "de.thomaskuenneth.cmpunitconverter"
@@ -57,14 +50,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        androidTarget {
-            compilerOptions {
-                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-            }
-        }
     }
 }
 

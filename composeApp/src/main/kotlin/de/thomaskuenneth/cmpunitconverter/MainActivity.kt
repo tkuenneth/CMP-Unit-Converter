@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.app.App
 import de.thomaskuenneth.cmpunitconverter.app.AppViewModel
 import de.thomaskuenneth.cmpunitconverter.shared.generated.resources.Res

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
@@ -11,7 +11,11 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
+    androidLibrary {
+        namespace = "de.thomaskuenneth.cmpunitconverter.shared"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources { enable = true }
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -77,19 +81,6 @@ kotlin {
     }
 }
 
-android {
-    namespace = "de.thomaskuenneth.cmpunitconverter.shared"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
 compose.resources {
     packageOfResClass = "de.thomaskuenneth.cmpunitconverter.shared.generated.resources"
     publicResClass = true
@@ -117,7 +108,3 @@ dependencies {
 room {
     schemaDirectory("$projectDir/schemas")
 }
-
-// Reuse version extraction for Desktop app if needed.
-// The desktop app has been moved to its own :desktopApp module to ensure a clean decoupling.
-// This structure follows the recommended KMP layout, especially for AGP 9.0 compatibility.

@@ -16,7 +16,7 @@ Unlike many other samples, this one has a strong focus on platform integration. 
 
 ### Noteworthy
 
-This project uses the [new recommended Compose Multiplatform project structure](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/): a shared multiplatform library module (`:shared`) consumed by separate app modules for Android (`:composeApp`) and desktop (`:desktopApp`), rather than a single module combining the app and shared code.
+This project uses the [new recommended Compose Multiplatform project structure](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/): a shared multiplatform library module (`:shared`) consumed by separate app modules for Android (`:composeApp`) and desktop (`:desktopApp`), rather than a single module combining the app and shared code. The Android build uses AGP 9 with the new Android KMP library plugin in `:shared` and built-in Kotlin support in the app module (no separate Kotlin Android plugin). The iOS app lives in the `iosApp/` Xcode project and consumes the same shared framework.
 
 ### A note about icons
 
