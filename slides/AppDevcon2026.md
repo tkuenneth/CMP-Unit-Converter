@@ -185,6 +185,16 @@ Crucially, this is where you initialize your Dependency Injection—like Koin. Y
 * Google hasn't announced a multiplatform roadmap for Hilt. So for shared code today, we use a pure Kotlin option (for example, Koin)
 * You define modules in shared code; platform supplies the actuals (e.g. where's the data dir). One container, init once per platform
 
+```kotlin
+// commonMain: one module, platform supplies DB path via expect/actual
+val appModule = module {
+    single<AppDatabase> { getRoomDatabase(getDatabaseBuilder()) }  // getDatabaseBuilder() is expect/actual
+    viewModelOf(::AppViewModel)
+    viewModelOf(::TemperatureViewModel)
+    viewModelOf(::DistanceViewModel)
+}
+```
+
 **Speaker Notes:**
 I know what many of you are thinking: "Wait, isn't Hilt the recommended Jetpack DI?"
 Yes, for Android, it is fantastic. But Hilt relies heavily on Dagger and Java annotation processing, which simply does not work on iOS or Desktop.
@@ -208,6 +218,24 @@ It runs on Android, iOS, and Desktop. But crucially, it is built entirely on the
 * In shared: new plugin `com.android.kotlin.multiplatform.library`, and you use `androidLibrary { }` inside the `kotlin { }` block—not the old top-level `android { }`. The app module gets built-in Kotlin from AGP; you don't apply the Kotlin Android plugin there.
 * Gradle 9.1, AGP 9. Mental shift, but it pays off. The host apps are thin; the library does the heavy lifting.
 
+```kotlin
+// shared/build.gradle.kts
+plugins {
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    // ...
+}
+kotlin {
+    androidLibrary { namespace = "..."; ... }
+    // ...
+}
+
+// composeApp/build.gradle.kts
+dependencies {
+    implementation(project(":shared"))
+    // ...
+}
+```
+
 **Speaker Notes:**
 When you open the project, you'll notice the structure immediately. It follows the modern AGP 9 guidelines. Gradle 9.1 and AGP 9 are the baseline. In this repo the modules are: shared (the library), composeApp (the Android app), desktopApp, and iosApp is a separate Xcode project.
 Your Android app—here, composeApp—is its own module: just application code, no Kotlin Multiplatform plugin. The shared module uses the new `com.android.kotlin.multiplatform.library` plugin. In shared's build file you configure the Android target with `androidLibrary { }` inside the `kotlin { }` block, not the old top-level `android { }` block. The app module uses AGP's built-in Kotlin, so you don't apply the Kotlin Android plugin there. Android is just another target, like Desktop or iOS.
@@ -219,6 +247,19 @@ This clean separation is key: the app is a thin shell, the library does the heav
 * Icons and strings go in composeResources. You reference them with the generated Res API—Res.string.app_name, Res.drawable.ic_thermostat.
 * No XML for Android and Localizable.strings for iOS. One place, native look everywhere.
 
+```kotlin
+// commonMain/.../ConverterScreen.kt
+@Composable
+fun ConverterScreen(
+    viewModel: AbstractConverterViewModel,
+    scrollBehavior: TopAppBarScrollBehavior
+) { ... }
+
+// Res API (e.g. AppIcons.kt)
+val Thermostat: DrawableResource get() = Res.drawable.ic_thermostat
+// In composables: stringResource(Res.string.app_name)
+```
+
 **Speaker Notes:**
 In `commonMain`, we have `ConverterScreen.kt`. This is our UI. It's standard Compose code.
 But notice the resources. We don't have XML strings for Android and Localizable.strings for iOS. We put everything in the `composeResources` folder. We access them in Kotlin using the generated `Res` object—`Res.string` or `Res.drawable`.
@@ -229,6 +270,18 @@ At compile time, CMP bundles these into the correct native format for each platf
 * The converter ViewModels (e.g. TemperatureViewModel, DistanceViewModel) hold the math and state. Defined in a Koin module in commonMain; the UI gets them via koinViewModel().
 * They don't know (or care) if they're running on an iPhone or a Pixel. Same classes everywhere.
 
+```kotlin
+// commonMain/.../di/AppModule.kt
+val appModule = module {
+    single<AppDatabase> { getRoomDatabase(getDatabaseBuilder()) }
+    viewModelOf(::TemperatureViewModel)
+    viewModelOf(::DistanceViewModel)
+}
+
+// In a composable (e.g. App.kt)
+viewModel = koinViewModel<TemperatureViewModel>()
+```
+
 **Speaker Notes:**
 The brain of the app is the converter ViewModels—we have TemperatureViewModel and DistanceViewModel, both in shared code and registered with Koin. When the UI loads, it asks for the ViewModel via koinViewModel(). It doesn't care if it's running on a Pixel or an iPhone. The ViewModels survive configuration changes on Android and manage state on iOS seamlessly. Same classes everywhere.
 
@@ -237,6 +290,18 @@ The brain of the app is the converter ViewModels—we have TemperatureViewModel 
 * Room saves conversion history. DataStore saves the last selected unit. All in shared code.
 * The only platform bit: a small expect/actual for where to put the DB file (e.g. Application Support on iOS, getDatabasePath on Android).
 * No CoreData, no SharedPreferences. One persistence layer.
+
+```kotlin
+// commonMain/Platform.kt
+expect fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase>
+
+// androidMain: path from context.getDatabasePath("...")
+actual fun getDatabaseBuilder() = Room.databaseBuilder<AppDatabase>(
+    context = context,
+    name = context.getDatabasePath("CMPUnitConverter.db").absolutePath
+)
+// iosMain: path from getDirectoryForType(DirectoryType.Database) → Application Support
+```
 
 **Speaker Notes:**
 For data, we use Room and DataStore.
@@ -247,6 +312,21 @@ Everything else—the DAOs, the queries, the preference keys—is shared. We are
 
 * Android: Application calls initKoin at startup; MainActivity calls setContent. iOS: ComposeView inside a ViewController. Desktop: main() launches the window.
 * One quirk: Kotlin/Native exports Unit-returning top-level functions with a "do" prefix in Swift. So you have initKoin() in Kotlin but call doInitKoin() from Swift. Don't "fix" it—that's the convention.
+
+```kotlin
+// commonMain/.../di/KoinApp.kt
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin {
+        includes(config)
+        modules(appModule)
+    }
+}
+```
+
+```swift
+// iOS (Swift). Kotlin exports Unit-returning functions with "do" prefix:
+KoinAppKt.doInitKoin()
+```
 
 **Speaker Notes:**
 The platform apps are just entry points. On Android, the Application class calls initKoin at startup (e.g. in CMPUnitConverterApp); MainActivity then calls setContent. On iOS, ComposeView inside a ViewController. On Desktop, main() launches the window.
