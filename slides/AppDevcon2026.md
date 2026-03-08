@@ -3,7 +3,7 @@
 ### Refuelling your Jetpack
 
 **Speaker Notes:**
-Welcome to "Refuelling your Jetpack.
+Welcome to "Refuelling your Jetpack."
 
 If you are an Android developer, you know Jetpack. It changed how we build Android apps. 
 
@@ -35,27 +35,22 @@ Google gave us the "Support Library" to fix this. It worked, but it was a mess. 
 
 ### The Reboot – Enter Android Jetpack
 
-* At Google I/O 2018 the great reboot to `androidx.*` was announced
-* Libraries finally unbundled. Own release cycles, own versions. You could actually reason about compatibility.
+* 2017: Architecture Components (ViewModel, Room, Lifecycle, LiveData) announced at I/O; 1.0 that November
+* 2018: Jetpack and the great reboot to `androidx.*`—libraries unbundled, own release cycles, semantic versioning
 * Opinionated architecture: from "do it however" to "here's the best way"
 
 **Speaker Notes:**
-That reboot came at I/O 2018 with **Android Jetpack**.
-We migrated everything to the `androidx.*` namespace.
-It was strictly unbundled. Each library had its own version and its own update cycle. It introduced semantic versioning so we knew what would break.
-And it introduced the "Architecture Components"—finally telling us *how* to architect an app properly.
+The reboot came in two steps. In 2017, Google announced **Android Architecture Components** at I/O—ViewModel, Room, Lifecycle, LiveData—and they went 1.0 stable that November. That was the "how to architect" piece. Then at I/O 2018 came **Jetpack**: the umbrella name and the migration to `androidx.*`. Everything moved to the new namespace. Libraries were strictly unbundled—own versions, own cycles, semantic versioning so we could reason about compatibility. So: Architecture Components in 2017, Jetpack and androidx in 2018.
 
 ### Fast forward to the Jetpack Jungle
 
 * Today there are 130+ artifacts: not just modularity; instead, it's baggage
-* Zombie libraries: deprecated, duplicate, still haunting the docs
+* Zombie libraries: deprecated, duplicate, still haunting the docs—e.g. `lifecycle-extensions` (deprecated, split into separate lifecycle-* libs), `security-crypto` (deprecated, no clear successor)
 * How to build a modern architecture with three ways to do the same thing?
 
 **Speaker Notes:**
 Fast forward to today. We have solved one problem but created another: **The Jetpack Jungle.**
-There are now over 130 artifacts in the suite.
-We have historical baggage. We have deprecated libraries sitting next to modern ones. We have three different ways to do background work, two ways to do navigation, and endless UI toolkits.
-The challenge is no longer "how do I do this?" but "which of these 130 libraries should I actually use?"
+There are now over 130 artifacts in the suite. We have historical baggage. Deprecated libraries still sit next to modern ones—for example **lifecycle-extensions**, which Google deprecated and replaced with separate lifecycle-runtime, lifecycle-viewmodel, and so on, but it still turns up in old tutorials. Or **security-crypto**, deprecated with no clear official successor, but still in the docs. We have three different ways to do background work, two ways to do navigation, and endless UI toolkits. The challenge is no longer "how do I do this?" but "which of these 130 libraries should I actually use?"
 
 ### The Official Architecture
 
@@ -110,7 +105,7 @@ Cross-platform frameworks like Xamarin were using the MVVM pattern to share logi
 The good news is that **Android and KMP have finally adapted this proven standard.**
 You put your `ViewModel` in shared code. It survives configuration changes. It holds your state. It’s the industry standard for a reason, and now it’s the standard for our shared code too.
 
-### Slide 10: Navigation
+### Navigation
 
 * With **Navigation Compose** you define your graph and routes once in `commonMain`. Type-safe.
 * Back stack and deep links work the same on Android, iOS, and Desktop
@@ -123,8 +118,8 @@ Whether it's an Android Activity, an iOS View Controller, or a Desktop Window, t
 
 ### Persistence: Room
 
-* Room in KMP is the same thing: SQLite, DAOs, Flow for reactive queries. Same annotations.
-* It validates your SQL at build time—no nasty runtime surprises. Runs on each platform's native SQLite.
+* Room is an ORM on SQLite: Kotlin classes → tables, DAOs, Flow for reactive queries. Same in KMP.
+* Compile-time SQL verification—no nasty runtime surprises. Runs on each platform's native SQLite.
 * One database layer in shared code. ViewModels consume it the same way everywhere.
 
 **Speaker Notes:**
@@ -145,7 +140,7 @@ Every app needs to store configuration—whether it's a dark mode toggle, a sess
 Usually, this means writing one implementation for iOS using `UserDefaults` and another for Android using `SharedPreferences`.
 With **DataStore**, we unify this. It is a modern, multiplatform key-value store built entirely on **Kotlin Coroutines**. It is asynchronous by default, preventing UI freezes on any platform. You write your preference logic once in shared code, and it handles the native storage details for you.
 
-### Slide 13: Three platforms, one architecture
+### Three platforms, one architecture
 
 * One shared module holds almost everything: UI, ViewModels, navigation, Room, DataStore
 * Platform apps are thin shells—Android, iOS, Desktop. They host and build. That's it.
@@ -288,7 +283,7 @@ So, what did we cover? The story—where Jetpack came from, the jungle of 130+ a
 ### What I left out
 
 * **Testing.** You can unit test ViewModels, repositories, and use cases in commonTest (or JVM). Room: in-memory DB, same DAOs. expect/actual: test doubles. The docs and the sample repo have the details.
-* **Version alignment.** We mentioned it in the checklist—activity-compose and Compose versions must match. When you upgrade, check the compatibility tables. It saves a lot of pain.
+* **Version alignment.** We had a slide on it—activity-compose and Compose versions must match. When you upgrade, check the compatibility tables. It saves a lot of pain.
 * **What's not (yet) in KMP.** WorkManager, CameraX, and some others are still Android-only. For those you keep them in the app module or find alternatives. The Golden Path stack we used is the solid core.
 
 **Speaker Notes:**
