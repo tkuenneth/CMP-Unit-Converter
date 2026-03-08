@@ -334,12 +334,12 @@ There is one little 'gotcha' I want to highlight on iOS. When we export our Kotl
 
 ### Version alignment
 
-* Keep Compose Multiplatform, Compose Compiler, and Kotlin in compatible versions. The docs have tables—use them.
-* Your Android app's activity-compose must match the Compose version the shared module uses. If they're out of sync, you can get NoSuchMethodError at setContent and other runtime surprises.
+* Keep Compose Multiplatform, Compose Compiler plugin, and Kotlin Multiplatform plugin in sync. The docs have tables—use them.
+* Your Android app's `activity-compose` must match the Compose version the shared module uses. If they're out of sync, you can get `NoSuchMethodError` at `setContent` and other runtime surprises.
 * When you upgrade, check the compatibility page first. It saves a lot of debugging.
 
 **Speaker Notes:**
-One of the most common pitfalls is version mismatch. Your shared module pulls in Compose Multiplatform and a specific Compose runtime. Your Android app uses activity-compose to call setContent. If activity-compose was built for a different Compose version, you get crashes like NoSuchMethodError at runtime. So align activity-compose with the Jetpack Compose version that Compose Multiplatform uses—there's a compatibility table in the docs. Also keep the Compose Compiler version in sync with your Kotlin version. When in doubt, check the Compose Multiplatform and AGP compatibility pages before you upgrade. Practical habit that pays off.
+One of the most common pitfalls is version mismatch. Your shared module pulls in Compose Multiplatform and a specific Compose runtime. Your Android app uses `activity-compose` to call `setContent`. If `activity-compose` was built for a different Compose version, you get crashes like `NoSuchMethodError` at runtime. So align `activity-compose` with the Jetpack Compose version that Compose Multiplatform uses—there's a compatibility table in the docs. Also keep the Compose Compiler plugin version in sync with your Kotlin Multiplatform plugin. When in doubt, check the Compose Multiplatform and AGP compatibility pages before you upgrade. That habit pays off.
 
 ### Lessons from the trenches
 
@@ -348,7 +348,7 @@ One of the most common pitfalls is version mismatch. Your shared module pulls in
 * Put platform quirks behind expect/actual and document them (like doInitKoin). Keeps shared code clean and stops people "fixing" what isn't broken.
 
 **Speaker Notes:**
-A few things that help in practice. First, version alignment really matters—Compose, Kotlin, activity-compose. Check the docs and compatibility tables before you upgrade; it saves a lot of pain. Second, if you're starting fresh, use the AGP 9 structure from day one. Migrating an old single-module app to the new structure works, but it's more work. Third, expect/actual is your friend. Put every platform quirk behind an expect declaration, implement it per platform, and document the odd ones—like doInitKoin on iOS—so your future self or your team don't "fix" what isn't broken. That keeps the shared code clean and the architecture solid.
+A few other things help in practice. If you're starting fresh, use the AGP 9 structure from day one. Migrating an old single-module app to the new structure works, but it's more work. And expect/actual is your friend: put every platform quirk behind an expect declaration, implement it per platform, and document the odd ones—like doInitKoin on iOS—so your future self or your team don't "fix" what isn't broken. That keeps the shared code clean and the architecture solid.
 
 ### Time to wrap things up: what I showed you
 
@@ -363,11 +363,11 @@ So, what did we cover? The story—where Jetpack came from, the jungle of 130+ a
 ### What I left out
 
 * **Testing.** You can unit test ViewModels, repositories, and use cases in commonTest (or JVM). Room: in-memory DB, same DAOs. expect/actual: test doubles. The docs and the sample repo have the details.
-* **Version alignment.** We had a slide on it—activity-compose and Compose versions must match. When you upgrade, check the compatibility tables. It saves a lot of pain.
+* **Version alignment.** We had a slide on it—`activity-compose` and Compose versions must match. When you upgrade, check the compatibility tables. It saves a lot of pain.
 * **What's not (yet) in KMP.** WorkManager, CameraX, and some others are still Android-only. For those you keep them in the app module or find alternatives. The Golden Path stack we used is the solid core.
 
 **Speaker Notes:**
-I didn't cover everything. Testing: your shared module is highly testable. ViewModels, repositories, use cases—you can run them in commonTest or on the JVM. Room works with an in-memory database; same DAOs and entities. For expect/actual you supply test implementations. The Kotlin and Android docs and the CMP Unit Converter repo show how. Version alignment: we touched it in the checklist. When you upgrade, align activity-compose with the Compose version your shared module uses, and check the compatibility pages. And what's not in KMP yet: WorkManager, CameraX, a few others. For those you stay in the Android app module or look for community options. The stack we focused on is the part that's officially supported and where you'll spend most of your time.
+I didn't cover everything. Testing: your shared module is highly testable. ViewModels, repositories, use cases—you can run them in commonTest or on the JVM. Room works with an in-memory database; same DAOs and entities. For expect/actual you supply test implementations. The Kotlin and Android docs and the CMP Unit Converter repo show how. Version alignment: we touched it in the checklist. When you upgrade, align `activity-compose` with the Compose version your shared module uses, and check the compatibility pages. And what's not in KMP yet: WorkManager, CameraX, a few others. For those you stay in the Android app module or look for community options. The stack we focused on is the part that's officially supported and where you'll spend most of your time.
 
 ### Jetpack roadmap beyond Android
 
