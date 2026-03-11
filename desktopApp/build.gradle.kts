@@ -65,7 +65,7 @@ compose.desktop {
                 bundleID = "de.thomaskuenneth.cmpunitconverter.CMPUnitConverter"
                 iconFile.set(rootProject.file("artwork/app_icon_desktop.icns"))
                 signing {
-                    sign.set(true)
+                    sign.set(false)
                     identity.set("Thomas Kuenneth")
                 }
                 notarization {
