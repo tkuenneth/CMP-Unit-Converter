@@ -22,10 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import de.thomaskuenneth.cmpunitconverter.AppDestinations
 import de.thomaskuenneth.cmpunitconverter.NavigationState
 import de.thomaskuenneth.cmpunitconverter.ScaffoldWithBackArrow
@@ -83,36 +82,42 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                     )
                 }
             }) {
-            val navController = rememberNavController()
-            NavHost(
-                navController = navController,
-                startDestination = uiState.currentDestination.name,
-                enterTransition = { fadeIn(animationSpec = tween(300)) },
-                exitTransition = { fadeOut(animationSpec = tween(300)) },
-                popEnterTransition = { fadeIn(animationSpec = tween(300)) },
-                popExitTransition = { fadeOut(animationSpec = tween(300)) }) {
-                composable(route = AppDestinations.Temperature.name) {
-                    ConverterScreen(
-                        navigationState = navigationState,
-                        viewModel = koinViewModel<TemperatureViewModel>(),
-                        scrollBehavior = scrollBehavior
-                    )
+            val backStack = rememberNavBackStack(
+                routeSavedStateConfiguration,
+                when (uiState.currentDestination) {
+                    AppDestinations.Temperature -> TemperatureRoute
+                    AppDestinations.Distance -> DistanceRoute
                 }
-                composable(route = AppDestinations.Distance.name) {
-                    ConverterScreen(
-                        navigationState = navigationState,
-                        viewModel = koinViewModel<DistanceViewModel>(),
-                        scrollBehavior = scrollBehavior
-                    )
-                }
-            }
-            LaunchedEffect(uiState.currentDestination) {
-                navController.navigate(uiState.currentDestination.name) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
+            )
+            NavDisplay(
+                backStack = backStack,
+                onBack = { backStack.removeLastOrNull() },
+                entryProvider = entryProvider {
+                    entry<TemperatureRoute> {
+                        ConverterScreen(
+                            navigationState = navigationState,
+                            viewModel = koinViewModel<TemperatureViewModel>(),
+                            scrollBehavior = scrollBehavior
+                        )
                     }
-                    launchSingleTop = true
-                    restoreState = true
+                    entry<DistanceRoute> {
+                        ConverterScreen(
+                            navigationState = navigationState,
+                            viewModel = koinViewModel<DistanceViewModel>(),
+                            scrollBehavior = scrollBehavior
+                        )
+                    }
+                }
+            )
+            LaunchedEffect(uiState.currentDestination) {
+                val targetRoute = when (uiState.currentDestination) {
+                    AppDestinations.Temperature -> TemperatureRoute
+                    AppDestinations.Distance -> DistanceRoute
+                }
+                val current = backStack.lastOrNull()
+                if (current != targetRoute) {
+                    backStack.clear()
+                    backStack.add(targetRoute)
                 }
             }
             AboutBottomSheet(visible = uiState.aboutVisibility == DialogOrSheetVisibility.Sheet) {
