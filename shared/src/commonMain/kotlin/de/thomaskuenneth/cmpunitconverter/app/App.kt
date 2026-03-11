@@ -56,6 +56,10 @@ fun App(platformContent: @Composable (AppViewModel) -> Unit = {}) {
 fun CMPUnitConverter(appViewModel: AppViewModel) {
     val uiState by appViewModel.uiState.collectAsStateWithLifecycle()
     val navigationState = remember { NavigationState() }
+    val backStack = rememberNavBackStack(
+        routeSavedStateConfiguration,
+        TemperatureRoute
+    )
     ScaffoldWithBackArrow(
         shouldShowBack = navigationState.canNavigateBack,
         navigateBack = { navigationState.navigateBack() },
@@ -69,7 +73,17 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                 AppDestinations.entries.forEach {
                     item(
                         selected = it == uiState.currentDestination,
-                        onClick = { appViewModel.setCurrentDestination(it) },
+                        onClick = {
+                            val targetRoute = when (it) {
+                                AppDestinations.Temperature -> TemperatureRoute
+                                AppDestinations.Distance -> DistanceRoute
+                            }
+                            val current = backStack.lastOrNull()
+                            if (current != targetRoute) {
+                                backStack.clear()
+                                backStack.add(targetRoute)
+                            }
+                        },
                         icon = {
                             Icon(
                                 imageVector = vectorResource(it.iconRes),
@@ -82,13 +96,6 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                     )
                 }
             }) {
-            val backStack = rememberNavBackStack(
-                routeSavedStateConfiguration,
-                when (uiState.currentDestination) {
-                    AppDestinations.Temperature -> TemperatureRoute
-                    AppDestinations.Distance -> DistanceRoute
-                }
-            )
             NavDisplay(
                 backStack = backStack,
                 onBack = { backStack.removeLastOrNull() },
@@ -109,6 +116,19 @@ fun CMPUnitConverter(appViewModel: AppViewModel) {
                     }
                 }
             )
+            // BackStack -> ViewModel (source of truth for rendering)
+            LaunchedEffect(backStack.lastOrNull()) {
+                val destination = when (backStack.lastOrNull()) {
+                    null,
+                    TemperatureRoute -> AppDestinations.Temperature
+                    DistanceRoute -> AppDestinations.Distance
+                    else -> AppDestinations.Temperature
+                }
+                if (uiState.currentDestination != destination) {
+                    appViewModel.setCurrentDestination(destination)
+                }
+            }
+            // ViewModel changes from outside (e.g. desktop menu) -> BackStack
             LaunchedEffect(uiState.currentDestination) {
                 val targetRoute = when (uiState.currentDestination) {
                     AppDestinations.Temperature -> TemperatureRoute
