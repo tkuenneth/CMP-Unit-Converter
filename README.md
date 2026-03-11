@@ -7,7 +7,7 @@ Among others, these libraries are used:
 - [Koin](https://insert-koin.io/)
 - [Compose Material 3 Adaptive](https://developer.android.com/jetpack/androidx/releases/compose-material3-adaptive)
 - [DataStore](https://developer.android.com/kotlin/multiplatform/datastore)
-- [Navigation Compose](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-navigation-routing.html)
+- [Navigation 3 for Compose Multiplatform](https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html)
 - [Room](https://developer.android.com/kotlin/multiplatform/room)
 - [Lifecycle (ViewModel / Runtime Compose)](https://developer.android.com/jetpack/androidx/releases/lifecycle)
 - [Kotlinx DateTime](https://github.com/Kotlin/kotlinx-datetime)
@@ -25,24 +25,25 @@ The [official Android Compose documentation on Material icons](https://developer
 ### What's up next?
 
 - Regularly updating dependencies
+- Exploring deeper Navigation 3 patterns (more routes, back stack–driven state, and adaptive layouts) as the library evolves
 
-### Note to myself ;-)
+### Run and build from the command line
 
-The project contains a few workarounds to make the build smooth across platforms and targets. We should occasionally check if the workarounds are still necessary.
+**Android (build & install debug):**
 
-- Fix `java.lang.NoClassDefFoundError: sun/misc/Unsafe` by adding
-
-```
-modules("jdk.unsupported")
-modules("jdk.unsupported.desktop")
+```bash
+./gradlew :composeApp:installDebug
 ```
 
-- Fix `could not resolve all files for configuration ':kotlinNativeBundleConfiguration'` on Linux on ARM by adding
+**Desktop (run the app):**
 
+```bash
+./gradlew :desktopApp:run
 ```
-if (!System.getProperty("os.name").lowercase().contains("linux"))
+
+**iOS (build for a simulator):**
+
+```bash
+xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16e'
 ```
 
-- Refine *rules.pro*
-
-While this preliminary version seems to work, it needs some more love for sure
