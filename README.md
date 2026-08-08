@@ -29,6 +29,8 @@ The [official Android Compose documentation on Material icons](https://developer
 
 ### Run and build from the command line
 
+*IntelliJ IDEA* 2026.2 currently supports the Android Gradle Plugin up to 9.1.0, while this project uses AGP 9.3.1. Until the IDE catches up, use the commands below (or *Android Studio*) to build and run.
+
 **Android (build & install debug):**
 
 ```bash

@@ -1,7 +1,7 @@
 // Pin Kotlin Gradle plugin for KMP/shared (AGP 9 defaults to 2.2.10)
 buildscript {
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10")
     }
 }
 
