@@ -10,8 +10,9 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SingleChoiceSegmentedButtonRowScope
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -76,7 +77,7 @@ fun Settings(viewModel: AppViewModel = koinViewModel(), modifier: Modifier = Mod
 @Composable
 fun SettingsBottomSheet(visible: Boolean, closeSheet: () -> Unit) {
     if (visible) {
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+        val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
         ModalBottomSheet(sheetState = sheetState, onDismissRequest = { closeSheet() }) {
             Settings(modifier = Modifier.align(Alignment.CenterHorizontally))
         }

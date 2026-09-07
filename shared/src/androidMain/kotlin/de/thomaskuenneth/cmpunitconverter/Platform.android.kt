@@ -77,7 +77,7 @@ actual fun Float.convertToLocalizedString(digits: Int): String {
             maximumFractionDigits = digits
         }
         return try {
-            if (!isNaN()) format(toFloat()) else ""
+            if (!isNaN()) format(this@convertToLocalizedString) else ""
         } catch (_: IllegalArgumentException) {
             ""
         }

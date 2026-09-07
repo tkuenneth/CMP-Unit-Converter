@@ -7,7 +7,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.HingePolicy
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
@@ -36,7 +36,8 @@ fun ConverterScreen(
 ) {
     val navigator = rememberSupportingPaneScaffoldNavigator(
         scaffoldDirective = calculatePaneScaffoldDirective(
-            windowAdaptiveInfo = currentWindowAdaptiveInfo(), verticalHingePolicy = HingePolicy.AlwaysAvoid
+            windowAdaptiveInfo = currentWindowAdaptiveInfoV2(),
+            verticalHingePolicy = HingePolicy.AlwaysAvoid,
         )
     )
     val viewModelState by viewModel.uiState.collectAsStateWithLifecycle()

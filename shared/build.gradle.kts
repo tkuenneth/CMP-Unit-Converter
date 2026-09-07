@@ -11,7 +11,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary {
+    android {
         namespace = "de.thomaskuenneth.cmpunitconverter.shared"
         // API 37 is installed as platforms/android-37.0 (not android-37); select that explicitly.
         compileSdk {
@@ -46,10 +46,7 @@ kotlin {
                 freeCompilerArgs.add("-Xexpect-actual-classes")
             }
         }
-        val desktopMain by getting
-
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.activity.compose)
         }
@@ -60,7 +57,7 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
-            implementation(libs.compose.components.ui.tooling.preview)
+            implementation(libs.compose.ui.tooling.preview)
 
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.adaptive)
@@ -78,7 +75,7 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
         }
-        desktopMain.dependencies {
+        getByName("desktopMain").dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
