@@ -1,5 +1,6 @@
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -58,8 +59,14 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
+
 dependencies {
-    implementation(project(":shared"))
+    implementation(projects.shared)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)

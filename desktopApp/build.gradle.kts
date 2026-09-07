@@ -3,7 +3,7 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
@@ -31,7 +31,7 @@ val appleTeamId = System.getenv("PROD_MACOS_NOTARIZATION_TEAM_ID") ?: ""
 val notarizationPassword = System.getenv("PROD_MACOS_NOTARIZATION_PWD") ?: ""
 
 dependencies {
-    api(project(":shared"))
+    api(projects.shared)
     implementation(compose.desktop.currentOs)
     implementation(libs.kotlinx.coroutines.swing)
     implementation(libs.compose.material3)

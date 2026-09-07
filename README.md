@@ -16,7 +16,14 @@ Unlike many other samples, this one has a strong focus on platform integration. 
 
 ### Noteworthy
 
-This project uses the [new recommended Compose Multiplatform project structure](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/): a shared multiplatform library module (`:shared`) consumed by separate app modules for Android (`:composeApp`) and desktop (`:desktopApp`), rather than a single module combining the app and shared code. The Android build uses AGP 9.3 with the new Android KMP library plugin in `:shared` and built-in Kotlin support in the app module (no separate Kotlin Android plugin). The iOS app lives in the `iosApp/` Xcode project and consumes the same shared framework.
+This project follows the [current default Kotlin Multiplatform project structure](https://blog.jetbrains.com/kotlin/2026/05/new-kmp-default-structure/) (also described in the [recommended structure docs](https://kotlinlang.org/docs/multiplatform/multiplatform-project-recommended-structure.html)):
+
+- `:shared` — multiplatform library (shared UI + logic), using the [Android KMP library plugin](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/)
+- `:androidApp` — Android application entry point (`com.android.application`, built-in Kotlin; no KMP plugin)
+- `:desktopApp` — desktop application entry point
+- `iosApp/` — Xcode project consuming the `Shared` framework produced by `:shared`
+
+Because UI is shared with Compose Multiplatform on every client, a single `shared` module is used (no `sharedLogic` / `sharedUI` split).
 
 Toolchain versions live in `gradle/libs.versions.toml` and the Gradle wrapper. Current stack (high level): **Gradle 9.7**, **AGP 9.3.2**, **Kotlin 2.4.10**, **Compose Multiplatform 1.12**. Material3, Adaptive, and Navigation 3 are versioned separately from the CMP core artifacts, as documented in the [CMP 1.12 release notes](https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.0).
 
@@ -38,7 +45,7 @@ The [official Android Compose documentation on Material icons](https://developer
 **Android (build & install debug):**
 
 ```bash
-./gradlew :composeApp:installDebug
+./gradlew :androidApp:installDebug
 ```
 
 **Desktop (run the app):**
