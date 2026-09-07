@@ -1,4 +1,4 @@
-// Pin Kotlin Gradle plugin for KMP/shared (AGP 9 defaults to 2.2.10)
+// Pin Kotlin Gradle plugin for KMP/shared (AGP ships an older embedded Kotlin by default)
 buildscript {
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10")
@@ -7,7 +7,6 @@ buildscript {
 
 plugins {
     alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.composeCompiler) apply false

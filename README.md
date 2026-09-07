@@ -16,7 +16,11 @@ Unlike many other samples, this one has a strong focus on platform integration. 
 
 ### Noteworthy
 
-This project uses the [new recommended Compose Multiplatform project structure](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/): a shared multiplatform library module (`:shared`) consumed by separate app modules for Android (`:composeApp`) and desktop (`:desktopApp`), rather than a single module combining the app and shared code. The Android build uses AGP 9 with the new Android KMP library plugin in `:shared` and built-in Kotlin support in the app module (no separate Kotlin Android plugin). The iOS app lives in the `iosApp/` Xcode project and consumes the same shared framework.
+This project uses the [new recommended Compose Multiplatform project structure](https://blog.jetbrains.com/kotlin/2026/01/update-your-projects-for-agp9/): a shared multiplatform library module (`:shared`) consumed by separate app modules for Android (`:composeApp`) and desktop (`:desktopApp`), rather than a single module combining the app and shared code. The Android build uses AGP 9.3 with the new Android KMP library plugin in `:shared` and built-in Kotlin support in the app module (no separate Kotlin Android plugin). The iOS app lives in the `iosApp/` Xcode project and consumes the same shared framework.
+
+Toolchain versions live in `gradle/libs.versions.toml` and the Gradle wrapper. Current stack (high level): **Gradle 9.7**, **AGP 9.3.2**, **Kotlin 2.4.10**, **Compose Multiplatform 1.12**. Material3, Adaptive, and Navigation 3 are versioned separately from the CMP core artifacts, as documented in the [CMP 1.12 release notes](https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.0).
+
+Apple Silicon is required for the iOS targets in this project: CMP 1.11+ dropped `iosX64`, so only `iosArm64` and `iosSimulatorArm64` are configured.
 
 ### A note about icons
 
@@ -29,7 +33,7 @@ The [official Android Compose documentation on Material icons](https://developer
 
 ### Run and build from the command line
 
-*IntelliJ IDEA* 2026.2 currently supports the Android Gradle Plugin up to 9.1.0, while this project uses AGP 9.3.1. Until the IDE catches up, use the commands below (or *Android Studio*) to build and run.
+*IntelliJ IDEA* 2026.2 currently supports the Android Gradle Plugin up to **9.1.0**, while this project uses **AGP 9.3.2**. Until the IDE catches up, use the commands below (or *Android Studio*) to build and run Android. Desktop and iOS Gradle/Xcode workflows are unaffected; `./gradlew` in the IDE terminal works regardless of that AGP ceiling.
 
 **Android (build & install debug):**
 
@@ -48,4 +52,3 @@ The [official Android Compose documentation on Material icons](https://developer
 ```bash
 xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16e'
 ```
-

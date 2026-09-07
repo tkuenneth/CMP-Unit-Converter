@@ -28,7 +28,12 @@ val (humanReadableVersionString, buildNumber) = with(content) {
 
 android {
     namespace = "de.thomaskuenneth.cmpunitconverter"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    // API 37 is installed as platforms/android-37.0 (not android-37); select that explicitly.
+    compileSdk {
+        version = release(libs.versions.android.compileSdk.get().toInt()) {
+            minorApiLevel = 0
+        }
+    }
 
     defaultConfig {
         applicationId = "de.thomaskuenneth.cmpunitconverter"

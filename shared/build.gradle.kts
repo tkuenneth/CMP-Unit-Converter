@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -14,7 +13,12 @@ plugins {
 kotlin {
     androidLibrary {
         namespace = "de.thomaskuenneth.cmpunitconverter.shared"
-        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        // API 37 is installed as platforms/android-37.0 (not android-37); select that explicitly.
+        compileSdk {
+            version = release(libs.versions.android.compileSdk.get().toInt()) {
+                minorApiLevel = 0
+            }
+        }
         minSdk = libs.versions.android.minSdk.get().toInt()
         androidResources { enable = true }
         compilerOptions {
@@ -22,9 +26,9 @@ kotlin {
         }
     }
 
+    // CMP 1.11+ dropped Apple x86_64 (iosX64); keep device + Apple Silicon simulator.
     val isMacOS = System.getProperty("os.name").lowercase().contains("mac os x")
     if (isMacOS) listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -53,7 +57,6 @@ kotlin {
             implementation(libs.compose.material3.adaptive.navigation.suite)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
-            implementation(libs.compose.material)
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
@@ -97,7 +100,6 @@ dependencies {
             addAll(
                 listOf(
                     "kspIosArm64",
-                    "kspIosX64",
                     "kspIosSimulatorArm64"
                 )
             )
